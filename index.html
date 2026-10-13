@@ -242,6 +242,33 @@ header .hero-note{display:none}
 @media(max-width:850px){.hqmetrics{grid-template-columns:repeat(2,1fr)}.hqtwocol{grid-template-columns:1fr}}
 @media(max-width:600px){.wrap{padding:12px}body{padding-bottom:90px}header{padding-bottom:4px}.mark{width:42px;height:42px;font-size:23px;border-radius:12px}.hqhero{padding:17px}.hqmetrics{gap:8px;margin:9px 0}.hqmetric{padding:12px}.hqmetric .hint{font-size:10px}.hqmetric .number{font-size:23px}.hqnav{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:90;margin:0;padding:8px max(4px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));border-top:1px solid #32546c;border-bottom:0;box-shadow:0 -8px 30px #0008;background:#081522f9;overflow:hidden}.hqnav button{font-size:11px;padding:8px 2px;border-radius:10px;min-width:0}.hqnav button .ico{font-size:19px;display:block;margin-bottom:3px}.hqnav button .num{display:none}.hqpanel{padding:13px}.hqhero h2{font-size:25px}}
 
+
+/* League-wide v9.1 refinements */
+#v9-view-lab{display:none!important}
+#scheduleTable{width:100%;min-width:0!important;table-layout:fixed}
+#scheduleTable th:first-child,#scheduleTable td:first-child{width:80px;text-align:left;vertical-align:top}
+#scheduleTable th:last-child,#scheduleTable td:last-child{width:92px;text-align:left;vertical-align:top}
+#scheduleTable th:nth-child(2),#scheduleTable td:nth-child(2){text-align:left}
+.schedule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:3px 0}
+.schedule-game{border:1px solid #29465d;background:#0a1b2e;border-radius:10px;padding:9px 10px;min-width:0}
+.schedule-teams{display:flex;align-items:flex-start;gap:7px;justify-content:space-between;font-weight:700;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
+.schedule-teams span{min-width:0}.schedule-teams .versus{flex:none;font-weight:600;color:#7899b1;font-size:10px;padding-top:2px}
+.schedule-pred{font-size:11px;color:#8cdccc;margin-top:6px;line-height:1.4;overflow-wrap:anywhere}
+.schedule-pred.waiting{color:#8ea5bb}
+#hqToiletTable{min-width:0;table-layout:fixed}
+#hqToiletTable th:first-child,#hqToiletTable td:first-child{width:40%;text-align:left;overflow-wrap:anywhere}
+#hqToiletTable th:not(:first-child),#hqToiletTable td:not(:first-child){text-align:right}
+#hqToiletTable th,#hqToiletTable td{white-space:normal;overflow-wrap:anywhere;padding:10px 7px}
+.roster-warning{padding:12px 13px;border:1px solid #9c6935;background:#312519;color:#ffe6b1;border-radius:11px;font-size:12px;line-height:1.5;margin-bottom:10px}
+.roster-warning strong{display:block;margin-bottom:4px}.roster-warning .small{color:#eccb9a}
+.person.empty-slot{background:#322332;border:1px solid #724159;border-radius:10px;padding:10px 8px}
+.person.empty-slot .pname{color:#ffd2dc}
+.fixture .model-outlook{padding:9px 0 0;margin-top:10px;border-top:1px solid #294255;color:#d8ecfb;font-size:12px;line-height:1.55}
+.fixture .model-outlook .chance{color:#77ebcd;font-weight:800}
+.hqcaption.hqclarity{font-size:12px;color:#a8becf;margin-top:10px}
+@media(max-width:780px){.schedule-grid{grid-template-columns:1fr}#scheduleTable th:first-child,#scheduleTable td:first-child{width:56px}#scheduleTable th:last-child,#scheduleTable td:last-child{display:none}}
+@media(max-width:600px){#scheduleTable th,#scheduleTable td{font-size:11px;padding:10px 5px}#scheduleTable th:first-child,#scheduleTable td:first-child{width:48px}#scheduleTable .schedule-game{padding:8px}#hqToiletTable th:nth-child(4),#hqToiletTable td:nth-child(4){display:none}#hqToiletTable th:first-child,#hqToiletTable td:first-child{width:45%}#hqToiletTable th:nth-child(2),#hqToiletTable td:nth-child(2){width:24%}#hqToiletTable th:nth-child(3),#hqToiletTable td:nth-child(3){width:31%}#hqToiletTable th,#hqToiletTable td{font-size:11px;padding:10px 5px}}
+
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v7</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -259,14 +286,15 @@ header .hero-note{display:none}
 <div class="section-intro" id="syncDetail">Sleeper sync updates rosters, results and fixtures. Current scores are provisional.</div>
 </section>
 
-<section class="panel"><div class="panel-title"><h2>🏆 League forecast</h2><div class="actions"><button class="secondary copy-action" type="button" data-copy-target="forecastTable" data-copy-title="League forecast">Copy table</button><button class="secondary" id="copyBtn">Copy for chat</button><button class="secondary" id="csvBtn">CSV</button></div></div>
-<div class="controls v7mode"><label class="control">Forecast engine <select id="modelMode"><option value="adaptive" selected>Adaptive · regression + team SD</option><option value="legacy">Original v6 · 70/30 and SD 20</option><option value="custom">Custom / backtest winner</option></select></label>
+<section class="panel"><div class="panel-title"><h2>🏆 League forecast</h2><div class="actions"><button class="secondary copy-action" type="button" data-copy-target="forecastTable" data-copy-title="League forecast">Copy table</button><button class="secondary" id="csvBtn">CSV</button></div></div>
+<details class="model-details" style="margin:10px 0"><summary>Advanced forecast settings</summary><div style="padding:9px 0"><div class="controls v7mode"><label class="control">Forecast engine <select id="modelMode"><option value="adaptive" selected>Adaptive · regression + team SD</option><option value="legacy">Original v6 · 70/30 and SD 20</option><option value="custom">Custom / backtest winner</option></select></label>
 <label class="control">Volatility <select id="sdMode"><option value="measured" selected>Measured by team (shrunken)</option><option value="fixed">Fixed points</option></select></label><span id="sigmaLabel" class="small">League SD: —</span></div>
 <div class="controls"><label class="control">Simulations <select id="simCount"><option value="20000">20,000</option><option value="50000" selected>50,000</option><option value="100000">100,000</option></select></label>
 <label class="control">Regression K <input id="regK" type="number" min="0" max="40" step="1" value="6"></label>
 <label class="control">Relative Max PF <input id="maxSignal" type="number" min="0" max="0.8" step=".05" value=".15"></label>
 <label class="control">Fixed SD <input id="scoreSd" type="number" min="8" max="60" step="1" value="22"></label>
 <label class="control">Seed <input id="seed" type="number" value="20261012"></label></div>
+</div></details>
 <p class="section-intro" style="margin-top:9px">Simulated odds, not guarantees. Tap Copy table to paste into Sheets or Messages.</p>
 <div class="tablewrap"><table id="forecastTable"><thead><tr><th data-sort="name">Team</th><th data-sort="current">Now</th><th data-sort="projReg">Proj Reg</th><th data-sort="expWins">Proj W</th><th data-sort="playoff">Playoffs</th><th data-sort="toilet">Toilet</th><th data-sort="champ">Champion</th><th data-sort="last">💩 Last</th><th data-sort="projFinal">Proj Final</th></tr></thead><tbody></tbody></table></div>
 </section>
@@ -287,9 +315,9 @@ header .hero-note{display:none}
 <div class="tablewrap"><table id="strengthTable" class="strength-table"><thead><tr><th>Team</th><th>PF / week</th><th>Max PF / week</th><th>Lineup efficiency</th><th>Forecast / week</th><th>Weekly SD</th><th>All-play win %</th></tr></thead><tbody></tbody></table></div></section>
 <section class="panel"><div class="panel-title"><h2>🎯 Finishing probabilities</h2><button class="secondary copy-action" type="button" data-copy-target="matrix" data-copy-title="Finishing position probabilities">Copy table</button></div><div class="tablewrap"><div class="matrix" id="matrix"></div></div></section>
 <section class="panel"><div class="panel-title"><h2>🏟 Weekly matchups</h2><div class="controls"><label class="control">Week <select id="weekSelect"></select></label><span id="weekState" class="small"></span><button class="secondary copy-action" type="button" data-copy-target="matchupCards" data-copy-title="Weekly matchups">Copy</button></div></div>
-<div class="pairings" id="matchupCards"></div></section>
+<div class="pairings" id="matchupCards"></div><p class="hqcaption hqclarity">Pregame forecast only. Scores shown as projections are average model outcomes, not actual scores or live Sleeper projections.</p></section>
 <section class="panel"><div class="panel-title"><h2>📅 Remaining schedule</h2><div class="btnright"><span class="small" id="scheduleStatus">Offline v5 fixtures</span><button class="secondary copy-action" type="button" data-copy-target="scheduleTable" data-copy-title="Remaining schedule">Copy table</button></div></div>
-<div class="tablewrap"><table id="scheduleTable"><thead><tr><th>Week</th><th style="text-align:left">Fixtures</th><th>Source</th></tr></thead><tbody></tbody></table></div></section>
+<div class="tablewrap" style="overflow-x:visible"><table id="scheduleTable"><thead><tr><th>Week</th><th style="text-align:left">Fixtures</th><th>Source</th></tr></thead><tbody></tbody></table></div></section>
 <section class="panel"><div class="panel-title"><h2>🧑‍🤝‍🧑 League rosters</h2><div class="controls"><label class="control">Team <select id="rosterSelect"></select></label><button class="secondary copy-action" type="button" data-copy-target="rosterDetail" data-copy-title="Current roster">Copy roster</button></div></div>
 <div class="roster-columns"><div><div id="rosterOverview" class="roster-side"></div></div><div id="rosterDetail"></div></div></section>
 <section class="panel" id="byePanel"><div class="panel-title"><h2>✈ Bye-week risk</h2><div class="controls">
@@ -417,6 +445,17 @@ const nflByes = {
   15:[]
 };
 const seededRosters = {
+  "Humble Champions":[
+    ["EMPTY — QB not started","QB","","QB"],
+    ["Chase Brown","RB","CIN","RB"],["Aaron Jones","RB","MIN","RB"],
+    ["Emeka Egbuka","WR","TB","WR"],["Christian Watson","WR","GB","WR"],
+    ["Trey McBride","TE","ARI","TE"],["Tony Pollard","RB","TEN","WRRB_FLEX"],
+    ["KC Concepcion","WR","CLE","WRRB_FLEX"],["Cam Little","K","JAX","K"],
+    ["Houston Texans","DEF","HOU","DEF"],["Caleb Williams","QB","CHI","BN"],
+    ["Marvin Harrison","WR","HOU","BN"],["Kyle Monangai","RB","CHI","BN"],
+    ["Jordyn Tyson","WR","NO","BN"],["DeVonta Smith","WR","PHI","BN"],
+    ["Kenneth Walker","RB","KC","BN"]
+  ],
   "Tall & Handsome":[
     ["Dak Prescott","QB","DAL","QB"],["Christian McCaffrey","RB","SF","RB"],
     ["Chris Rodriguez","RB","JAX","RB"],["George Pickens","WR","DAL","WR"],
@@ -466,7 +505,7 @@ const PLAYERS_KEY='sf_v6_players';
 const ID_KEY='sf_v6_leagueid';
 const POSITION_VALUE={QB:18,RB:12.5,WR:11.5,TE:8.5,FLEX:10.5,K:7,DEF:7};
 const NON_STARTER=new Set(['BN','IR','TAXI','RES','IL','NA']);
-let live=null, model=null, busy=false, source='offline', currentWeek=5, completedWeeks=4, regularWeeks=15;
+let live=null, model=null, busy=false, source='offline', currentWeek=calendarNflWeek(), completedWeeks=4, regularWeeks=15;
 let teams=structuredClone(baseline).map((t,i)=>({...t,id:i+1}));
 let rosters=offlineRosters();
 let weekly={}, players={}, leagueInfo=null, realBrackets={winners:[],losers:[]}, warnings=[];
@@ -484,7 +523,7 @@ function status(msg,type=''){el('status').className='statusline '+type;el('statu
 function mulberry32(a){return function(){let t=a+=0x6d2b79f5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
 function gaussian(r){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
 async function fetchJSON(url){const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),20000);try{const r=await fetch(url,{mode:'cors',credentials:'omit',cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('Sleeper HTTP '+r.status+' ('+url.split('/').slice(-2).join('/')+')');return await r.json();}finally{clearTimeout(timeout)}}
-function offlineRosters(){return Object.fromEntries(Object.entries(seededRosters).map(([name,r])=>[name,r.map((p,i)=>({id:String(i),name:p[0],pos:p[1],nfl:p[2],slot:p[3]}))]))}
+function offlineRosters(){return Object.fromEntries(Object.entries(seededRosters).map(([name,r])=>[name,r.map((p,i)=>({id:p[0].startsWith('EMPTY —')?'0':String(i),name:p[0].startsWith('EMPTY —')?'EMPTY':p[0],pos:p[1],nfl:p[2],slot:p[3],empty:p[0].startsWith('EMPTY —')}))]))}
 function scoreSetting(s,name){return Number(s?.[name]||0)+Number(s?.[name+'_decimal']||0)/100}
 function validateFixtures(fix){if(!Array.isArray(fix)||fix.length!==teams.length/2)return false;const xs=fix.flat();return xs.length===teams.length&&xs.every(n=>teams.some(t=>t.name===n))&&new Set(xs).size===teams.length}
 function derivePairs(entries){if(!Array.isArray(entries))return [];const by={};for(const e of entries){if(e.matchup_id==null||e.roster_id==null)continue;(by[e.matchup_id]??=[]).push(e)}
@@ -679,25 +718,47 @@ function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),ar
  }else el('matchupCards').innerHTML='<div class="note">No matchups available for this week.</div>';
 }
 function renderSchedule(){const body=el('scheduleTable').querySelector('tbody');const rows=[];
- for(let w=completedWeeks+1;w<=regularWeeks;w++){
-  const x=scheduleFor(w);rows.push('<tr><td><b>Wk '+w+'</b></td><td style="text-align:left">'+(x.games.length?x.games.map(p=>safe(p[0])+' <span class="subtle">v</span> '+safe(p[1])).join(' <span class="subtle">·</span> '):'<span class="byebad">Incomplete fixture list — forecast paused</span>')+'</td><td><span class="small">'+safe(x.type)+'</span></td></tr>');
+ for(let w=Math.max(completedWeeks+1,calendarNflWeek());w<=regularWeeks;w++){
+  const x=scheduleFor(w);
+  const fixtures=x.games.map(([a,b])=>{
+   const pa=hqProjectedScore(a,w),pb=hqProjectedScore(b,w),prob=hqProbability(a,b,w);
+   const estimate=pa&&pb&&prob!=null?'<div class="schedule-pred">Proj '+fmt(pa.mu,0)+'–'+fmt(pb.mu,0)+' pts · '+safe(a)+' '+hqPct(prob)+' to win</div>':'<div class="schedule-pred waiting">Run forecast for estimated points</div>';
+   return '<div class="schedule-game"><div class="schedule-teams"><span>'+safe(a)+'</span><span class="versus">v</span><span>'+safe(b)+'</span></div>'+estimate+'</div>';
+  }).join('');
+  rows.push('<tr><td><b>Wk '+w+'</b></td><td><div class="schedule-grid">'+(fixtures||'<span class="byebad">Fixture list unavailable</span>')+'</div></td><td><span class="small">'+safe(x.type)+'</span></td></tr>');
  }
  body.innerHTML=rows.join('')||'<tr><td colspan="3">The regular season is complete.</td></tr>';
 }
 function renderRosterSelector(){const sel=el('rosterSelect'),old=sel.value;sel.innerHTML=teams.map(t=>'<option value="'+t.id+'">'+safe(t.name)+'</option>').join('');
- if(teams.some(t=>String(t.id)===old))sel.value=old;else {const mine=teams.find(t=>t.name==='Tall & Handsome');if(mine)sel.value=String(mine.id)}
+ if(teams.some(t=>String(t.id)===old))sel.value=old;else if(teams.length)sel.value=String([...teams].sort((a,b)=>a.name.localeCompare(b.name))[0].id)
  renderRoster();}
-function renderRoster(){const t=teams.find(t=>String(t.id)===el('rosterSelect').value)||teams[0];if(!t)return;
- const r=rosterFor(t);const q=rosterQuality(t);const stats='<div class="roster-card"><strong>'+safe(t.name)+'</strong><small>'+safe(t.owner||'Sleeper manager')+'</small><div style="margin-top:8px">'+t.w+'–'+t.l+(t.ties?'–'+t.ties:'')+' · '+fmt(t.pf,2)+' PF</div><small>'+ (t.maxpf===null?'Max PF unknown':fmt(t.maxpf,2)+' Max PF')+'</small></div>';
- el('rosterOverview').innerHTML=stats+'<div class="roster-card"><strong>Starting lineup</strong><small>'+q.have+'/'+q.required+' slots · '+(q.ok?'bye model enabled':'bye model disabled')+'</small><div style="margin-top:8px"><strong>Players</strong><small>'+r.length+' currently on roster</small></div></div>';
- if(!r.length){el('rosterDetail').innerHTML='<p class="note">This team does not have an offline roster. Sync Sleeper to load it.</p>';return;}
- const starter=r.filter(p=>!['BN','IR'].includes(p.slot));const bench=r.filter(p=>p.slot==='BN'),ir=r.filter(p=>p.slot==='IR');
+function renderRoster(){
+ const t=teams.find(t=>String(t.id)===el('rosterSelect').value)||teams[0];if(!t)return;
+ const r=rosterFor(t);const q=rosterQuality(t);
+ const active=r.filter(p=>!NON_STARTER.has(p.slot));
+ const gaps=active.filter(p=>p.empty||p.id==='0'||!p.name||!p.pos||!p.nfl);
+ const available=r.filter(p=>p.slot==='BN'&&p.pos&&p.nfl);
+ const filled=Math.max(0,active.length-gaps.length);
+ const stats='<div class="roster-card"><strong>'+safe(t.name)+'</strong><small>'+safe(t.owner||'Sleeper manager')+'</small><div style="margin-top:8px">'+t.w+'–'+t.l+(t.ties?'–'+t.ties:'')+' · '+fmt(t.pf,2)+' PF</div><small>'+ (t.maxpf===null?'Max PF unknown':fmt(t.maxpf,2)+' Max PF')+'</small></div>';
+ el('rosterOverview').innerHTML=stats+'<div class="roster-card"><strong>Actual starting lineup</strong><small>'+filled+'/'+q.required+' filled · '+(source==='sleeper'?'Sleeper':'Offline snapshot')+'</small><div style="margin-top:8px"><strong>Roster</strong><small>'+r.filter(p=>!p.empty).length+' listed players</small></div></div>';
+ if(!r.length){el('rosterDetail').innerHTML='<p class="note">No offline player list for this team. Press Sync Sleeper on Home for current starters and bench.</p>';return;}
+ const starter=r.filter(p=>!NON_STARTER.has(p.slot)),bench=r.filter(p=>p.slot==='BN'),ir=r.filter(p=>p.slot==='IR');
+ let gapNote='';
+ if(gaps.length){
+  const slots=gaps.map(p=>p.slot).join(', ');
+  const suggestions=[];
+  for(const p of gaps){const candidates=available.filter(b=>positionalEligibility(b.pos,p.slot)).map(b=>b.name);if(candidates.length)suggestions.push(p.slot+': '+candidates.join(' / '));}
+  gapNote='<div class="roster-warning"><strong>⚠️ Empty or unrecognised starting slot: '+safe(slots)+'</strong>'+
+   (suggestions.length?'Possible bench cover — '+safe(suggestions.join('; '))+'. ':'')+
+   '<span class="small">This is the lineup shown in the loaded data, not a prediction. The model may use eligible bench cover for future projections; it cannot change anyone’s Sleeper lineup.</span></div>';
+ }
+ const offlineNote=source!=='sleeper'?'<p class="hqcaption">Offline roster snapshot may be outdated. Sync Sleeper for the latest confirmed lineup.</p>':'';
  function section(title,arr){return '<div class="sect"><h3>'+title+' ('+arr.length+')</h3>'+arr.map(p=>{
   const bye=Object.entries(nflByes).find(([,names])=>names.includes(p.nfl))?.[0];
-  const pos=safe(p.pos||'–'),slot=safe(p.slot||'BN');
-  return '<div class="person"><span class="slot '+(slot==='BN'?'bn':slot==='IR'?'ir':'')+'">'+slot+'</span><span><span class="pname">'+safe(p.name)+'</span><div class="ptiny">'+pos+(p.injury?' · '+safe(p.injury):'')+'</div></span><div class="pteam">'+safe(p.nfl||'Team unknown')+'<div class="ptiny">'+(bye?'Bye Wk '+bye:'')+'</div></div></div>';
+  const pos=safe(p.pos||'–'),slot=safe(p.slot||'BN');const empty=p.empty||p.id==='0';
+  return '<div class="person'+(empty?' empty-slot':'')+'"><span class="slot '+(slot==='BN'?'bn':slot==='IR'?'ir':'')+'">'+slot+'</span><span><span class="pname">'+(empty?'EMPTY — no player started':safe(p.name))+'</span><div class="ptiny">'+pos+(p.injury?' · '+safe(p.injury):'')+'</div></span><div class="pteam">'+safe(p.nfl||'No NFL team')+'<div class="ptiny">'+(bye?'Bye Wk '+bye:'')+'</div></div></div>';
  }).join('')+'</div>'}
- el('rosterDetail').innerHTML=section('Starters',starter)+section('Bench',bench)+section('Injured reserve / taxi',ir);
+ el('rosterDetail').innerHTML=gapNote+offlineNote+section('Starters',starter)+section('Bench',bench)+section('Injured reserve / taxi',ir);
 }
 // NFL 2026 Week 1 begins Thursday 10 September. Advance the visible week on
 // Tuesday at noon UTC after Monday Night Football, even when cached data is stale.
@@ -1134,7 +1195,7 @@ function setupCopyControls(){
 function boot(){const prior=read(ID_KEY);if(prior&&/^\d+$/.test(prior))el('leagueId').value=prior;
  const saved=read(STANDINGS_KEY);if(saved?.league?.league_id&&String(saved.league.league_id)===el('leagueId').value){try{saved.playerMap=read(PLAYERS_KEY)?.map||{};hydrate(saved);warnings.push('Displaying cached Sleeper data until refreshed.');}catch(e){console.warn('Cached league ignored',e)}}
  renderAll();initLab();startSimulation();el('syncBtn').addEventListener('click',sync);el('runBtn').addEventListener('click',startSimulation);
- el('copyBtn').addEventListener('click',copyTable);el('csvBtn').addEventListener('click',exportCSV);setupCopyControls();
+ el('csvBtn').addEventListener('click',exportCSV);setupCopyControls();
  el('weekSelect').addEventListener('change',renderMatchups);el('rosterSelect').addEventListener('change',renderRoster);
  el('byeStart').addEventListener('change',renderByeTable);el('byeSpan').addEventListener('change',renderByeTable);
  // Keep an open tab's auto week display current across Tuesday NFL week rollover.
@@ -1202,14 +1263,13 @@ function initV9(){
 <button type="button" data-hq="games"><span class="ico">🏟</span>Games</button>
 <button type="button" data-hq="rosters"><span class="ico">👥</span>Teams</button>
 <button type="button" data-hq="toilet"><span class="ico">💩</span>Toilet</button>
-<button type="button" data-hq="lab"><span class="ico">🧪</span>Lab</button>
 </nav>
 <div id="v9-view-home" class="hqview active">
  <div class="hqhero"><div class="hqrow"><span class="eyebrow">Sunday Funday · 2026</span><span id="hqSource" class="small">Offline preview</span></div>
-  <h2 id="hqGreeting">Your league. Every possible ending.</h2><p id="hqIntro">Live Sleeper results with 50,000 simulated seasons. Sync to refresh.</p></div>
+  <h2 id="hqGreeting">Every team. Every possible ending.</h2><p id="hqIntro">Live Sleeper results with 50,000 simulated seasons. Sync to refresh.</p></div>
  <div id="hqMetrics" class="hqmetrics"></div>
  <div class="hqtwocol"><section class="hqpanel"><h3>🔥 League headlines</h3><div id="hqHeadlines" class="hqempty">Run the simulation to see the latest league picture.</div></section>
- <section class="hqpanel"><div class="hqrow"><h3>⚔️ Week at a glance</h3><button type="button" class="secondary" id="hqAllGames" style="font-size:11px">All games →</button></div><div id="hqGames" class="hqempty">Waiting for league data.</div></section></div>
+ <section class="hqpanel"><div class="hqrow"><h3>⚔️ Week at a glance</h3><button type="button" class="secondary" id="hqAllGames" style="font-size:11px">All games →</button></div><div id="hqGames" class="hqempty">Waiting for league data.</div><p class="hqcaption hqclarity">Predicted points and percentages use team scoring history, bye-week cover and weekly volatility — not player-by-player future projections.</p></section></div>
  <section class="hqpanel"><div class="hqrow"><h3>📈 Power rankings</h3><button type="button" class="secondary copy-action" data-copy-target="hqPowerTable">Copy</button></div>
  <div class="tablewrap"><table id="hqPowerTable" class="hqtable"><thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>PF / week</th><th>Power</th><th>Playoffs</th><th>Title</th><th>Change</th></tr></thead><tbody></tbody></table></div><p class="hqcaption" id="hqMovementNote">Probability changes will be shown after snapshots are saved on this device in multiple weeks.</p></section>
  <section class="panel" id="v9-connection"></section>
@@ -1219,19 +1279,19 @@ function initV9(){
 <div id="v9-view-rosters" class="hqview"></div>
 <div id="v9-view-toilet" class="hqview">
  <section class="hqhero"><div class="eyebrow">Bottom four · Two-round bracket</div><h2>💩 Toilet Bowl headquarters</h2><p>Last place is decided in the Toilet Bowl, not simply by finishing 10th in the regular season.</p></section>
- <section class="hqpanel"><div class="hqrow"><h3>Race for the 💩 crown</h3><button type="button" class="secondary copy-action" data-copy-target="hqToiletTable">Copy table</button></div><div class="tablewrap"><table id="hqToiletTable" class="hqtable"><thead><tr><th>Team</th><th>Toilet Bowl</th><th>Finishes last</th><th>Projected finish</th></tr></thead><tbody></tbody></table></div></section>
+ <section class="hqpanel"><div class="hqrow"><h3>Race for the 💩 crown</h3><button type="button" class="secondary copy-action" data-copy-target="hqToiletTable">Copy table</button></div><div class="tablewrap" style="overflow-x:visible"><table id="hqToiletTable" class="hqtable"><thead><tr><th>Team</th><th>Toilet Bowl</th><th>Finishes last</th><th>Projected finish</th></tr></thead><tbody></tbody></table></div></section>
 </div>
 <div id="v9-view-lab" class="hqview"></div>
 `);
  const panels=Array.from(document.querySelectorAll('main.wrap > section.panel'));
  const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
  panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
- const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9</span>';}
- document.title='Sunday Funday — League Headquarters v9';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
+ const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.1</span>';}
+ document.title='Sunday Funday — League Edition v9.1';
+ const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.1 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
  document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
  el('hqAllGames').addEventListener('click',()=>hqTab('games'));
- const qs=new URLSearchParams(location.search),tab=qs.get('tab');if(['home','forecast','games','rosters','toilet','lab'].includes(tab))hqTab(tab);
+ const qs=new URLSearchParams(location.search),tab=qs.get('tab');if(['home','forecast','games','rosters','toilet'].includes(tab))hqTab(tab);
 }
 function hqTab(tab){
  hqActive=tab;document.querySelectorAll('.hqview').forEach(v=>v.classList.toggle('active',v.id==='v9-view-'+tab));
@@ -1249,11 +1309,18 @@ function hqLuck(){
  }
  return [...sum.values()].filter(x=>x.weeks>0).map(s=>({...s,actual:s.team.w,expected:s.allPlay,delta:s.actual-s.allPlay}));
 }
-function hqProbability(a,b,w){if(!model)return null;
- const ai=teams.findIndex(t=>t.name===a),bi=teams.findIndex(t=>t.name===b);if(ai<0||bi<0)return null;
- const mA=model.strength[ai]-(w>completedWeeks?byeImpact(teams[ai],w).pts:0),mB=model.strength[bi]-(w>completedWeeks?byeImpact(teams[bi],w).pts:0);
- const variance=model.sigma[ai]**2+model.sigma[bi]**2;
- return clamp(normalCDF((mA-mB)/Math.max(1,Math.sqrt(variance))),.001,.999);
+const hqWeeklyProjectionCache=new Map();
+function hqProjectedScore(teamName,week){
+ if(!model)return null;
+ const idx=teams.findIndex(t=>t.name===teamName);if(idx<0)return null;
+ const key=String(teams[idx].id)+'-'+String(week);
+ if(hqWeeklyProjectionCache.has(key))return hqWeeklyProjectionCache.get(key);
+ const mu=Math.max(0,model.strength[idx]-(week>completedWeeks?byeImpact(teams[idx],week).pts:0));
+ const estimate={mu,sd:model.sigma[idx],team:teams[idx]};hqWeeklyProjectionCache.set(key,estimate);return estimate;
+}
+function hqProbability(a,b,w){
+ const x=hqProjectedScore(a,w),y=hqProjectedScore(b,w);if(!x||!y)return null;
+ return clamp(normalCDF((x.mu-y.mu)/Math.max(1,Math.hypot(x.sd,y.sd))),.001,.999);
 }
 function hqCurrentFixtures(w){const games=scheduleFor(w).games;return games.map(([a,b])=>({a,b,p:hqProbability(a,b,w)}));}
 function hqWeekLabel(){return Math.min(regularWeeks,Math.max(1,currentWeek));}
@@ -1279,14 +1346,14 @@ function renderHQ(){
  if(hqRendering)return;hqRendering=true;
  try{
  const synced=source==='sleeper';el('hqSource').textContent=synced?'● Sleeper synced':'○ Offline snapshot';
- if(!model){el('hqGreeting').textContent='Your league. Every possible ending.';el('hqIntro').textContent='Sync Sleeper and run the simulation for updated forecasts.';return}
+ if(!model){el('hqGreeting').textContent='Every team. Every possible ending.';el('hqIntro').textContent='Sync Sleeper and run the simulation for updated forecasts.';return}
  const all=teams.map((t,i)=>({t,i,ch:model.champ[i]/model.sims,po:model.playoff[i]/model.sims,tb:model.toilet[i]/model.sims,lp:model.last[i]/model.sims,str:model.strength[i]}));
  const king=[...all].sort((a,b)=>b.ch-a.ch)[0],last=[...all].sort((a,b)=>b.lp-a.lp)[0];
- const t=teams.find(x=>x.name==='Tall & Handsome'),mine=teams.findIndex(x=>x.id===t?.id);
- const name=mine>=0?t.name:'League overview';
- el('hqGreeting').textContent=synced?'Week '+hqWeekLabel()+' — the league is taking shape':'League preview — sync for live standings';
+ const highest=[...all].sort((a,b)=>b.str-a.str)[0];
+ const closestTitle=[...all].sort((a,b)=>b.po-a.po)[0];
+ el('hqGreeting').textContent=synced?'Week '+hqWeekLabel()+' — Sunday Funday':'League preview — sync for live standings';
  el('hqIntro').textContent='50,000-season probabilities · '+completedWeeks+' completed weeks · '+teams.length+' fantasy teams';
- const cells=[['Title favourite',king.t.name,hqPct(king.ch)+' champion odds'],['Most at risk',last.t.name,hqPct(last.lp)+' to finish last'],[mine>=0?'Your playoffs':'Playoff picture',mine>=0?hqPct(all[mine].po):'Top 4',mine>=0?name:'Four playoff berths'],['Your record',mine>=0?`${t.w}–${t.l}`:'—',mine>=0?`${fmt(t.pf/Math.max(1,t.w+t.l),1)} PF / week`:'Sleeper refresh required']];
+ const cells=[['Title favourite',king.t.name,hqPct(king.ch)+' championship probability'],['Most at risk',last.t.name,hqPct(last.lp)+' to finish last'],['Highest scoring forecast',highest.t.name,fmt(highest.str,1)+' pts / game'],['Playoff favourite',closestTitle.t.name,hqPct(closestTitle.po)+' chance of top four']];
  el('hqMetrics').innerHTML=cells.map(([k,v,desc])=>`<div class="hqmetric"><div class="hint">${safe(k)}</div><div class="number">${safe(v)}</div><div class="desc">${safe(desc)}</div></div>`).join('');
  const week=hqWeekLabel(),fixtures=hqCurrentFixtures(week),luck=hqLuck();
  const lucky=luck.sort((a,b)=>b.delta-a.delta)[0];const close=fixtures.filter(x=>x.p!=null).sort((a,b)=>Math.abs(a.p-.5)-Math.abs(b.p-.5))[0];
@@ -1295,7 +1362,10 @@ function renderHQ(){
  if(close)cards.push(hqItem('⚔️',close.a+' v '+close.b,'Closest Week '+week+' pregame forecast: '+hqPct(close.p)+' / '+hqPct(1-close.p)));
  else cards.push(hqItem('📅','Upcoming fixtures','Sync Sleeper for verified pairings'));
  el('hqHeadlines').innerHTML=cards.join('');
- el('hqGames').innerHTML=fixtures.length?fixtures.map(g=>`<div class="hqmini"><div><b>${safe(g.a)}</b><small>vs ${safe(g.b)}</small></div><div class="hqprob">${g.p!=null&&week>completedWeeks?hqPct(g.p):'—'}<small style="text-align:right">${week>completedWeeks?'pregame':'completed / live'}</small></div></div>`).join(''):'<div class="hqempty">No current fixtures loaded.</div>';
+ el('hqGames').innerHTML=fixtures.length?fixtures.map(g=>{
+ const a=hqProjectedScore(g.a,week),b=hqProjectedScore(g.b,week),upcoming=week>completedWeeks;
+ return `<div class="hqmini"><div><b>${safe(g.a)}</b><small>v ${safe(g.b)}</small><small>${upcoming&&a&&b?'Proj '+fmt(a.mu,0)+'–'+fmt(b.mu,0)+' fantasy pts':'Current scores on Games tab'}</small></div><div class="hqprob">${g.p!=null&&upcoming?hqPct(g.p):'—'}<small style="text-align:right">${upcoming?'win chance':'completed / live'}</small></div></div>`;
+ }).join(''):'<div class="hqempty">No current fixtures loaded.</div>';
  const past=hqSnapshotBaseline();
  el('hqMovementNote').textContent=past?'Probability change vs your locally saved Week '+past.wk+' forecast. Snapshots are stored on this device only.':'Changes will appear after this device has captured forecasts from two different completed weeks.';
  el('hqPowerTable').querySelector('tbody').innerHTML=[...all].sort((a,b)=>b.str-a.str).map((x,n)=>{
@@ -1309,22 +1379,24 @@ function renderHQ(){
 function renderHQMatchups(){
  if(!model||!el('matchupCards'))return;
  const w=+el('weekSelect')?.value||hqWeekLabel();
- if(w<=completedWeeks)return; // Real completed results are already rendered by v7; never relabel them as projections.
  const widgets=Array.from(el('matchupCards').querySelectorAll('.fixture'));
- const fixture=hqCurrentFixtures(w);
- // Use a dedicated, explicitly pregame readout under each matchup (no invented live probabilities).
- widgets.forEach((node,i)=>{node.querySelectorAll('.v9-prob').forEach(n=>n.remove());
-  const pair=fixture[i];if(!pair||pair.p==null)return;
-  const strip=document.createElement('div');strip.className='v9-prob';strip.style='font-size:11px;margin-top:9px;border-top:1px solid #294255;padding-top:8px;color:#89d9c8';
-  strip.textContent='Pregame model · '+pair.a+' '+hqPct(pair.p)+' / '+pair.b+' '+hqPct(1-pair.p);node.appendChild(strip);
+ widgets.forEach(node=>node.querySelectorAll('.model-outlook').forEach(n=>n.remove()));
+ if(w<=completedWeeks)return; // Actual final scores displayed unchanged.
+ const fixtures=hqCurrentFixtures(w);
+ widgets.forEach((node,i)=>{
+  const pair=fixtures[i];if(!pair||pair.p==null)return;
+  const a=hqProjectedScore(pair.a,w),b=hqProjectedScore(pair.b,w);if(!a||!b)return;
+  const strip=document.createElement('div');strip.className='model-outlook';
+  strip.innerHTML='<div>Projected points: <b>'+safe(pair.a)+' '+fmt(a.mu,1)+'</b> · <b>'+safe(pair.b)+' '+fmt(b.mu,1)+'</b></div><div class="chance">Win probability: '+safe(pair.a)+' '+hqPct(pair.p)+' / '+safe(pair.b)+' '+hqPct(1-pair.p)+'</div>';
+  node.appendChild(strip);
  });
 }
-const v9RenderForecast=renderForecast;renderForecast=function(){v9RenderForecast();renderHQ()};
+const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
 const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();renderHQMatchups()};
 
 
-const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();return hqOldHydrate(...args)};
+const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();return hqOldHydrate(...args)};
 
 initV9();boot();
 
