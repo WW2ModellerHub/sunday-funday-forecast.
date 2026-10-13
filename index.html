@@ -1,1583 +1,373 @@
 <!doctype html>
-<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f"><title>Sunday Funday — v7 Rolling Byes</title>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Sunday Funday RedZone v9.3</title>
 <style>
 :root{
-  --bg:#07111f; --panel:#0d1b2d; --panel2:#10243a; --line:#24384f;
-  --text:#f5f8fc; --muted:#91a4bb; --teal:#24e7c5; --blue:#67b7ff;
-  --green:#45d483; --amber:#f2b94b; --red:#ff6577; --pink:#ff7ec8;
+  --bg:#050d19;
+  --bg2:#071426;
+  --card:#0c1e33;
+  --card2:#102846;
+  --line:#224a66;
+  --soft:#8aa8c1;
+  --text:#eef7ff;
+  --muted:#aac0d4;
+  --teal:#40f0d3;
+  --teal2:#14cbb8;
+  --green:#49f2b0;
+  --red:#ff5d6c;
+  --red2:#ff7145;
+  --gold:#ffcb66;
+  --shadow:0 20px 60px rgba(0,0,0,.4);
 }
 *{box-sizing:border-box}
-body{margin:0;background:linear-gradient(180deg,#06101e,#0a1525 45%,#07111f);color:var(--text);
-font-family:Inter,ui-sans-serif,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif}
-.wrap{max-width:1400px;margin:auto;padding:22px}
-header{display:flex;gap:16px;align-items:flex-start;justify-content:space-between;margin-bottom:18px}
-h1{font-size:clamp(25px,4vw,42px);margin:0 0 5px;font-weight:850;letter-spacing:-.04em}
-.sub{color:var(--muted);font-size:14px;line-height:1.45}
-.badges{display:flex;flex-wrap:wrap;gap:8px;justify-content:flex-end}
-.badge{background:#10253a;border:1px solid #24425e;border-radius:999px;padding:7px 10px;color:#cde2f4;font-size:12px;font-weight:700}
-.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin:18px 0}
-.card,.panel{background:linear-gradient(180deg,rgba(18,38,60,.98),rgba(11,27,45,.98));border:1px solid var(--line);border-radius:18px;box-shadow:0 12px 30px rgba(0,0,0,.16)}
-.card{padding:16px}
-.card .k{color:var(--muted);font-size:12px;text-transform:uppercase;letter-spacing:.08em;font-weight:750}
-.card .v{font-size:25px;font-weight:850;margin-top:4px}
-.panel{padding:16px;margin:14px 0}
-.panel-title{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:12px}
-.panel-title h2{margin:0;font-size:18px}
-.actions{display:flex;flex-wrap:wrap;gap:8px}
-button,select,input{font:inherit}
-button{border:0;border-radius:12px;padding:10px 13px;font-weight:800;cursor:pointer}
-button.primary{background:var(--teal);color:#002b25}
-button.secondary{background:#17314a;color:#dceaf7;border:1px solid #2c4c68}
-button.danger{background:#3a1f29;color:#ffcbd3;border:1px solid #6b3140}
-.controls{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.control{display:flex;align-items:center;gap:7px;color:var(--muted);font-size:13px}
-select,input[type=number],input[type=text]{background:#071625;border:1px solid #2c4661;color:#f6fbff;border-radius:10px;padding:8px 9px}
-input[type=number]{width:86px}
-table{width:100%;border-collapse:separate;border-spacing:0;min-width:920px}
-th{position:sticky;top:0;background:#0a1728;color:#9fb4c9;text-align:right;font-size:11px;text-transform:uppercase;letter-spacing:.06em;padding:10px 9px;border-bottom:1px solid #2a4057;z-index:1}
-th:first-child,td:first-child{text-align:left}
-th[data-sort]{cursor:pointer;user-select:none;white-space:nowrap}
-th[data-sort]:hover{color:#d9efff;background:#102238}
-th[data-sort]::after{content:" ↕";opacity:.35;font-size:10px}
-th[data-sort].sort-asc::after{content:" ↑";opacity:1;color:var(--teal)}
-th[data-sort].sort-desc::after{content:" ↓";opacity:1;color:var(--teal)}
-td{padding:10px 9px;border-bottom:1px solid rgba(56,80,103,.55);text-align:right;font-variant-numeric:tabular-nums}
-tr:last-child td{border-bottom:0}
-.team{font-weight:800}
-.small{font-size:12px;color:var(--muted)}
-.tablewrap{overflow:auto;border-radius:13px}
-.edit td input{width:88px;text-align:right;background:#081827;border:1px solid #25445f}
-.edit td:first-child input{width:210px;text-align:left}
-.pill{display:inline-block;border-radius:999px;padding:4px 8px;font-size:11px;font-weight:850;white-space:nowrap}
-.pill.playoff{background:rgba(69,212,131,.16);color:#8df0b4;border:1px solid rgba(69,212,131,.32)}
-.pill.toilet{background:rgba(255,101,119,.14);color:#ff9daa;border:1px solid rgba(255,101,119,.30)}
-.pill.middle{background:rgba(103,183,255,.12);color:#9bd0ff;border:1px solid rgba(103,183,255,.25)}
-.barcell{min-width:126px}
-.bar{height:9px;background:#132a40;border-radius:999px;overflow:hidden}
-.bar>i{display:block;height:100%;border-radius:999px;background:linear-gradient(90deg,var(--teal),#72b7ff)}
-.bar.red>i{background:linear-gradient(90deg,#ffb05d,var(--red))}
-.pct{font-weight:800}
-.matrix{display:grid;grid-template-columns:220px repeat(10,minmax(52px,1fr));min-width:880px}
-.matrix div{border-right:1px solid #1c3248;border-bottom:1px solid #1c3248;padding:7px 5px;text-align:center;font-size:11px}
-.matrix .mh{background:#0a1728;color:#9fb4c9;font-weight:800}
-.matrix .name{text-align:left;font-weight:750}
-.heat{border-radius:7px;margin:2px}
-.note{color:#a9bbcc;font-size:12px;line-height:1.55}
-.footer{color:#6f859c;text-align:center;font-size:11px;padding:18px}
-.flash{color:var(--teal);font-weight:800}
-.byeok{color:#7f94aa;font-size:11px}
-.byebad{color:#ff9daa;font-weight:800;font-size:11px}
-.byemid{color:#ffd27a;font-weight:800;font-size:11px}
-.complete{color:#8df0b4;font-weight:800}
-.incomplete{color:#ffcf74;font-weight:800}
-.roster-controls{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
-.roster-grid{display:grid;grid-template-columns:1.8fr .65fr .7fr .8fr 36px;gap:6px;align-items:center;margin:6px 0}
-.roster-grid input,.roster-grid select{width:100%}
-.roster-head{color:#8fa5ba;font-size:10px;text-transform:uppercase;letter-spacing:.06em;font-weight:800}
-.iconbtn{padding:7px 9px;border-radius:9px;background:#2b1b25;color:#ff9daa;border:1px solid #5c2b39}
-.weekbye{display:inline-block;margin:2px 4px 2px 0;padding:3px 6px;border-radius:999px;background:#132a40;color:#b9d1e7;font-size:10px;font-weight:800}
-@media(max-width:800px){
-  .wrap{padding:14px}
-  header{display:block}.badges{justify-content:flex-start;margin-top:10px}
-  .grid{grid-template-columns:repeat(2,1fr)}
-  .panel{padding:12px}
+html,body{height:100%}
+body{
+  margin:0;
+  color:var(--text);
+  background:
+    radial-gradient(1000px 400px at 50% -10%, rgba(29,95,164,.35), transparent 60%),
+    radial-gradient(600px 320px at 0% 20%, rgba(15,123,164,.15), transparent 60%),
+    radial-gradient(600px 320px at 100% 20%, rgba(15,123,164,.15), transparent 60%),
+    linear-gradient(180deg,#06111e,#061423 35%, #050d19 100%);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
 }
+.app{
+  max-width:980px;
+  margin:0 auto;
+  min-height:100dvh;
+  padding:16px 16px 110px;
+  position:relative;
+}
+.topbar{display:flex;align-items:center;justify-content:space-between;margin:2px 4px 14px;font-weight:800;font-size:19px;opacity:.95}
+.topicons{display:flex;gap:10px;align-items:center;font-size:15px;color:#f5fbff}
+.topicons .battery{border:2px solid #fff;border-radius:8px;padding:0 7px 1px;font-weight:900}
+.brand{
+  position:relative;
+  border-radius:28px;
+  overflow:hidden;
+  padding:22px 20px 20px;
+  background:
+    radial-gradient(180px 180px at 10% 18%, rgba(52,149,255,.12), transparent 60%),
+    radial-gradient(180px 180px at 90% 18%, rgba(52,149,255,.12), transparent 60%),
+    linear-gradient(180deg, rgba(9,22,40,.96), rgba(9,22,40,.88));
+  border:1px solid rgba(62,112,149,.55);
+  box-shadow:var(--shadow);
+}
+.brand:before,.brand:after{
+  content:"";position:absolute;top:20px;width:130px;height:130px;border-radius:50%;
+  background:radial-gradient(circle, rgba(255,255,255,.9) 0 8%, rgba(130,213,255,.35) 10% 22%, transparent 25%);
+  filter:blur(.2px);opacity:.8
+}
+.brand:before{left:-18px}.brand:after{right:-18px}
+.headerline{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;position:relative;z-index:2}
+.logoblock{display:flex;gap:12px;align-items:flex-start}
+.ball{font-size:30px;filter:drop-shadow(0 0 10px rgba(64,240,211,.5))}
+.titlewrap{line-height:.92}
+.kicker{font-size:15px;letter-spacing:.4em;color:#8cc8d4;text-transform:uppercase;margin-left:3px;margin-top:8px}
+.title1{font-size:clamp(34px,7.6vw,74px);font-weight:1000;letter-spacing:-.06em;text-transform:uppercase;text-shadow:0 6px 22px rgba(0,0,0,.35)}
+.title2{font-size:clamp(34px,8vw,76px);font-weight:1000;letter-spacing:-.08em;color:var(--teal);font-style:italic;text-shadow:0 0 28px rgba(64,240,211,.3), 0 6px 18px rgba(0,0,0,.35);margin-left:34px;margin-top:-4px}
+.livepill,.weekpill,.redpill,.tagpill{display:inline-flex;align-items:center;gap:8px;padding:10px 16px;border-radius:18px;border:1px solid rgba(255,110,110,.65);background:rgba(74,10,17,.55);font-weight:900}
+.livepill .dot,.tagpill .dot{width:10px;height:10px;border-radius:50%;background:#ff6f6f;box-shadow:0 0 12px rgba(255,111,111,.9)}
+.sidepills{display:flex;flex-direction:column;gap:14px;align-items:flex-end}
+.weekpill{border-color:#375c78;background:#0e2641;color:#eaf7ff}
+.redpill{border-color:#82433f;background:rgba(92,18,18,.65);color:#ffc7b8}
+.section{margin-top:18px;border:1px solid rgba(47,88,118,.75);background:linear-gradient(180deg, rgba(11,28,48,.92), rgba(9,22,40,.92));border-radius:26px;box-shadow:var(--shadow)}
+.sectionhead{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:14px 18px 10px;font-weight:900;text-transform:uppercase;letter-spacing:.2em;color:#86f7d3;font-size:14px}
+.sectionhead .right{display:flex;align-items:center;gap:10px;color:#c9f1e9}
+.featured{overflow:hidden}
+.scoreband{display:grid;grid-template-columns:1fr auto 1fr;gap:12px;align-items:center;padding:10px 18px 12px}
+.teamstack{display:grid;grid-template-columns:72px 1fr auto;gap:12px;align-items:center}
+.teamstack.right{grid-template-columns:auto 1fr 72px}
+.logo{
+  width:72px;height:72px;border-radius:20px;display:grid;place-items:center;font-size:26px;font-weight:1000;border:1px solid rgba(255,255,255,.12);box-shadow: inset 0 0 30px rgba(255,255,255,.08), 0 10px 30px rgba(0,0,0,.28)
+}
+.logo.bal{background:radial-gradient(circle at 30% 30%, rgba(145,83,255,.45), rgba(41,20,84,.95))}
+.logo.cle{background:radial-gradient(circle at 30% 30%, rgba(255,124,52,.55), rgba(90,38,4,.95))}
+.logo.hou{background:radial-gradient(circle at 30% 30%, rgba(24,42,88,.7), rgba(4,18,42,.95))}
+.logo.ind{background:radial-gradient(circle at 30% 30%, rgba(58,109,218,.45), rgba(8,22,75,.95))}
+.logo.sf{background:radial-gradient(circle at 30% 30%, rgba(221,76,76,.5), rgba(74,9,13,.95))}
+.logo.sea{background:radial-gradient(circle at 30% 30%, rgba(66,139,199,.4), rgba(11,35,72,.95))}
+.logo.det{background:radial-gradient(circle at 30% 30%, rgba(105,173,255,.45), rgba(17,46,105,.95))}
+.logo.dal{background:radial-gradient(circle at 30% 30%, rgba(115,155,255,.33), rgba(12,31,65,.95))}
+.logo.tb{background:radial-gradient(circle at 30% 30%, rgba(255,84,84,.42), rgba(85,8,13,.95))}
+.logo.no{background:radial-gradient(circle at 30% 30%, rgba(255,224,130,.35), rgba(76,59,13,.95))}
+.logo.kc{background:radial-gradient(circle at 30% 30%, rgba(255,108,108,.45), rgba(101,9,13,.95))}
+.logo.lac{background:radial-gradient(circle at 30% 30%, rgba(255,208,73,.42), rgba(53,78,8,.95))}
+.teammeta{line-height:1}
+.teamabbr{font-size:62px;font-weight:1000;letter-spacing:-.07em;line-height:.9}
+.teamshort{font-size:22px;font-weight:900;margin-top:8px;color:#d8ecf9}
+.teamrec{margin-top:4px;font-size:15px;color:#7ea8c4;font-weight:800}
+.midscore{text-align:center;min-width:145px}
+.midscore .period{font-size:28px;font-weight:1000;line-height:1}
+.midscore .clock{font-size:56px;font-weight:1000;line-height:1;letter-spacing:-.04em}
+.posarrow{color:var(--gold);font-size:22px;font-weight:1000}
+.fieldwrap{padding:2px 18px 0}
+.field{
+  position:relative;height:182px;border-radius:16px;overflow:hidden;border:1px solid rgba(86,177,120,.45);
+  background:
+    linear-gradient(90deg, rgba(74,45,128,.9) 0 12%, transparent 12% 88%, rgba(113,55,28,.95) 88% 100%),
+    repeating-linear-gradient(90deg, rgba(255,255,255,.12) 0 2px, transparent 2px 10%),
+    linear-gradient(180deg, rgba(17,85,49,.98), rgba(14,76,44,.98));
+}
+.field:before{content:"";position:absolute;inset:0;background:linear-gradient(180deg, rgba(255,255,255,.07), transparent 20% 80%, rgba(0,0,0,.15));pointer-events:none}
+.field .yards{position:absolute;inset:0;display:grid;grid-template-columns:repeat(10,1fr);align-items:end;padding:0 34px 18px;color:#d5ece2;font-weight:900;font-size:14px}
+.field .yards span{text-align:center;opacity:.95}
+.field .endzone{position:absolute;top:0;bottom:0;width:12%;display:flex;align-items:center;justify-content:center;font-size:28px;font-weight:1000;letter-spacing:.12em;writing-mode:vertical-rl;text-orientation:mixed}
+.field .endzone.left{left:0;background:linear-gradient(180deg,#5f3ba6,#3b2469);color:#c8b8ff}
+.field .endzone.right{right:0;background:linear-gradient(180deg,#954e25,#6f3617);color:#ffc1a1}
+.field .firstdown{position:absolute;top:0;bottom:0;width:4px;background:#ffd54e;left:74%;box-shadow:0 0 14px rgba(255,213,78,.7)}
+.field .ball{position:absolute;left:82%;top:47%;width:24px;height:14px;background:linear-gradient(180deg,#ff9a39,#db5d1f);border:2px solid rgba(255,241,219,.95);border-radius:50% 50% 45% 45%;transform:translate(-50%,-50%) rotate(-18deg);box-shadow:0 0 18px rgba(255,145,63,.95)}
+.field .rzshade{position:absolute;top:0;bottom:0;right:0;width:18%;background:linear-gradient(90deg, rgba(255,72,72,.06), rgba(255,72,72,.23))}
+.infostrip{display:grid;grid-template-columns:1.4fr 1fr 1.3fr;gap:0;padding:14px 18px;font-size:clamp(14px,2.8vw,18px);border-top:1px solid rgba(44,94,115,.75);border-bottom:1px solid rgba(44,94,115,.75)}
+.infostrip div{padding-right:12px;font-weight:900}
+.infostrip div+div{border-left:1px solid rgba(44,94,115,.75);padding-left:14px}
+.infostrip .muted{color:#87b0c9;font-weight:800}
+.impactcard{display:grid;grid-template-columns:110px 1fr;gap:14px;padding:16px 18px 18px}
+.playerpanel{min-height:150px;border-radius:16px;border:1px solid rgba(124,67,255,.55);background:radial-gradient(circle at 20% 20%, rgba(121,68,255,.55), rgba(28,16,54,.95));display:grid;place-items:center;font-size:80px;box-shadow: inset 0 0 80px rgba(255,255,255,.05)}
+.impactbody{border:1px solid rgba(59,104,132,.8);border-radius:18px;padding:16px 18px;background:linear-gradient(180deg, rgba(12,25,44,.7), rgba(9,19,35,.8))}
+.impacttitle{display:flex;align-items:center;gap:10px;flex-wrap:wrap;font-weight:1000;margin-bottom:10px}
+.tagpill{padding:8px 12px;border-radius:12px;border-color:rgba(145,92,255,.7);background:rgba(77,43,133,.45);color:#ebdaff}
+.slashes{letter-spacing:.2em;color:#6e50ff;font-size:18px}
+.bigimpact{font-size:clamp(24px,4.5vw,42px);font-weight:1000;letter-spacing:-.05em;line-height:1.05}
+.subimpact{font-size:clamp(15px,2.9vw,20px);margin-top:8px;color:#b7d0de}
+.subimpact .green{color:var(--green);font-weight:1000}
+.swing{font-size:clamp(15px,2.9vw,20px);margin-top:8px;color:#bfd7e1}.swing .green{color:var(--green);font-weight:1000}
+.gameshead{display:flex;justify-content:space-between;align-items:center;padding:0 2px 8px}
+.gameshead h3{margin:0;font-size:18px;letter-spacing:.35em;text-transform:uppercase;color:#cbe7ff}
+.filterpill{padding:12px 16px;border:1px solid #375d79;background:#0e2641;border-radius:16px;color:#eaf7ff;font-weight:900}
+.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+.gamecard{border:1px solid rgba(47,88,118,.75);background:linear-gradient(180deg, rgba(10,26,44,.92), rgba(9,20,36,.92));border-radius:20px;padding:14px 14px 12px;box-shadow:var(--shadow);position:relative;overflow:hidden;cursor:pointer}
+.gamecard.live:before{content:"";position:absolute;top:0;left:0;right:0;height:2px;background:linear-gradient(90deg,#ff5e6c,#f88f58 60%, transparent)}
+.gamecard.active{box-shadow:0 0 0 1px rgba(255,94,108,.55), 0 10px 30px rgba(0,0,0,.35)}
+.gamecard .meta{display:flex;justify-content:space-between;align-items:center;gap:8px;font-size:12px;font-weight:1000;text-transform:uppercase;letter-spacing:.08em;color:#d9e9f7}
+.livebadge{display:inline-flex;align-items:center;gap:7px;color:#ff828e}.livebadge .dot{width:10px;height:10px;border-radius:50%;background:#ff5d6c;box-shadow:0 0 10px rgba(255,93,108,.8)}
+.rzbadge{padding:4px 8px;border-radius:12px;border:1px solid rgba(255,105,105,.75);background:rgba(113,20,28,.65);color:#ffd2d7}
+.teamrow{display:grid;grid-template-columns:40px 1fr auto 40px;align-items:center;gap:10px;margin-top:10px}
+.teamrow .tinylogo{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;font-weight:1000;font-size:13px;border:1px solid rgba(255,255,255,.08);box-shadow:inset 0 0 18px rgba(255,255,255,.05)}
+.tinylogo span{font-size:11px}
+.teamrow .name{font-size:16px;font-weight:900}
+.teamrow .pts{font-size:28px;font-weight:1000;letter-spacing:-.04em}
+.gamedrive{margin-top:10px;padding-top:10px;border-top:1px solid rgba(42,75,98,.8);color:#c4d9e8;font-size:17px}
+.gamedrive .small{display:block;color:#9cc7dc;font-size:14px;margin-top:2px}
+.matchup{margin-top:18px;border:1px solid rgba(47,88,118,.75);border-radius:24px;background:linear-gradient(180deg, rgba(7,38,47,.95), rgba(8,23,38,.95));box-shadow:var(--shadow);overflow:hidden}
+.matchhead{display:flex;justify-content:space-between;align-items:center;padding:14px 18px 10px;font-size:14px;font-weight:1000;text-transform:uppercase;letter-spacing:.18em;color:#85f7d3}
+.matchbody{display:grid;grid-template-columns:1.2fr auto 1.2fr .9fr;gap:12px;align-items:center;padding:8px 18px 18px}
+.avatar{display:flex;align-items:center;gap:12px}.avatar .icon{width:70px;height:70px;border-radius:50%;display:grid;place-items:center;font-size:33px;background:radial-gradient(circle at 30% 30%, rgba(84,255,221,.35), rgba(10,42,55,.95));border:1px solid rgba(84,255,221,.55);box-shadow:inset 0 0 30px rgba(255,255,255,.06)}
+.avatar.cheese .icon{background:radial-gradient(circle at 30% 30%, rgba(255,224,104,.4), rgba(55,43,8,.95));border-color:rgba(255,224,104,.55)}
+.avatar .label{font-size:16px;font-weight:900;color:#ebf6ff}
+.avatar .score{font-size:54px;font-weight:1000;letter-spacing:-.06em;line-height:.95}
+.avatar .delta{font-size:18px;font-weight:1000;color:var(--green)}
+.vs{font-size:34px;font-weight:1000;color:#b0cbdb}
+.liveimpact{padding-left:16px;border-left:1px solid rgba(49,92,110,.8)}
+.liveimpact h4{margin:0 0 8px;font-size:16px;letter-spacing:.18em;color:#80ffdc;text-transform:uppercase}
+.liveimpact ul{margin:0;padding-left:18px;color:#d9f2ff;font-size:15px;line-height:1.5}.liveimpact .green{color:var(--green);font-weight:1000}
+.nav{position:fixed;left:50%;transform:translateX(-50%);bottom:0;width:min(980px,100%);padding:12px 12px calc(12px + env(safe-area-inset-bottom));background:linear-gradient(180deg, rgba(3,11,20,.25), rgba(3,11,20,.92) 18%, rgba(3,11,20,.96));backdrop-filter:blur(14px);border-top:1px solid rgba(55,96,122,.75);display:grid;grid-template-columns:repeat(5,1fr);gap:8px;z-index:20}
+.navbtn{display:grid;place-items:center;gap:4px;padding:10px 6px 8px;border-radius:18px;color:#a8c3d6;font-weight:900;font-size:12px;text-align:center;border:1px solid transparent}
+.navbtn .ico{font-size:24px}
+.navbtn.active{background:linear-gradient(180deg, rgba(30,115,101,.6), rgba(9,62,72,.7));color:#edfff7;border-color:rgba(78,224,198,.45);box-shadow:inset 0 0 0 1px rgba(64,240,211,.15)}
+.homebar{height:5px;width:134px;border-radius:999px;background:#fff;opacity:.85;margin:14px auto 0}
+.smallnote{margin-top:12px;font-size:12px;color:#86a8bf;text-align:center}
+@media (max-width:760px){
+  .app{padding:12px 12px 108px}
+  .topbar{font-size:16px;margin-bottom:12px}
+  .headerline{align-items:flex-start}
+  .sidepills{gap:10px}
+  .scoreband{grid-template-columns:1fr;gap:10px}
+  .midscore{order:-1}
+  .teamstack,.teamstack.right{grid-template-columns:58px 1fr auto}
+  .logo{width:58px;height:58px;border-radius:16px;font-size:22px}
+  .teamabbr{font-size:48px}.teamshort{font-size:18px}
+  .midscore .period{font-size:20px}.midscore .clock{font-size:44px}
+  .field{height:145px}
+  .field .endzone{font-size:22px}
+  .infostrip{grid-template-columns:1fr;gap:8px;font-size:16px}.infostrip div+div{border-left:none;padding-left:0}
+  .impactcard{grid-template-columns:1fr}.playerpanel{min-height:110px;font-size:68px}
+  .grid{grid-template-columns:1fr}
+  .matchbody{grid-template-columns:1fr;gap:14px}.vs{display:none}.liveimpact{padding-left:0;border-left:none;border-top:1px solid rgba(49,92,110,.8);padding-top:12px}
+  .avatar .score{font-size:46px}
+}
+</style>
+</head>
+<body>
+  <div class="app">
+    <div class="topbar">
+      <div>20:28</div>
+      <div class="topicons"><span>📶</span><span>📡</span><span class="battery">30</span></div>
+    </div>
 
-/* v6 refinements */
-:root{color-scheme:dark}
-.wrap{max-width:1480px}header{align-items:center;margin-bottom:18px}
-.lead{display:flex;align-items:center;gap:13px}
-.mark{width:54px;height:54px;border-radius:16px;background:linear-gradient(145deg,#24e7c5,#519aff);display:grid;place-items:center;font-size:29px;box-shadow:0 9px 26px #00d9b833}
-.hero-note{font-size:13px;color:#b4c8de;max-width:810px;line-height:1.55}
-.syncrow{display:flex;align-items:end;flex-wrap:wrap;gap:10px}
-.syncrow label{display:flex;flex-direction:column;gap:6px;color:#9fb4c9;font-size:12px;font-weight:700}
-.syncrow input{width:min(340px,80vw)}
-.statusline{margin-top:12px;border-radius:11px;padding:11px 13px;background:#0b2131;border:1px solid #234157;color:#a8d3ea;font-size:13px;line-height:1.55}
-.statusline.warn{border-color:#816128;background:#291f16;color:#ffe1a9}
-.statusline.error{border-color:#a73f54;background:#311927;color:#ffc2c9}
-.statusline.ok{border-color:#177869;background:#092d31;color:#a0f0da}
-.source-grid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin:15px 0}
-.meta{padding:15px 17px;border:1px solid #25415a;border-radius:14px;background:#102238}
-.meta .k{color:#9fb2c7;font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase}
-.meta .v{font-size:21px;font-weight:900;margin-top:3px;line-height:1.25}
-.meta .hint{color:#899fb6;font-size:11px;margin-top:5px}
-.panel{margin:14px 0}.panel h2{letter-spacing:-.025em}
-.section-intro{font-size:12px;color:#9cafc3;margin:0 0 13px;line-height:1.55}
-.card-title{font-size:13px;color:#8fa5ba;text-transform:uppercase;font-weight:900;letter-spacing:.06em}
-.pinned{color:#24e7c5;font-weight:900}
-.live-label{color:#ffd27a;font-weight:800}.smallpoint{font-variant-numeric:tabular-nums;font-weight:900}
-.range{margin-left:8px;color:#7891a9;font-size:11px}
-.actions button{min-height:40px}button:disabled{opacity:.55;cursor:wait}
-tr:hover td{background:rgba(58,109,143,.11)}
-td{vertical-align:top}th{white-space:nowrap}
-.tablewrap{max-width:100%}.tablewrap table{min-width:750px}
-.tline{font-size:12px;color:#a1b7cc}.pairings{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}
-.fixture{padding:13px;border:1px solid #28475c;border-radius:12px;background:#0a1d30}
-.fixture .who{font-size:13px;font-weight:800;display:flex;justify-content:space-between;gap:12px;align-items:center}
-.fixture .vs{font-size:10px;color:#7da0b6}
-.fixture .score{color:#b8d5ea;white-space:nowrap;font-variant-numeric:tabular-nums}
-.fixture .foot{font-size:10px;color:#789bb6;margin-top:6px}
-.roster-columns{display:grid;grid-template-columns:230px minmax(0,1fr);gap:18px}
-.roster-card{background:#0c2033;border:1px solid #27445e;padding:13px;border-radius:13px;margin-bottom:8px}
-.roster-card strong{display:block;font-size:14px}.roster-card small{color:#9cb5cc}
-.person{display:flex;gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid #243e53;font-size:13px}
-.person:last-child{border:0}.slot{width:52px;text-align:center;display:inline-block;border-radius:7px;background:#1c3550;color:#b8dcf9;padding:4px 5px;font-size:10px;font-weight:900;flex-shrink:0}
-.slot.bn{color:#8c9eb1;background:#13263b}.slot.ir{color:#ffa1af;background:#492b39}
-.pname{font-weight:750}.ptiny{font-size:11px;color:#8fa5bb}
-.pteam{margin-left:auto;text-align:right;min-width:80px;font-size:11px;color:#93adc3}
-.sect{margin-bottom:17px}.sect h3{font-size:14px;margin:0 0 8px;color:#a9d8fa}
-.grid-two{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.subtle{color:#829db5;font-size:12px}
-.big-pct{font-weight:900;color:#b4ffe0}
-.btnright{display:flex;align-items:center;flex-wrap:wrap;gap:8px}
-.warning-list{margin:8px 0;padding-left:19px;font-size:12px;color:#ffd9a6;line-height:1.6}
-footer{margin:24px 0;text-align:center;color:#758da3;font-size:11px;line-height:1.8}
-[hidden]{display:none!important}
-@media(max-width:850px){.source-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.pairings,.grid-two{grid-template-columns:1fr}.roster-columns{grid-template-columns:1fr}.roster-side{display:flex;flex-direction:row;flex-wrap:wrap;gap:7px}.roster-card{flex:1;min-width:155px}.grid{grid-template-columns:repeat(2,1fr)}}
-@media(max-width:560px){.wrap{padding:12px}.mark{width:43px;height:43px;flex-shrink:0}.hero-note{font-size:12px}.source-grid{gap:8px}.meta{padding:11px}.meta .v{font-size:18px}.syncrow input{width:95%}h1{font-size:27px}.badges{display:none}.panel-title{flex-wrap:wrap}.actions{width:100%}.actions button{flex:1}}
+    <section class="brand">
+      <div class="headerline">
+        <div>
+          <div class="logoblock">
+            <div class="ball">🏈</div>
+            <div class="titlewrap">
+              <div class="title1">Sunday Funday</div>
+              <div class="title2">RedZone</div>
+            </div>
+          </div>
+          <div class="kicker">Fantasy football for the lads</div>
+        </div>
+        <div class="sidepills">
+          <div class="livepill"><span class="dot"></span>LIVE</div>
+          <div class="weekpill">WEEK 6 ▾</div>
+        </div>
+      </div>
+    </section>
 
-/* V7 research / evidence lab */
-.v7-top{border:1px solid #317563;background:linear-gradient(110deg,#0e353b,#102036);padding:18px 20px;border-radius:15px;margin:14px 0 10px;display:flex;gap:16px;align-items:center;justify-content:space-between}
-.v7-top h2{font-size:20px;margin:0 0 5px;letter-spacing:-.03em}.v7-top p{font-size:12px;line-height:1.55;color:#b3d8df;margin:0;max-width:780px}.v7-top .chip{white-space:nowrap;background:#153d3e;border-radius:99px;color:#9ffff0;font-size:11px;font-weight:800;padding:7px 11px}
-.v7mode{margin-bottom:10px}.lab-stats{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-bottom:13px}
-.lab-stat{padding:13px 15px;background:#0a1e30;border:1px solid #27465d;border-radius:13px}.lab-stat .k{font-size:10px;text-transform:uppercase;letter-spacing:.07em;font-weight:800;color:#90abc2}.lab-stat .v{font-size:21px;font-weight:850;margin-top:5px;overflow-wrap:anywhere}.lab-stat .hint{font-size:10px;color:#829cb5;margin-top:4px}
-.lab-split>div{min-width:0;max-width:100%}.lab-split{display:grid;grid-template-columns:1.35fr .65fr;gap:16px;align-items:start}.lab-actions{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:12px}
-.lab-actions button{font-size:12px}.lab-note{font-size:12px;line-height:1.6;color:#9fb7c9}.lab-note strong{color:#d7efff}.calrow{display:grid;grid-template-columns:55px minmax(0,1fr) 55px 65px;align-items:center;gap:7px;margin:11px 0;font-size:11px}
-.caltrack{border-radius:30px;background:#18364e;height:10px;overflow:hidden}.caltrack i{display:block;background:linear-gradient(90deg,#25d2b8,#68b5f7);height:100%;border-radius:30px}
-.lab-standalone{background:#092439;border-left:3px solid #22bea9;padding:12px;border-radius:5px;margin:8px 0 11px;font-size:12px;color:#c3dbe9}
-.strength-table td:first-child{font-weight:800}.strength-table td{font-size:12px}.strength-table th{font-size:10px}.lab-links a{color:#8fdcff}
-@media(max-width:820px){.lab-stats{grid-template-columns:repeat(2,minmax(0,1fr))}.lab-split{grid-template-columns:1fr}.v7-top{display:block}.v7-top .chip{display:inline-block;margin-top:10px}}
+    <section class="section featured">
+      <div class="sectionhead">
+        <div>● NFL · LIVE NOW</div>
+        <div class="right"><span class="redpill">RED ZONE</span></div>
+      </div>
+      <div id="featuredPanel"></div>
+    </section>
 
-/* Clean v7: compact headings and tap-to-copy tables. */
-header{margin-bottom:9px}
-.hero-note{line-height:1.35}
-.panel{margin:10px 0;padding:14px}
-.panel-title{margin-bottom:9px}
-.panel-title h2{font-size:17px}
-.source-grid{margin:10px 0}
-.source-grid .hint{font-size:10px}
-.statusline{margin-top:9px;padding:9px 11px}
-.lab-stats{margin-bottom:8px}
-.lab-stat{padding:10px 12px}
-.lab-stat .v{font-size:19px}
-.inlinehead{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:12px 0 8px}
-.copy-action{font-size:12px;padding:7px 10px;min-height:34px;white-space:nowrap;flex-shrink:0}
-.tablewrap,table,td,th,.matrix,.matrix div{user-select:text;-webkit-user-select:text}
-#matrix{user-select:text;-webkit-user-select:text}
-.model-details{margin-top:8px;border-top:1px solid #24384f;padding-top:9px}
-.model-details summary{color:#c0ddf2;cursor:pointer;font-size:12px;font-weight:700}
-.model-details p{margin-bottom:0}
-.copy-toast{position:fixed;bottom:calc(18px + env(safe-area-inset-bottom));left:50%;transform:translateX(-50%);z-index:1000;background:#133d45;border:1px solid #21ae98;border-radius:12px;color:#e3fff9;box-shadow:0 15px 40px #0008;padding:10px 15px;font-weight:800;font-size:13px;pointer-events:none;max-width:calc(100vw - 30px);text-align:center}
-.copy-overlay{position:fixed;inset:0;z-index:3000;background:rgba(0,0,0,.8);display:flex;align-items:center;justify-content:center;padding:18px}
-.copy-dialog{background:#10243a;border:1px solid #53708c;border-radius:16px;max-width:680px;width:100%;padding:16px}
-.copy-dialog textarea{width:100%;min-height:240px;max-height:60vh;resize:vertical;background:#071625;color:#edf8ff;border:1px solid #486780;border-radius:10px;padding:12px;font:12px/1.5 ui-monospace,monospace;margin:12px 0}
-.copy-dialog .actions{justify-content:flex-end}
-@media(max-width:560px){.copy-action{flex:none!important;padding:7px 10px}.actions button{flex:1}.panel-title{align-items:center}.inlinehead .copy-action{flex-shrink:0}header .lead{align-items:flex-start}.syncrow{align-items:center}.lab-actions button{flex:1 1 42%}.lab-stat{padding:9px}}
+    <section style="margin-top:22px">
+      <div class="gameshead">
+        <h3>▮ All Games</h3>
+        <div class="filterpill">Live Games ▾</div>
+      </div>
+      <div class="grid" id="gamesGrid"></div>
+    </section>
 
-/* Rolling byes: current week follows NFL season time and latest Sleeper roster sync. */
-.bye-summary{background:#0a1e30;border:1px solid #27445e;border-radius:11px;padding:10px 12px;margin-bottom:11px;color:#bed9e9;font-size:12px;line-height:1.6}
-.bye-summary strong{color:#f5f8fc}.bye-summary .active{color:#65e6ba;font-weight:800}
-.bye-foot{color:#90a7bd;font-size:11px;line-height:1.5;margin-top:9px}
-#byeTable{min-width:710px}
-#byeTable td,#byeTable th{text-align:left;min-width:135px}
-#byeTable td:first-child,#byeTable th:first-child{min-width:185px;max-width:210px;position:sticky;left:0;background:#0c2033;z-index:2}
-#byeTable th:first-child{background:#0a1728;z-index:4}
-#byeTable td:nth-child(2),#byeTable th:nth-child(2){min-width:94px}
-#byeTable th.bye-current{color:#7ff4d5;background:#103747}
-#byeTable td.bye-current{background:#0b2b38}
-#byeTable .risk-number{display:block;font-size:14px;font-weight:850}
-#byeTable .risk-players{color:#abc0d3;font-size:11px;line-height:1.35;margin-top:3px;max-width:195px;white-space:normal;overflow-wrap:anywhere}
-#byeTable .risk-cover{color:#7898ac;font-size:10px;line-height:1.4;margin-top:3px}
-#byeTable .week-teams{font-size:10px;font-weight:600;color:#8398af;display:block;white-space:normal;line-height:1.3;margin-top:3px;letter-spacing:0;text-transform:none}
-#byePanel .panel-title{flex-wrap:wrap}
-@media(max-width:560px){#byePanel .panel-title .controls{gap:6px;width:100%}#byePanel .control{font-size:11px}#byePanel select{max-width:165px;font-size:12px}#byeTable td:first-child,#byeTable th:first-child{min-width:135px;max-width:160px}#byeTable td:nth-child(2),#byeTable th:nth-child(2){min-width:74px}#byeTable td,#byeTable th{min-width:115px}}
+    <section class="matchup" id="impactPanel"></section>
 
-/* v9 League Headquarters: light, focused screens with mobile navigation */
-:root{--accent:#24e7c5}
-body{padding-bottom:76px}
-.wrap{max-width:1480px}
-header{padding:5px 0 13px;border-bottom:1px solid #213a50;margin-bottom:12px}
-header h1{font-size:clamp(22px,3vw,34px)}
-header .hero-note{display:none}
-.hqnav{display:flex;gap:7px;position:sticky;top:0;z-index:60;background:#081626ee;backdrop-filter:blur(14px);border-bottom:1px solid #2a4258;padding:10px 2px;margin:0 0 12px;overflow-x:auto}
-.hqnav button{flex:1;background:transparent;border:1px solid transparent;color:#93adc4;white-space:nowrap;padding:11px 8px;font-size:13px}
-.hqnav button.selected{background:#123e40;color:#c8fff2;border-color:#237b72}
-.hqview{display:none;min-width:0}.hqview.active{display:block}
-.hqhero{border:1px solid #2b5f65;border-radius:20px;background:radial-gradient(ellipse at 98% 4%,#1b5764 0%,transparent 48%),linear-gradient(135deg,#112b41,#0a1929);padding:20px;margin:0 0 12px}
-.hqhero .eyebrow{font-size:11px;letter-spacing:.13em;color:#7cebd8;font-weight:900;text-transform:uppercase}
-.hqhero h2{font-size:clamp(23px,4vw,34px);line-height:1.1;margin:9px 0 8px;letter-spacing:-.04em}
-.hqhero p{color:#b1cadb;font-size:13px;line-height:1.5;margin:0}
-.hqrow{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.hqmetrics{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin:12px 0}
-.hqmetric{background:#10243a;border:1px solid #2a435a;border-radius:16px;padding:15px;min-width:0}
-.hqmetric .hint{font-size:11px;letter-spacing:.04em;color:#99b0c8;font-weight:750;text-transform:uppercase}
-.hqmetric .number{font-size:clamp(21px,3vw,30px);font-weight:900;margin-top:7px;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
-.hqmetric .desc{font-size:11px;color:#91a9bc;margin-top:3px}
-.hqtwocol{display:grid;grid-template-columns:1.18fr .82fr;gap:12px}
-.hqpanel{border:1px solid #294159;background:linear-gradient(175deg,#10243a,#0b1b2d);border-radius:16px;padding:15px;margin-bottom:12px;min-width:0}
-.hqpanel h3{font-size:16px;margin:0 0 12px}.hqpanel small{color:#9ab1c7}
-.hqheadline{padding:12px 0;border-bottom:1px solid #243b52;display:flex;gap:10px;align-items:start}
-.hqheadline:last-child{border-bottom:0}.hqheadline .emoji{width:32px;font-size:22px;flex-shrink:0}.hqheadline b{display:block;font-size:13px}.hqheadline .detail{color:#9cb5c9;font-size:12px;margin-top:4px;line-height:1.4}
-.hqmini{padding:10px 0;border-bottom:1px solid #243b52;display:flex;justify-content:space-between;align-items:center;gap:12px;font-size:13px}
-.hqmini:last-child{border-bottom:0}.hqmini b{font-weight:800}.hqmini small{display:block;margin-top:5px}
-.hqprob{font-variant-numeric:tabular-nums;font-size:15px;font-weight:900;color:#68edc9;white-space:nowrap}
-.hqcaption{color:#8da6ba;font-size:11px;line-height:1.5;margin:9px 0}
-.hqctrl{display:flex;flex-wrap:wrap;gap:8px;align-items:center}.hqctrl button,.hqctrl select{min-height:37px}
-.hqctrl select{min-width:165px}
-.hqhighlight{color:#76ebcc}
-.hqempty{color:#9db2c7;font-size:13px;line-height:1.6}
-.hqtable{width:100%;min-width:660px}.hqtable td,.hqtable th{font-size:12px}
-.hqtable td:first-child{font-weight:800}
-#v9-connection .source-grid,#v9-connection .section-intro,#v9-connection #syncDetail{display:none}
-#v9-connection .panel-title h2{font-size:15px}
-#v9-connection .statusline{font-size:11px;padding:7px 10px}
-#v9-connection .syncrow{gap:6px}
-#v9-connection .syncrow button{font-size:12px;padding:8px 10px;min-height:38px}
-#v9-connection .syncrow label{display:none}
-#v9-connection .syncrow a{display:none}
-#v9-connection{margin-top:3px}
-#v9-view-lab .panel,#v9-view-forecast .panel,#v9-view-games .panel,#v9-view-rosters .panel,#v9-view-toilet .panel{margin-top:0}
-.hqnav .num{display:none}
-@media(max-width:850px){.hqmetrics{grid-template-columns:repeat(2,1fr)}.hqtwocol{grid-template-columns:1fr}}
-@media(max-width:600px){.wrap{padding:12px}body{padding-bottom:90px}header{padding-bottom:4px}.mark{width:42px;height:42px;font-size:23px;border-radius:12px}.hqhero{padding:17px}.hqmetrics{gap:8px;margin:9px 0}.hqmetric{padding:12px}.hqmetric .hint{font-size:10px}.hqmetric .number{font-size:23px}.hqnav{position:fixed;top:auto;bottom:0;left:0;right:0;z-index:90;margin:0;padding:8px max(4px,env(safe-area-inset-left)) calc(8px + env(safe-area-inset-bottom));border-top:1px solid #32546c;border-bottom:0;box-shadow:0 -8px 30px #0008;background:#081522f9;overflow:hidden}.hqnav button{font-size:11px;padding:8px 2px;border-radius:10px;min-width:0}.hqnav button .ico{font-size:19px;display:block;margin-bottom:3px}.hqnav button .num{display:none}.hqpanel{padding:13px}.hqhero h2{font-size:25px}}
+    <div class="smallnote">Immersive RedZone shell · exact visual build based on the approved mockup</div>
+    <div class="homebar"></div>
+  </div>
 
+  <nav class="nav">
+    <div class="navbtn"><div class="ico">⌂</div><div>Home</div></div>
+    <div class="navbtn active"><div class="ico">◉</div><div>RedZone</div></div>
+    <div class="navbtn"><div class="ico">🏆</div><div>Matchups</div></div>
+    <div class="navbtn"><div class="ico">👥</div><div>Teams</div></div>
+    <div class="navbtn"><div class="ico">▥</div><div>More</div></div>
+  </nav>
 
-/* League-wide v9.1 refinements */
-#v9-view-lab{display:none!important}
-#scheduleTable{width:100%;min-width:0!important;table-layout:fixed}
-#scheduleTable th:first-child,#scheduleTable td:first-child{width:80px;text-align:left;vertical-align:top}
-#scheduleTable th:last-child,#scheduleTable td:last-child{width:92px;text-align:left;vertical-align:top}
-#scheduleTable th:nth-child(2),#scheduleTable td:nth-child(2){text-align:left}
-.schedule-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;padding:3px 0}
-.schedule-game{border:1px solid #29465d;background:#0a1b2e;border-radius:10px;padding:9px 10px;min-width:0}
-.schedule-teams{display:flex;align-items:flex-start;gap:7px;justify-content:space-between;font-weight:700;font-size:12px;line-height:1.4;overflow-wrap:anywhere}
-.schedule-teams span{min-width:0}.schedule-teams .versus{flex:none;font-weight:600;color:#7899b1;font-size:10px;padding-top:2px}
-.schedule-pred{font-size:11px;color:#8cdccc;margin-top:6px;line-height:1.4;overflow-wrap:anywhere}
-.schedule-pred.waiting{color:#8ea5bb}
-#hqToiletTable{min-width:0;table-layout:fixed}
-#hqToiletTable th:first-child,#hqToiletTable td:first-child{width:40%;text-align:left;overflow-wrap:anywhere}
-#hqToiletTable th:not(:first-child),#hqToiletTable td:not(:first-child){text-align:right}
-#hqToiletTable th,#hqToiletTable td{white-space:normal;overflow-wrap:anywhere;padding:10px 7px}
-.roster-warning{padding:12px 13px;border:1px solid #9c6935;background:#312519;color:#ffe6b1;border-radius:11px;font-size:12px;line-height:1.5;margin-bottom:10px}
-.roster-warning strong{display:block;margin-bottom:4px}.roster-warning .small{color:#eccb9a}
-.person.empty-slot{background:#322332;border:1px solid #724159;border-radius:10px;padding:10px 8px}
-.person.empty-slot .pname{color:#ffd2dc}
-.fixture .model-outlook{padding:9px 0 0;margin-top:10px;border-top:1px solid #294255;color:#d8ecfb;font-size:12px;line-height:1.55}
-.fixture .model-outlook .chance{color:#77ebcd;font-weight:800}
-.hqcaption.hqclarity{font-size:12px;color:#a8becf;margin-top:10px}
-@media(max-width:780px){.schedule-grid{grid-template-columns:1fr}#scheduleTable th:first-child,#scheduleTable td:first-child{width:56px}#scheduleTable th:last-child,#scheduleTable td:last-child{display:none}}
-@media(max-width:600px){#scheduleTable th,#scheduleTable td{font-size:11px;padding:10px 5px}#scheduleTable th:first-child,#scheduleTable td:first-child{width:48px}#scheduleTable .schedule-game{padding:8px}#hqToiletTable th:nth-child(4),#hqToiletTable td:nth-child(4){display:none}#hqToiletTable th:first-child,#hqToiletTable td:first-child{width:45%}#hqToiletTable th:nth-child(2),#hqToiletTable td:nth-child(2){width:24%}#hqToiletTable th:nth-child(3),#hqToiletTable td:nth-child(3){width:31%}#hqToiletTable th,#hqToiletTable td{font-size:11px;padding:10px 5px}}
-
-
-/* v9.2 — simplified league forecast + independent RedZone */
-#hqnav .ico{line-height:1.15}
-.rzhero{background:linear-gradient(125deg,#113047,#0b1c32);border:1px solid #2c5373;border-radius:18px;padding:17px;margin:0 0 13px}
-.rztop{display:flex;justify-content:space-between;gap:12px;align-items:center;flex-wrap:wrap}
-.rztitle{display:flex;align-items:center;gap:10px;font-size:24px;font-weight:900;letter-spacing:-.04em}
-.rzblink{width:10px;height:10px;background:#20db96;border-radius:50%;box-shadow:0 0 12px #20db9675}
-.rzmeta,.rzsmall{color:#9eb6ca;font-size:12px;line-height:1.5}
-.rzcontrols{display:flex;align-items:center;flex-wrap:wrap;gap:8px;margin-top:13px}
-.rzcontrols button,.rzcontrols select{background:#193650;color:#e6f5ff;border:1px solid #345a76;border-radius:10px;padding:9px 12px;font-size:12px;font-weight:800}
-.rzcontrols button.active{background:#18bea7;color:#002a29;border-color:#18bea7}
-.rzsignal{margin-top:11px;color:#b6cddd;font-size:12px}
-.rzgrid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:11px;margin:12px 0}
-.rzgame{border:1px solid #2b4760;background:linear-gradient(160deg,#12273b,#0b1929);border-radius:15px;padding:13px;cursor:pointer;min-width:0;color:inherit;text-align:left;width:100%;box-shadow:none}
-.rzgame:focus-visible{outline:3px solid #61e5d0;outline-offset:2px}
-.rzgame.selected{border-color:#36dec6;box-shadow:0 0 0 1px #36dec655}
-.rzgame.rzred{border-color:#f27378;background:linear-gradient(160deg,#31232b,#111d30)}
-.rzhead{display:flex;justify-content:space-between;align-items:center;gap:8px;margin-bottom:9px}
-.rzstate{color:#9fb6cc;font-size:11px;text-transform:uppercase;font-weight:800;letter-spacing:.04em}
-.rzstate.live{color:#64eabf}
-.rzstate.final{color:#a8c3d6}
-.rzscoreline{display:flex;align-items:center;gap:9px;font-size:19px;font-weight:900}
-.rzscoreline .abbr{min-width:42px;font-size:17px}
-.rzscoreline .score{margin-left:auto;font-variant-numeric:tabular-nums;font-size:22px}
-.rzscoreline .rzpos{font-size:13px;color:#67e3bd}
-.rzdrive{margin-top:12px;border-top:1px solid #263c4e;padding-top:9px;font-size:12px;color:#b6d2e7;line-height:1.5}
-.rzdrive .fieldtext{font-weight:800;color:#d9f3ec}
-.rzalert{background:#50242b;color:#ffb9be;border-radius:5px;padding:3px 6px;font-size:10px;font-weight:900;white-space:nowrap}
-.rzfield{height:23px;background:repeating-linear-gradient(90deg,#1f5b43 0,#1f5b43 calc(10% - 1px),#368461 10%);border:1px solid #448c69;border-radius:6px;position:relative;overflow:hidden;margin:9px 0 2px}
-.rzfield:before,.rzfield:after{content:'TD';display:flex;position:absolute;top:0;bottom:0;width:9%;justify-content:center;align-items:center;background:#173b4b;color:#9ee4da;font-size:8px;font-weight:900}
-.rzfield:before{left:0}.rzfield:after{right:0}
-.rzball{position:absolute;z-index:1;top:50%;width:11px;height:11px;background:#ffb666;border:2px solid #fff2d8;box-shadow:0 0 7px #fff7;border-radius:100%;transform:translate(-50%,-50%)}
-.rzfollow{font-size:11px;color:#88b6cf;display:block;margin-top:8px;white-space:normal}
-.rzdetail{border:1px solid #2c4e64;border-radius:16px;background:#10253a;padding:15px;margin:12px 0}
-.rzdetail h3{margin:0 0 11px;font-size:17px}
-.rzplays{display:grid;gap:8px}
-.rzplay{border:1px solid #294559;padding:10px;border-radius:10px;background:#0a1b2c;font-size:13px;line-height:1.45;color:#dbeaf5}
-.rzplay small{display:block;color:#91b0c5;margin-bottom:4px}
-.rzscoring{color:#ffbf86;border-color:#96604755}
-.rzimpact{color:#a8dacc;font-size:12px;margin-top:9px;line-height:1.5}
-.rzlegend{font-size:12px;color:#95b2c6;line-height:1.6}
-.rzfantasy{display:none}
-.rzfantasy.visible{display:block}
-.rznfl.hidden{display:none}
-#scheduleTable th:nth-child(3),#scheduleTable td:nth-child(3){display:none}
-#scheduleTable{min-width:0!important;width:100%;table-layout:fixed}
-#scheduleTable th:first-child,#scheduleTable td:first-child{width:57px}
-#scheduleTable .schedule-grid{grid-template-columns:repeat(2,minmax(0,1fr))}
-#scheduleTable .schedule-game{padding:9px 11px}
-#scheduleTable .schedule-teams{font-size:12px}
-#forecastTable th[data-sort="projReg"],#forecastTable th[data-sort="projFinal"]{font-size:10px}
-@media(max-width:940px){.rzgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
-@media(max-width:650px){.rzgrid{grid-template-columns:1fr;gap:9px}.rzgame{padding:13px}.rztitle{font-size:21px}.rzdetail{padding:12px}#scheduleTable .schedule-grid{grid-template-columns:1fr}.rzhero{padding:13px}.rzscoreline{font-size:17px}}
-
-</style></head><body><main class="wrap">
-<header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v7</span></h1>
-<div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
-</header>
-<section class="panel"><div class="panel-title"><h2>⚡ Sleeper league connection</h2><div class="small" id="lastSync">Not yet synced</div></div>
-<div class="syncrow"><label>Sleeper league ID<input id="leagueId" type="text" spellcheck="false" inputmode="numeric" value="1388984626868912128" aria-label="Sleeper league ID"></label>
-<button id="syncBtn" class="primary">↻ Sync Sleeper</button><button class="secondary" id="runBtn">▶ Run 50,000 simulations</button>
-<a class="badge" id="openSleeper" href="https://sleeper.com/leagues/1388984626868912128" target="_blank" rel="noopener noreferrer" style="text-decoration:none">Open on Sleeper ↗</a></div>
-<div id="status" class="statusline">Offline v5 snapshot loaded. Click <b>Sync Sleeper</b> for current data, or use the offline forecast below.</div>
-<div class="source-grid">
-<div class="meta"><div class="k">League</div><div class="v" id="leagueName">Sunday Funday</div><div class="hint" id="seasonText">2026 NFL · Half PPR</div></div>
-<div class="meta"><div class="k">Data source</div><div class="v" id="sourceText">Offline v5</div><div class="hint" id="rosterCount">10 teams (saved snapshot)</div></div>
-<div class="meta"><div class="k">Confirmed results</div><div class="v" id="weekText">Through Wk 4</div><div class="hint" id="weekHint">Current live week is not final</div></div>
-<div class="meta"><div class="k">Simulation</div><div class="v" id="simCard">50,000</div><div class="hint" id="simHint">Remaining games + two playoff rounds</div></div></div>
-<div class="section-intro" id="syncDetail">Sleeper sync updates rosters, results and fixtures. Current scores are provisional.</div>
-</section>
-
-<section class="panel"><div class="panel-title"><h2>🏆 League forecast</h2><div class="actions"><button class="secondary copy-action" type="button" data-copy-target="forecastTable" data-copy-title="League forecast">Copy table</button><button class="secondary" id="csvBtn">CSV</button></div></div>
-<details class="model-details" style="margin:10px 0"><summary>Advanced forecast settings</summary><div style="padding:9px 0"><div class="controls v7mode"><label class="control">Forecast engine <select id="modelMode"><option value="adaptive" selected>Adaptive · regression + team SD</option><option value="legacy">Original v6 · 70/30 and SD 20</option><option value="custom">Custom / backtest winner</option></select></label>
-<label class="control">Volatility <select id="sdMode"><option value="measured" selected>Measured by team (shrunken)</option><option value="fixed">Fixed points</option></select></label><span id="sigmaLabel" class="small">League SD: —</span></div>
-<div class="controls"><label class="control">Simulations <select id="simCount"><option value="20000">20,000</option><option value="50000" selected>50,000</option><option value="100000">100,000</option></select></label>
-<label class="control">Regression K <input id="regK" type="number" min="0" max="40" step="1" value="6"></label>
-<label class="control">Relative Max PF <input id="maxSignal" type="number" min="0" max="0.8" step=".05" value=".15"></label>
-<label class="control">Fixed SD <input id="scoreSd" type="number" min="8" max="60" step="1" value="22"></label>
-<label class="control">Seed <input id="seed" type="number" value="20261012"></label></div>
-</div></details>
-<p class="section-intro" style="margin-top:9px">Regular rank = projected standings after Week 15. Final rank = projected finishing order after both playoff brackets. These are positions, not points. Win percentages use predicted scoring averages and volatility.</p>
-<div class="tablewrap"><table id="forecastTable"><thead><tr><th data-sort="name">Team</th><th data-sort="current">Current rank</th><th data-sort="projReg">Regular rank</th><th data-sort="expWins">Est. wins</th><th data-sort="playoff">Playoffs</th><th data-sort="toilet">Toilet</th><th data-sort="champ">Champion</th><th data-sort="last">💩 Last</th><th data-sort="projFinal">Final rank</th></tr></thead><tbody></tbody></table></div>
-</section>
-<section class="panel" id="accuracyLab"><div class="panel-title"><h2>🧪 Model Accuracy Lab</h2></div>
-<div class="lab-actions"><button id="labBtn" class="primary">Run backtest</button><button id="histBtn" class="secondary">Load history</button><button id="labApply" class="secondary" disabled>Apply best model</button><button id="labExport" class="secondary">CSV</button><button id="labClear" class="secondary">Clear history</button></div>
-<div class="lab-stats"><div class="lab-stat"><div class="k">Evaluated head-to-head games</div><div class="v" id="labGames">—</div></div>
-<div class="lab-stat"><div class="k">Holdout Brier score</div><div class="v" id="labBrier">—</div><div class="hint" id="labBrierHint">Lower is better</div></div>
-<div class="lab-stat"><div class="k">Weekly Max PF coverage</div><div class="v" id="labCoverage">—</div></div>
-<div class="lab-stat"><div class="k">Seasons available</div><div class="v" id="labSeasons" style="font-size:15px;line-height:1.5">—</div></div></div>
-<div class="statusline warn" id="labStatus">Waiting for complete Sleeper weekly scores.</div>
-<div class="lab-standalone" id="labWinner">No fitted configuration available.</div>
-<div class="lab-split"><div><div class="inlinehead"><div class="card-title">Model comparison</div><button class="secondary copy-action" type="button" data-copy-target="labTable" data-copy-title="Model comparison">Copy table</button></div>
-<div class="tablewrap"><table id="labTable" style="min-width:620px"><thead><tr><th style="text-align:left">Configuration</th><th>Train games</th><th>Train Brier ↓</th><th>Holdout Brier ↓</th><th>Holdout win %</th><th>Holdout score MAE ↓</th></tr></thead><tbody></tbody></table></div></div>
-<div><div class="card-title" style="margin:15px 0 9px">Holdout calibration</div><div id="calibration"></div>
-<p class="lab-note">Best model chosen on training data; holdout results are independent.</p></div></div>
-<div class="lab-note lab-links" style="margin-top:8px">Historical weekly Max PF is estimated from available player scores.</div></section>
-<section class="panel"><div class="panel-title"><h2>📊 Team scoring</h2><button class="secondary copy-action" type="button" data-copy-target="strengthTable" data-copy-title="Team scoring">Copy table</button></div>
-<div class="tablewrap"><table id="strengthTable" class="strength-table"><thead><tr><th>Team</th><th>PF / week</th><th>Max PF / week</th><th>Lineup efficiency</th><th>Forecast / week</th><th>Weekly SD</th><th>All-play win %</th></tr></thead><tbody></tbody></table></div></section>
-<section class="panel"><div class="panel-title"><h2>🎯 Finishing probabilities</h2><button class="secondary copy-action" type="button" data-copy-target="matrix" data-copy-title="Finishing position probabilities">Copy table</button></div><div class="tablewrap"><div class="matrix" id="matrix"></div></div></section>
-<section class="panel"><div class="panel-title"><h2>🏟 Weekly matchups</h2><div class="controls"><label class="control">Week <select id="weekSelect"></select></label><span id="weekState" class="small"></span><button class="secondary copy-action" type="button" data-copy-target="matchupCards" data-copy-title="Weekly matchups">Copy</button></div></div>
-<div class="pairings" id="matchupCards"></div><p class="hqcaption hqclarity">Pregame forecast only. Scores shown as projections are average model outcomes, not actual scores or live Sleeper projections.</p></section>
-<section class="panel"><div class="panel-title"><h2>📅 Fixtures by week</h2><div class="btnright"><span class="small" id="scheduleStatus">Offline v5 fixtures</span><button class="secondary copy-action" type="button" data-copy-target="scheduleTable" data-copy-title="Remaining schedule">Copy table</button></div></div>
-<div class="tablewrap" style="overflow-x:visible"><table id="scheduleTable"><thead><tr><th>Week</th><th style="text-align:left">Fixtures</th><th>Source</th></tr></thead><tbody></tbody></table></div></section>
-<section class="panel"><div class="panel-title"><h2>🧑‍🤝‍🧑 League rosters</h2><div class="controls"><label class="control">Team <select id="rosterSelect"></select></label><button class="secondary copy-action" type="button" data-copy-target="rosterDetail" data-copy-title="Current roster">Copy roster</button></div></div>
-<div class="roster-columns"><div><div id="rosterOverview" class="roster-side"></div></div><div id="rosterDetail"></div></div></section>
-<section class="panel" id="byePanel"><div class="panel-title"><h2>✈ Bye-week risk</h2><div class="controls">
-<label class="control">From <select id="byeStart"><option value="auto" selected>Current week · auto</option></select></label>
-<label class="control">Show <select id="byeSpan"><option value="4" selected>4 weeks</option><option value="6">6 weeks</option><option value="all">All remaining</option></select></label>
-<button class="secondary copy-action" type="button" data-copy-target="byeTable" data-copy-title="Bye-week risk">Copy table</button>
-</div></div>
-<div id="byeSummary" class="bye-summary" role="status" aria-live="polite"></div>
-<div class="tablewrap"><table id="byeTable"><thead></thead><tbody></tbody></table></div>
-<div id="byeSource" class="bye-foot"></div></section>
-<section class="panel"><div class="panel-title"><h2>🧩 Bracket intelligence</h2><span class="small" id="bracketState">Predicted bracket model</span></div>
-<div class="grid-two"><div><div class="card-title">🏆 Championship</div><div id="winnersBracket" class="note" style="margin-top:10px"></div></div><div><div class="card-title">💩 Toilet Bowl</div><div id="losersBracket" class="note" style="margin-top:10px"></div></div></div>
-</section>
-<section class="panel data-quality"><div class="panel-title"><h2>🔎 Data quality</h2></div>
-<div id="quality" class="note"></div>
-<details class="model-details"><summary>Method & limitations</summary><p class="note">Scores are regression-adjusted; Max PF is a relative roster-depth signal; weekly SD is measured where possible. No future player projections or injury modelling. Bye penalties and custom brackets are approximate. Live weeks stay provisional.</p></details></section>
-<footer>Sunday Funday v9 · Rolling bye-week risk · Sleeper read-only</footer>
-</main><div class="copy-toast" id="copyToast" role="status" aria-live="polite" hidden></div>
-<div class="copy-overlay" id="copyOverlay" hidden role="dialog" aria-modal="true" aria-label="Manually copy table">
-  <div class="copy-dialog"><strong>Copy this table</strong><p class="small">Select the text below, then tap Copy.</p>
-  <textarea id="copyTextArea" readonly spellcheck="false"></textarea><div class="actions"><button id="selectCopyText" class="primary" type="button">Select all</button><button id="closeCopyDialog" class="secondary" type="button">Close</button></div></div></div><script>
-'use strict';
-const baseline = [
-  {name:"Romo's Rovers",w:3,l:1,pf:544.88,maxpf:622.48,pa:499.74},
-  {name:"Humble Champions",w:3,l:1,pf:530.74,maxpf:562.64,pa:488.04},
-  {name:"Tall & Handsome",w:3,l:1,pf:479.80,maxpf:536.50,pa:419.40},
-  {name:"Suck My D Henry",w:3,l:1,pf:474.70,maxpf:549.40,pa:444.60},
-  {name:"HG Hornets",w:2,l:2,pf:549.12,maxpf:567.32,pa:499.60},
-  {name:"Kupp My Balls",w:2,l:2,pf:483.08,maxpf:587.18,pa:490.70},
-  {name:"Show Me Your TDs",w:2,l:2,pf:423.60,maxpf:496.08,pa:447.98},
-  {name:"Utter Woke Nonsense",w:1,l:3,pf:480.96,maxpf:568.16,pa:487.46},
-  {name:"Team KraftyCheese",w:1,l:3,pf:402.64,maxpf:466.64,pa:478.40},
-  {name:"The Brady Bunch",w:0,l:4,pf:495.44,maxpf:538.04,pa:609.04}
+<script>
+const games = [
+  {id:'bal-cle', live:true, redzone:true, away:{abbr:'BAL', score:17, rec:'3-2', color:'bal', logo:'🦅'}, home:{abbr:'CLE', score:10, rec:'1-4', color:'cle', logo:'🟠'}, period:'3RD', clock:'4:12', down:'1st & 10 at CLE 18', ball:'BALL ON CLE 18', drive:'DRIVE 6 PLAYS · 72 YDS · 2:11', last:'Zay Flowers 23-yard TD', pending:'+6 pending', swing:'74% → 81%', ballPct:82, firstPct:74, impactMatchup:'Tall & Handsome', impactOpp:'KraftyCheese', impactScore:'119.4', oppScore:'89.2', impactDelta:'+6.0', players:['Zay Flowers (BAL)'], driveShort:'1st & 10 at CLE 18'},
+  {id:'hou-ind', live:true, redzone:false, away:{abbr:'HOU', score:14, rec:'', color:'hou', logo:'🐂'}, home:{abbr:'IND', score:7, rec:'', color:'ind', logo:'🐎'}, period:'2ND', clock:'1:03', down:'3rd & 6 at IND 34', driveShort:'3rd & 6 at IND 34'},
+  {id:'sf-sea', live:true, redzone:false, away:{abbr:'SF', score:21, rec:'', color:'sf', logo:'⛏️'}, home:{abbr:'SEA', score:17, rec:'', color:'sea', logo:'🦅'}, period:'2ND', clock:'6:24', down:'1st & 10 at SEA 28', driveShort:'1st & 10 at SEA 28'},
+  {id:'det-dal', live:true, redzone:true, away:{abbr:'DET', score:24, rec:'', color:'det', logo:'🦁'}, home:{abbr:'DAL', score:20, rec:'', color:'dal', logo:'★'}, period:'4TH', clock:'11:21', down:'2nd & 4 at DAL 12', driveShort:'2nd & 4 at DAL 12'},
+  {id:'tb-no', live:true, redzone:false, away:{abbr:'TB', score:10, rec:'', color:'tb', logo:'☠️'}, home:{abbr:'NO', score:13, rec:'', color:'no', logo:'⚜️'}, period:'3RD', clock:'2:17', down:'2nd & 8 at NO 42', driveShort:'2nd & 8 at NO 42'},
+  {id:'kc-lac', live:true, redzone:false, away:{abbr:'KC', score:27, rec:'', color:'kc', logo:'🛡️'}, home:{abbr:'LAC', score:20, rec:'', color:'lac', logo:'⚡'}, period:'2ND', clock:'0:45', down:'1st & 10 at LAC 31', driveShort:'1st & 10 at LAC 31'}
 ];
-const exactSchedule = {
-  5: [
-    ["Tall & Handsome","Romo's Rovers"],
-    ["The Brady Bunch","Kupp My Balls"],
-    ["Humble Champions","Utter Woke Nonsense"],
-    ["Suck My D Henry","Show Me Your TDs"],
-    ["HG Hornets","Team KraftyCheese"]
-  ],
-  6: [
-    ["Tall & Handsome","Team KraftyCheese"],
-    ["The Brady Bunch","Romo's Rovers"],
-    ["Humble Champions","Suck My D Henry"],
-    ["Utter Woke Nonsense","HG Hornets"],
-    ["Show Me Your TDs","Kupp My Balls"]
-  ],
-  7: [
-    ["Tall & Handsome","Utter Woke Nonsense"],
-    ["The Brady Bunch","Team KraftyCheese"],
-    ["Humble Champions","Show Me Your TDs"],
-    ["Romo's Rovers","Kupp My Balls"],
-    ["Suck My D Henry","HG Hornets"]
-  ],
-  8: [
-    ["Tall & Handsome","Suck My D Henry"],
-    ["The Brady Bunch","Utter Woke Nonsense"],
-    ["Humble Champions","HG Hornets"],
-    ["Romo's Rovers","Show Me Your TDs"],
-    ["Kupp My Balls","Team KraftyCheese"]
-  ],
-  9: [
-    ["Tall & Handsome","Humble Champions"],
-    ["The Brady Bunch","Suck My D Henry"],
-    ["Romo's Rovers","Team KraftyCheese"],
-    ["Utter Woke Nonsense","Kupp My Balls"],
-    ["Show Me Your TDs","HG Hornets"]
-  ],
-  10: [
-    ["Tall & Handsome","HG Hornets"],
-    ["The Brady Bunch","Humble Champions"],
-    ["Romo's Rovers","Utter Woke Nonsense"],
-    ["Suck My D Henry","Kupp My Balls"],
-    ["Show Me Your TDs","Team KraftyCheese"]
-  ],
-  11: [
-    ["Tall & Handsome","Show Me Your TDs"],
-    ["The Brady Bunch","HG Hornets"],
-    ["Humble Champions","Kupp My Balls"],
-    ["Romo's Rovers","Suck My D Henry"],
-    ["Utter Woke Nonsense","Team KraftyCheese"]
-  ],
-  12: [
-    ["Tall & Handsome","The Brady Bunch"],
-    ["Humble Champions","Romo's Rovers"],
-    ["Utter Woke Nonsense","Show Me Your TDs"],
-    ["Suck My D Henry","Team KraftyCheese"],
-    ["HG Hornets","Kupp My Balls"]
-  ],
-  13: [
-    ["Tall & Handsome","Kupp My Balls"],
-    ["The Brady Bunch","Show Me Your TDs"],
-    ["Humble Champions","Team KraftyCheese"],
-    ["Romo's Rovers","HG Hornets"],
-    ["Utter Woke Nonsense","Suck My D Henry"]
-  ],
-  14: [
-    ["Tall & Handsome","Romo's Rovers"],
-    ["The Brady Bunch","Kupp My Balls"],
-    ["Humble Champions","Utter Woke Nonsense"],
-    ["Suck My D Henry","Show Me Your TDs"],
-    ["HG Hornets","Team KraftyCheese"]
-  ],
-  15: [
-    ["Tall & Handsome","Team KraftyCheese"],
-    ["The Brady Bunch","Romo's Rovers"],
-    ["Humble Champions","Suck My D Henry"],
-    ["Utter Woke Nonsense","HG Hornets"],
-    ["Show Me Your TDs","Kupp My Balls"]
-  ]
-};
-const nflByes = {
-  5:["CAR","KC"],
-  6:["CIN","DET","MIA","MIN"],
-  7:["BUF","JAX","LAC","WAS"],
-  8:["HOU","NO","NYG","SF"],
-  9:["PIT","TEN"],
-  10:["CHI","DEN","PHI","TB"],
-  11:["ATL","CLE","GB","LAR","NE","SEA"],
-  12:[],
-  13:["BAL","IND","LV","NYJ"],
-  14:["ARI","DAL"],
-  15:[]
-};
-const seededRosters = {
-  "Humble Champions":[
-    ["EMPTY — QB not started","QB","","QB"],
-    ["Chase Brown","RB","CIN","RB"],["Aaron Jones","RB","MIN","RB"],
-    ["Emeka Egbuka","WR","TB","WR"],["Christian Watson","WR","GB","WR"],
-    ["Trey McBride","TE","ARI","TE"],["Tony Pollard","RB","TEN","WRRB_FLEX"],
-    ["KC Concepcion","WR","CLE","WRRB_FLEX"],["Cam Little","K","JAX","K"],
-    ["Houston Texans","DEF","HOU","DEF"],["Caleb Williams","QB","CHI","BN"],
-    ["Marvin Harrison","WR","HOU","BN"],["Kyle Monangai","RB","CHI","BN"],
-    ["Jordyn Tyson","WR","NO","BN"],["DeVonta Smith","WR","PHI","BN"],
-    ["Kenneth Walker","RB","KC","BN"]
-  ],
-  "Tall & Handsome":[
-    ["Dak Prescott","QB","DAL","QB"],["Christian McCaffrey","RB","SF","RB"],
-    ["Chris Rodriguez","RB","JAX","RB"],["George Pickens","WR","DAL","WR"],
-    ["Zay Flowers","WR","BAL","WR"],["Harold Fannin Jr.","TE","CLE","TE"],
-    ["Jordan Addison","WR","MIN","FLEX"],["Bhayshul Tuten","RB","JAX","FLEX"],
-    ["Harrison Mevis","K","LAR","K"],["Pittsburgh Steelers","DEF","PIT","DEF"],
-    ["Saquon Barkley","RB","PHI","BN"],["Chuba Hubbard","RB","CAR","BN"],
-    ["Devaughn Vele","WR","NO","BN"],["Jakobi Meyers","WR","JAX","BN"],
-    ["Michael Pittman Jr.","WR","PIT","BN"],["Wan'Dale Robinson","WR","TEN","BN"]
-  ],
-  "HG Hornets":[
-    ["Jalen Hurts","QB","PHI","QB"],["Javonte Williams","RB","DAL","RB"],
-    ["D'Andre Swift","RB","CHI","RB"],["CeeDee Lamb","WR","DAL","WR"],
-    ["Amon-Ra St. Brown","WR","DET","WR"],["Travis Kelce","TE","KC","TE"],
-    ["Terry McLaurin","WR","WAS","FLEX"],["Kalif Raymond","WR","CHI","FLEX"],
-    ["Jason Myers","K","SEA","K"],["Seattle Seahawks","DEF","SEA","DEF"],
-    ["Blake Corum","RB","LAR","BN"],["Emmett Johnson","RB","KC","BN"],
-    ["Rico Dowdle","RB","PIT","BN"],["Travis Etienne","RB","NO","BN"],
-    ["Luther Burden III","WR","CHI","BN"],["Jake Ferguson","TE","DAL","BN"]
-  ],
-  "Team KraftyCheese":[
-    ["Patrick Mahomes","QB","KC","QB"],["James Cook","RB","BUF","RB"],
-    ["TreVeyon Henderson","RB","NE","RB"],["Rashee Rice","WR","KC","WR"],
-    ["Davante Adams","WR","LAR","WR"],["Tyler Warren","TE","IND","TE"],
-    ["Marvin Harrison Jr.","WR","ARI","FLEX"],["Quentin Johnston","WR","LAC","FLEX"],
-    ["Will Reichard","K","MIN","K"],["Los Angeles Rams","DEF","LAR","DEF"],
-    ["Drake Maye","QB","NE","BN"],["Josh Jacobs","RB","GB","BN"],
-    ["Rachaad White","RB","WAS","BN"],["Zach Charbonnet","RB","SEA","BN"],
-    ["Xavier Hutchinson","WR","HOU","BN"],["Juwan Johnson","TE","NO","BN"]
-  ],
-  "Suck My D Henry":[
-    ["Joe Burrow","QB","CIN","QB"],["Jeremiyah Love","RB","ARI","RB"],
-    ["Bucky Irving","RB","TB","RB"],["Jaxon Smith-Njigba","WR","SEA","WR"],
-    ["Malik Nabers","WR","NYG","WR"],["George Kittle","TE","SF","TE"],
-    ["Braelon Allen","RB","NYJ","FLEX"],["Brandon Aubrey","K","DAL","K"],
-    ["Kansas City Chiefs","DEF","KC","DEF"],["Jadarian Price","RB","SEA","BN"],
-    ["Tyler Allgeier","RB","ARI","BN"],["Jordan Mason","RB","MIN","BN"],
-    ["Tyreek Hill","WR","MIA","BN"],["Deebo Samuel","WR","SF","BN"],
-    ["Justin Jefferson","WR","MIN","BN"]
-  ]
-};
-
-const LEAGUE_DEFAULT='1388984626868912128';
-const API='https://api.sleeper.app/v1';
-const STANDINGS_KEY='sf_v6_live';
-const PLAYERS_KEY='sf_v6_players';
-const ID_KEY='sf_v6_leagueid';
-const POSITION_VALUE={QB:18,RB:12.5,WR:11.5,TE:8.5,FLEX:10.5,K:7,DEF:7};
-const NON_STARTER=new Set(['BN','IR','TAXI','RES','IL','NA']);
-let live=null, model=null, busy=false, source='offline', currentWeek=calendarNflWeek(), completedWeeks=4, regularWeeks=15;
-let teams=structuredClone(baseline).map((t,i)=>({...t,id:i+1}));
-let rosters=offlineRosters();
-let weekly={}, players={}, leagueInfo=null, realBrackets={winners:[],losers:[]}, warnings=[];
-let sortState={key:'projFinal',dir:'asc'};
-function $ (sel){return document.querySelector(sel)}
-function el(id){return document.getElementById(id)}
-function safe(s){return String(s??'').replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));}
-function fmt(n,d=1){return n!==null&&n!==undefined&&Number.isFinite(Number(n))?Number(n).toFixed(d):'—'}
-function pct(p){return (p*100).toFixed(p<0.0001?2:1)+'%'}
-function ord(n){const v=n%100; return n+((v>=11&&v<=13)?'th':({1:'st',2:'nd',3:'rd'}[n%10]||'th'))}
-function store(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){console.warn('Cache storage unavailable',e)}}
-function read(k){try{return JSON.parse(localStorage.getItem(k)||'null')}catch(e){return null}}
-function clamp(n,a,b){return Math.max(a,Math.min(b,n))}
-function status(msg,type=''){el('status').className='statusline '+type;el('status').innerHTML=msg}
-function mulberry32(a){return function(){let t=a+=0x6d2b79f5;t=Math.imul(t^t>>>15,t|1);t^=t+Math.imul(t^t>>>7,t|61);return((t^t>>>14)>>>0)/4294967296}}
-function gaussian(r){let u=0,v=0;while(u===0)u=r();while(v===0)v=r();return Math.sqrt(-2*Math.log(u))*Math.cos(2*Math.PI*v)}
-async function fetchJSON(url){const controller=new AbortController();const timeout=setTimeout(()=>controller.abort(),20000);try{const r=await fetch(url,{mode:'cors',credentials:'omit',cache:'no-store',signal:controller.signal});if(!r.ok)throw Error('Sleeper HTTP '+r.status+' ('+url.split('/').slice(-2).join('/')+')');return await r.json();}finally{clearTimeout(timeout)}}
-function offlineRosters(){return Object.fromEntries(Object.entries(seededRosters).map(([name,r])=>[name,r.map((p,i)=>({id:p[0].startsWith('EMPTY —')?'0':String(i),name:p[0].startsWith('EMPTY —')?'EMPTY':p[0],pos:p[1],nfl:p[2],slot:p[3],empty:p[0].startsWith('EMPTY —')}))]))}
-function scoreSetting(s,name){return Number(s?.[name]||0)+Number(s?.[name+'_decimal']||0)/100}
-function validateFixtures(fix){if(!Array.isArray(fix)||fix.length!==teams.length/2)return false;const xs=fix.flat();return xs.length===teams.length&&xs.every(n=>teams.some(t=>t.name===n))&&new Set(xs).size===teams.length}
-function derivePairs(entries){if(!Array.isArray(entries))return [];const by={};for(const e of entries){if(e.matchup_id==null||e.roster_id==null)continue;(by[e.matchup_id]??=[]).push(e)}
- return Object.values(by).filter(g=>g.length===2).map(pair=>pair.map(x=>Number(x.roster_id)));}
-function activeSlots(info){return (info?.roster_positions||[]).filter(x=>!NON_STARTER.has(x))}
-function nameOfPlayer(id){const p=players[String(id)];return p?.name||(String(id).length<=3?String(id)+' DEF':'Player #'+id)}
-function playerFor(id,slot='BN',reserve=false){const p=players[String(id)];const isDef=String(id).length<=3&&/^[A-Z]{2,3}$/.test(String(id));return {id:String(id),name:p?.name||(isDef?String(id)+' Defense':'Player #'+id),pos:p?.pos||(isDef?'DEF':''),nfl:p?.nfl||(isDef?String(id):''),slot:reserve?'IR':slot,injury:p?.injury||''}}
-function getUsersTeamName(roster,byId){const u=byId[String(roster.owner_id)]||{};return String(u.metadata?.team_name||u.display_name||u.username||'Roster '+roster.roster_id)}
-function parseRoster(rs,league,users,playerMap){const byId=Object.fromEntries((users||[]).map(u=>[String(u.user_id),u]));
- const slots=activeSlots(league);const isKnown=Object.keys(playerMap).length>0;
- return rs.map(r=>{
-  const rawStarters=(r.starters||[]).map(String); const mainPlayers=(r.players||[]).map(String);
-  const reserve=new Set((r.reserve||[]).map(String));const taxi=new Set((r.taxi||[]).map(String));
-  const realStarters=new Set(rawStarters.filter(id=>id!=='0'&&id!=='null'));
-  const parsed=rawStarters.map((id,i)=>({...(id==='0'||id==='null'?{id:'0',name:'EMPTY',pos:'',nfl:''}:playerFor(id,slots[i]||'FLEX')),
-    slot:slots[i]||'FLEX',empty:id==='0'||id==='null'}));
-  for(const id of mainPlayers){if(!realStarters.has(id))parsed.push(playerFor(id,'BN',reserve.has(id)||taxi.has(id)))}
-  for(const id of reserve){if(!mainPlayers.includes(id))parsed.push(playerFor(id,'BN',true))}
-  const st=r.settings||{},num=Number(r.roster_id);const w=Number(st.wins||0),l=Number(st.losses||0),ties=Number(st.ties||0);
-  const pf=scoreSetting(st,'fpts'),pa=scoreSetting(st,'fpts_against');
-  const maxAvailable=st.ppts!==undefined&&st.ppts!==null;
-  return {id:num,name:getUsersTeamName(r,byId),owner:byId[String(r.owner_id)]?.display_name||'',
-    w,l,ties,pf,pa,maxpf:maxAvailable?scoreSetting(st,'ppts'):null,maxAvailable,roster:parsed,hasPlayerData:isKnown};
- });
-}
-async function loadPlayers(force=false){const c=read(PLAYERS_KEY),fresh=c?.fetched&&Date.now()-c.fetched<86400000;
- if(c?.map&&fresh&&!force)return {map:c.map,cached:true,stale:false};
- try{const d=await fetchJSON(API+'/players/nfl');if(!d||typeof d!=='object')throw Error('Player directory missing');
- const map={};for(const [id,p] of Object.entries(d)){
-  const name=p.full_name||[p.first_name,p.last_name].filter(Boolean).join(' ')||p.search_full_name||'';
-  map[id]={name,nfl:p.team||'',pos:p.position||p.fantasy_positions?.[0]||'',injury:p.injury_status||''};
- }
- const obj={fetched:Date.now(),map};store(PLAYERS_KEY,obj);return {map,cached:false,stale:false};
- }catch(err){if(c?.map)return {map:c.map,cached:true,stale:true,error:err.message};throw err}
-}
-function matchupsAsCards(week){const data=weekly[week]||[],mappedById=Object.fromEntries(teams.map(t=>[t.id,t]));const by={};for(const m of data)if(m.matchup_id!=null)(by[m.matchup_id]??=[]).push(m);
- return Object.values(by).filter(g=>g.length===2).map(g=>g.map(m=>({t:mappedById[Number(m.roster_id)],pts:m.custom_points==null?m.points:m.custom_points}))).filter(g=>g.every(a=>a.t));}
-function hydrate(data,updateLabel=true){const {league,rs,users,state,matchups,brackets,playerMap,syncedAt,playerStale}=data;
- live={syncedAt:syncedAt||null};players=playerMap||{};const t=parseRoster(rs,league,users,playerMap||{});
- if(t.length!==10||new Set(t.map(x=>x.id)).size!==10)throw Error('Expected 10 unique teams; Sleeper returned '+t.length);
- if(String(league.season)!=='2026')throw Error('League is for season '+league.season+', not 2026');
- teams=t.map(x=>({id:x.id,name:x.name,owner:x.owner,w:x.w,l:x.l,ties:x.ties,pf:x.pf,pa:x.pa,maxpf:x.maxpf,maxAvailable:x.maxAvailable}));
- rosters=Object.fromEntries(t.map(x=>[x.id,x.roster]));players=playerMap||{};
- weekly=matchups||{}; leagueInfo=league;realBrackets=brackets||{winners:[],losers:[]};
- const games=teams.map(x=>x.w+x.l+(x.ties||0));completedWeeks=Math.min(...games);
- currentWeek=Number(state?.season)==2026?clamp(Number(state.week||state.leg||completedWeeks+1),1,18):clamp(completedWeeks+1,1,18);
- regularWeeks=clamp(Number(league.settings?.playoff_week_start||16)-1,1,17);
- source='sleeper';warnings=[];
- if(Math.max(...games)!==completedWeeks)warnings.push('Some teams have different games-played counts. Starting simulation from the lowest confirmed week.');
- if(!t.every(x=>x.maxAvailable))warnings.push('Max PF is not present on every Sleeper roster. Those teams use PF-only historical strength rather than invented Max PF.');
- if(playerStale)warnings.push('Player directory is stale: some recently added players could have old NFL teams or IDs.');
- if(regularWeeks!==15)warnings.push('League playoffs begin in Week '+(regularWeeks+1)+' instead of Week 16: using the configured start week.');
- if(Number(league.settings?.playoff_teams||4)!==4)warnings.push('Sleeper playoff_teams is not 4. The customised top-four Sunday Funday bracket cannot be trusted.');
- if(updateLabel){
-  el('leagueName').textContent=league.name||'Sunday Funday';el('seasonText').textContent=league.season+' NFL · '+scoringLabel(league);
-  el('sourceText').textContent='Live Sleeper';el('rosterCount').textContent=teams.length+' synced teams';
-  el('lastSync').textContent='Synced '+new Date(syncedAt).toLocaleString('en-GB');
- }
- el('weekText').textContent='Through Wk '+completedWeeks;el('weekHint').textContent='NFL currently Wk '+currentWeek+' · live matchups provisional';
- el('simHint').textContent='Regular season ends Week '+regularWeeks;el('scheduleStatus').textContent='Sleeper fixtures (offline fallback marked)';
- el('openSleeper').href='https://sleeper.com/leagues/'+encodeURIComponent(String(league.league_id));
- const customRules=Number(league.settings?.playoff_teams||4)===4;
- el('bracketState').textContent=realBrackets.winners?.length||realBrackets.losers?.length?'Sleeper bracket loaded + custom simulation':'Prediction only; bracket not issued';
- el('syncDetail').textContent='Sleeper season '+league.season+' · '+teams.length+' managers · '+regularWeeks+' regular-season weeks · '+(customRules?'4 championship playoff seeds':'CHECK playoff settings')+' · sync does not place any trades or waivers.';
-}
-function scoringLabel(league){const r=Number(league?.scoring_settings?.rec||0);return r===0.5?'Half PPR':r===1?'Full PPR':r===0?'Standard':'Reception '+r}
-function scheduleFor(week){if(source==='sleeper'){
-  const from=derivePairs(weekly[week]).map(pair=>pair.map(id=>teams.find(t=>t.id===id)?.name));
-  if(validateFixtures(from))return {games:from,type:'Sleeper'};
-  const fallback=exactSchedule[week]||[];
-  if(validateFixtures(fallback))return {games:fallback,type:'v5 fallback'};
-  return {games:[],type:'Unavailable'};
- }
- return {games:exactSchedule[week]||[],type:'v5 offline'};
-}
-function rosterFor(team){return rosters[team.id]||rosters[team.name]||[]}
-function rosterQuality(team){const rs=rosterFor(team),starterRows=rs.filter(p=>!['BN','IR'].includes(p.slot));
- const required=source==='sleeper'?activeSlots(leagueInfo).length:10;
- const ok=starterRows.length===required && required>0&&starterRows.every(p=>p.id!=='0'&&!p.empty&&p.nfl&&p.pos);
- return {ok,have:starterRows.length,required,unknown:starterRows.filter(p=>!p.nfl||!p.pos).length};
-}
-function validBench(bench,slot){if(slot==='FLEX'||slot==='WRRB_FLEX'||slot==='REC_FLEX')return ['WR','RB','TE'].includes(bench.pos);
- if(slot==='SUPER_FLEX')return ['QB','RB','WR','TE'].includes(bench.pos);
- if(slot==='IDP_FLEX')return ['DB','DL','LB'].includes(bench.pos);
- return bench.pos===(slot==='DEF'?'DEF':slot)|| (slot==='WR'&&bench.pos==='WR')}
-function byeImpact(team,week){const q=rosterQuality(team);
- const bye=nflByes[week]||[],rs=rosterFor(team);
- const benchByes=rs.filter(p=>p.slot==='BN'&&bye.includes(p.nfl)).map(p=>p.name);
- if(!q.ok)return {pts:0,players:[],applied:false,benchByes,covered:[],uncovered:[]};
- const used=new Set(),bench=rs.filter(p=>p.slot==='BN'&&!bye.includes(p.nfl)&&p.nfl);
- let total=0;const missed=[],covered=[],uncovered=[];
- for(const p of rs.filter(p=>!NON_STARTER.has(p.slot)&&bye.includes(p.nfl))){
-  let next=bench.findIndex((b,i)=>!used.has(i)&&validBench(b,p.slot));
-  let base=POSITION_VALUE[p.slot]||10.5;
-  if(next>=0){used.add(next);total+=base*.38;covered.push(p.name+' → '+bench[next].name);}
-  else{total+=base;uncovered.push(p.name);}
-  missed.push(p.name);
- }
- return {pts:total,players:missed,applied:true,benchByes,covered,uncovered};
-}
-function currentOrder(){return teams.map((t,i)=>({i,t})).sort((a,b)=>b.t.w-a.t.w||b.t.ties-a.t.ties||b.t.pf-a.t.pf).map(x=>x.i)}
-function erf(x){const sign=x<0?-1:1;x=Math.abs(x);const t=1/(1+.3275911*x);return sign*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x));}
-function simulate(){
- const sims=+el('simCount').value,seed=+el('seed').value||1;
- const cfg=activeCfg(),adaptive=currentTeamEstimates(cfg);
- if(!(sims>=1000&&sims<=100000))throw Error('Simulation count must be 1,000–100,000');
- if(!(cfg.regK>=0&&cfg.regK<=40&&cfg.maxSignal>=0&&cfg.maxSignal<=.8&&cfg.fixedSd>=8&&cfg.fixedSd<=60))throw Error('Invalid model options');
- const n=teams.length;if(n!==10)throw Error('League must contain exactly 10 teams');
- if(source==='sleeper'&&Number(leagueInfo?.settings?.playoff_teams||4)!==4)throw Error('Sleeper playoff team count is not four; bracket rules need confirmation.');
- const nameIndex=Object.fromEntries(teams.map((t,i)=>[t.name,i])),weeks=[];
- for(let w=completedWeeks+1;w<=regularWeeks;w++){
-  const schedule=scheduleFor(w);if(!validateFixtures(schedule.games))throw Error('Missing or conflicting Week '+w+' pairings. Forecast paused rather than guessing.');
-  weeks.push({wk:w,games:schedule.games.map(([a,b])=>[nameIndex[a],nameIndex[b]]),bye:teams.map(t=>byeImpact(t,w).pts)});
- }
- let strength=adaptive.estimates.map(t=>t.mu),sigma=adaptive.estimates.map(t=>t.sd);
- if(el('modelMode').value==='legacy'){
-  strength=teams.map(t=>{const gp=Math.max(1,t.w+t.l+(t.ties||0));return .7*(t.pf/gp)+.3*((t.maxpf??t.pf)/gp)});
-  sigma=teams.map(()=>20);
- }
- const rng=mulberry32(seed),finish=Array.from({length:n},()=>new Float64Array(10));
- const playoff=new Float64Array(n),toilet=new Float64Array(n),champ=new Float64Array(n),last=new Float64Array(n),expectedWins=new Float64Array(n),expectedPF=new Float64Array(n);
- function game(a,b){const x=Math.max(0,strength[a]+gaussian(rng)*sigma[a]),y=Math.max(0,strength[b]+gaussian(rng)*sigma[b]);return x>=y?a:b}
- for(let s=0;s<sims;s++){
-  const wins=teams.map(t=>t.w),PF=teams.map(t=>t.pf);
-  for(const week of weeks)for(const [a,b] of week.games){
-   const sa=Math.max(0,strength[a]-week.bye[a]+gaussian(rng)*sigma[a]);
-   const sb=Math.max(0,strength[b]-week.bye[b]+gaussian(rng)*sigma[b]);
-   PF[a]+=sa;PF[b]+=sb;
-   if(sa>=sb)wins[a]++;else wins[b]++;
-  }
-  const order=Array.from({length:n},(_,i)=>i).sort((a,b)=>wins[b]-wins[a]||PF[b]-PF[a]||a-b);
-  for(let i=0;i<n;i++){expectedWins[i]+=wins[i];expectedPF[i]+=PF[i]}
-  for(let k=0;k<4;k++)playoff[order[k]]++;
-  for(let k=6;k<10;k++)toilet[order[k]]++;
-  const [a,b,c,d]=order,first=game(a,d),firstLose=first===a?d:a,second=game(b,c),secondLose=second===b?c:b;
-  const winner=game(first,second),runner=winner===first?second:first;
-  const third=game(firstLose,secondLose),fourth=third===firstLose?secondLose:firstLose;
-  finish[winner][0]++;finish[runner][1]++;finish[third][2]++;finish[fourth][3]++;champ[winner]++;
-  finish[order[4]][4]++;finish[order[5]][5]++;
-  const [e,f,g,h]=order.slice(6),x=game(e,h),lx=x===e?h:e,y=game(f,g),ly=y===f?g:f;
-  const seventh=game(x,y),eighth=seventh===x?y:x,ninth=game(lx,ly),tenth=ninth===lx?ly:lx;
-  finish[seventh][6]++;finish[eighth][7]++;finish[ninth][8]++;finish[tenth][9]++;last[tenth]++;
- }
- const expWins=Array.from(expectedWins,x=>x/sims),expPF=Array.from(expectedPF,x=>x/sims);
- const regOrder=Array.from({length:n},(_,i)=>i).sort((a,b)=>expWins[b]-expWins[a]||expPF[b]-expPF[a]||a-b);
- const expFinish=finish.map(x=>Array.from(x).reduce((sum,c,k)=>sum+c*(k+1)/sims,0));
- const finalOrder=Array.from({length:n},(_,i)=>i).sort((a,b)=>expFinish[a]-expFinish[b]||champ[b]-champ[a]||playoff[b]-playoff[a]||a-b);
- function inverse(order){const arr=[];order.forEach((x,i)=>arr[x]=i+1);return arr;}
- return {sims,finish,playoff,toilet,champ,last,expWins,expPF,expFinish,cur:inverse(currentOrder()),projReg:inverse(regOrder),projFinal:inverse(finalOrder),strength,sigma,regression:cfg.regK,maxSignal:cfg.maxSignal};
-}
-
-function startSimulation(){if(busy)return;busy=true;el('runBtn').disabled=true;el('runBtn').textContent='Running…';
- requestAnimationFrame(()=>setTimeout(()=>{
-  try{model=simulate();renderForecast();renderMatrix();el('simCard').textContent=model.sims.toLocaleString('en-GB');
-   if(source==='sleeper')status('✓ Synced Sleeper data. Monte Carlo model updated with <b>'+model.sims.toLocaleString('en-GB')+' simulated seasons</b> and confirmed standings.','ok');
-   else status('Offline v5 forecast. This is a <b>historical snapshot, not live standings</b>. Sync Sleeper to update all rosters, standings and future fixtures.','warn');
-  }catch(e){model=null;el('forecastTable').querySelector('tbody').innerHTML='<tr><td colspan="9" style="text-align:left">Forecast paused: '+safe(e.message)+'</td></tr>';status('Model paused: '+safe(e.message),'error');}
-  finally{busy=false;el('runBtn').disabled=false;el('runBtn').textContent='▶ Run '+Number(el('simCount').value).toLocaleString('en-GB')+' simulations';}
- },20));
-}
-function renderForecast(){if(!model)return;const rows=teams.map((t,i)=>({t,i,current:model.cur[i],projReg:model.projReg[i],expWins:model.expWins[i],playoff:model.playoff[i]/model.sims,
- toilet:model.toilet[i]/model.sims,champ:model.champ[i]/model.sims,last:model.last[i]/model.sims,projFinal:model.projFinal[i],expFinal:model.expFinish[i]}));
- const {key,dir}=sortState,fac=dir==='asc'?1:-1;
- rows.sort((a,b)=>key==='name'?fac*a.t.name.localeCompare(b.t.name):fac*((a[key]??0)-(b[key]??0))||a.t.name.localeCompare(b.t.name));
- el('forecastTable').querySelector('tbody').innerHTML=rows.map(x=>{
-  const zone=x.projReg<=4?'<span class="pill playoff">Playoffs</span>':x.projReg>=7?'<span class="pill toilet">Toilet</span>':'<span class="pill middle">5th–6th</span>';
-  return '<tr><td><div class="team">'+safe(x.t.name)+'</div><div class="small">'+zone+'</div></td><td>'+ord(x.current)+'</td><td><b>'+ord(x.projReg)+'</b></td><td>'+fmt(x.expWins,1)+'</td>'+[
-   '<td class="barcell"><div class="pct">'+pct(x.playoff)+'</div><div class="bar"><i style="width:'+(x.playoff*100)+'%"></i></div></td>',
-   '<td class="barcell"><div class="pct">'+pct(x.toilet)+'</div><div class="bar red"><i style="width:'+(x.toilet*100)+'%"></i></div></td>',
-   '<td><b class="big-pct">'+pct(x.champ)+'</b></td>','<td class="smallpoint">'+pct(x.last)+'</td>',
-   '<td><b>'+ord(x.projFinal)+'</b><div class="small">avg '+fmt(x.expFinal,2)+'</div></td>'
-  ].join('')+'</tr>';}).join('');
- document.querySelectorAll('#forecastTable th[data-sort]').forEach(h=>{h.classList.toggle('sort-asc',key===h.dataset.sort&&dir==='asc');h.classList.toggle('sort-desc',key===h.dataset.sort&&dir==='desc')});
-}
-function renderMatrix(){if(!model)return;const rows=teams.map((t,i)=>({t,i})).sort((a,b)=>model.projFinal[a.i]-model.projFinal[b.i]);
- el('matrix').innerHTML='<div class="mh">Team</div>'+Array.from({length:10},(_,i)=>'<div class="mh">'+ord(i+1)+'</div>').join('')+
- rows.map(({t,i})=>'<div class="name">'+safe(t.name)+'</div>'+Array.from(model.finish[i],c=>{
- const p=c/model.sims;return '<div class="heat" style="background:rgba(36,231,197,'+(0.04+clamp(p*3.5,0,1)*.55)+')">'+pct(p)+'</div>';}).join('')).join('');
-}
-function renderWeekPicker(){const s=el('weekSelect'),old=s.value;
- s.innerHTML=Array.from({length:regularWeeks},(_,i)=>'<option value="'+(i+1)+'">Week '+(i+1)+'</option>').join('');
- s.value=old&&+old<=regularWeeks?old:String(clamp(currentWeek,1,regularWeeks)); renderMatchups();
-}
-function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),arr=matchupsAsCards(w),actual=w<=completedWeeks,weekInfo=scheduleFor(w);
- el('weekState').textContent=actual?'✓ Completed (Sleeper official)':(w===currentWeek?'● Current NFL week · provisional':'Upcoming fixtures');
- if(arr.length){
-  el('matchupCards').innerHTML=arr.map(([a,b])=>{
-   let p1=Number(a.pts||0),p2=Number(b.pts||0);const comparable=actual;
-   return '<div class="fixture"><div class="who"><span>'+safe(a.t.name)+'</span><span class="score">'+fmt(p1,2)+'</span></div><div class="foot">'+(comparable?'FINAL':'Live / scheduled — not final')+'</div><div class="who" style="margin-top:8px"><span>'+safe(b.t.name)+'</span><span class="score">'+fmt(p2,2)+'</span></div></div>';
-  }).join('');
- }else if(weekInfo.games.length){el('matchupCards').innerHTML=weekInfo.games.map(([a,b])=>'<div class="fixture"><div class="who"><span>'+safe(a)+'</span><span class="vs">VS</span><span>'+safe(b)+'</span></div><div class="foot">'+safe(weekInfo.type)+' · no confirmed scores</div></div>').join('');
- }else el('matchupCards').innerHTML='<div class="note">No matchups available for this week.</div>';
-}
-function renderSchedule(){
- const sel=el('scheduleWeek');const defaultWeek=Math.max(1,Math.min(regularWeeks,Math.max(calendarNflWeek(),completedWeeks+1)));
- if(sel){const prior=Number(sel.value)||defaultWeek;sel.innerHTML=Array.from({length:regularWeeks},(_,i)=>'<option value="'+(i+1)+'">Week '+(i+1)+'</option>').join('');sel.value=String(clamp(prior,1,regularWeeks));}
- const w=sel?Number(sel.value):defaultWeek;const x=scheduleFor(w);
- const fixtures=x.games.map(([a,b])=>'<div class="schedule-game"><div class="schedule-teams"><span>'+safe(a)+'</span><span class="versus">v</span><span>'+safe(b)+'</span></div></div>').join('');
- el('scheduleTable').querySelector('tbody').innerHTML='<tr><td>Wk '+w+'</td><td><div class="schedule-grid">'+(fixtures||'<span class="small">No verified fixtures available</span>')+'</div></td><td>'+safe(x.type)+'</td></tr>';
-}
-function renderRosterSelector(){const sel=el('rosterSelect'),old=sel.value;sel.innerHTML=teams.map(t=>'<option value="'+t.id+'">'+safe(t.name)+'</option>').join('');
- if(teams.some(t=>String(t.id)===old))sel.value=old;else if(teams.length)sel.value=String([...teams].sort((a,b)=>a.name.localeCompare(b.name))[0].id)
- renderRoster();}
-function renderRoster(){
- const t=teams.find(t=>String(t.id)===el('rosterSelect').value)||teams[0];if(!t)return;
- const r=rosterFor(t);const q=rosterQuality(t);
- const active=r.filter(p=>!NON_STARTER.has(p.slot));
- const gaps=active.filter(p=>p.empty||p.id==='0'||!p.name||!p.pos||!p.nfl);
- const available=r.filter(p=>p.slot==='BN'&&p.pos&&p.nfl);
- const filled=Math.max(0,active.length-gaps.length);
- const stats='<div class="roster-card"><strong>'+safe(t.name)+'</strong><small>'+safe(t.owner||'Sleeper manager')+'</small><div style="margin-top:8px">'+t.w+'–'+t.l+(t.ties?'–'+t.ties:'')+' · '+fmt(t.pf,2)+' PF</div><small>'+ (t.maxpf===null?'Max PF unknown':fmt(t.maxpf,2)+' Max PF')+'</small></div>';
- el('rosterOverview').innerHTML=stats+'<div class="roster-card"><strong>Actual starting lineup</strong><small>'+filled+'/'+q.required+' filled · '+(source==='sleeper'?'Sleeper':'Offline snapshot')+'</small><div style="margin-top:8px"><strong>Roster</strong><small>'+r.filter(p=>!p.empty).length+' listed players</small></div></div>';
- if(!r.length){el('rosterDetail').innerHTML='<p class="note">No offline player list for this team. Press Sync Sleeper on Home for current starters and bench.</p>';return;}
- const starter=r.filter(p=>!NON_STARTER.has(p.slot)),bench=r.filter(p=>p.slot==='BN'),ir=r.filter(p=>p.slot==='IR');
- let gapNote='';
- if(gaps.length){
-  const slots=gaps.map(p=>p.slot).join(', ');
-  const suggestions=[];
-  for(const p of gaps){const candidates=available.filter(b=>positionalEligibility(b.pos,p.slot)).map(b=>b.name);if(candidates.length)suggestions.push(p.slot+': '+candidates.join(' / '));}
-  gapNote='<div class="roster-warning"><strong>⚠️ Empty or unrecognised starting slot: '+safe(slots)+'</strong>'+
-   (suggestions.length?'Possible bench cover — '+safe(suggestions.join('; '))+'. ':'')+
-   '<span class="small">This is the lineup shown in the loaded data, not a prediction. The model may use eligible bench cover for future projections; it cannot change anyone’s Sleeper lineup.</span></div>';
- }
- const offlineNote=source!=='sleeper'?'<p class="hqcaption">Offline roster snapshot may be outdated. Sync Sleeper for the latest confirmed lineup.</p>':'';
- function section(title,arr){return '<div class="sect"><h3>'+title+' ('+arr.length+')</h3>'+arr.map(p=>{
-  const bye=Object.entries(nflByes).find(([,names])=>names.includes(p.nfl))?.[0];
-  const pos=safe(p.pos||'–'),slot=safe(p.slot||'BN');const empty=p.empty||p.id==='0';
-  return '<div class="person'+(empty?' empty-slot':'')+'"><span class="slot '+(slot==='BN'?'bn':slot==='IR'?'ir':'')+'">'+slot+'</span><span><span class="pname">'+(empty?'EMPTY — no player started':safe(p.name))+'</span><div class="ptiny">'+pos+(p.injury?' · '+safe(p.injury):'')+'</div></span><div class="pteam">'+safe(p.nfl||'No NFL team')+'<div class="ptiny">'+(bye?'Bye Wk '+bye:'')+'</div></div></div>';
- }).join('')+'</div>'}
- el('rosterDetail').innerHTML=gapNote+offlineNote+section('Starters',starter)+section('Bench',bench)+section('Injured reserve / taxi',ir);
-}
-// NFL 2026 Week 1 begins Thursday 10 September. Advance the visible week on
-// Tuesday at noon UTC after Monday Night Football, even when cached data is stale.
-function calendarNflWeek(now=Date.now()){
- const firstTuesday=Date.UTC(2026,8,8,12);
- return clamp(Math.floor((now-firstTuesday)/(7*86400000))+1,1,19);
-}
-function visibleByeWeek(){return Math.max(calendarNflWeek(),source==='sleeper'?Number(currentWeek)||1:1);}
-function byeMaxWeek(){return Math.min(14,regularWeeks);}
-function byeViewStart(){const chosen=el('byeStart').value;
- return chosen==='auto'?visibleByeWeek():Number(chosen);
-}
-function renderByeStartOptions(){
- const e=el('byeStart'),selected=e.value||'auto';
- e.innerHTML='<option value="auto">Current week · auto</option>'+Array.from({length:Math.max(0,byeMaxWeek()-4)},(_,i)=>i+5).map(w=>'<option value="'+w+'">Week '+w+'</option>').join('');
- e.value=selected==='auto'||Number(selected)>=5&&Number(selected)<=byeMaxWeek()?selected:'auto';
-}
-let displayedAutoByeWeek=null;
-function renderByeTable(){
- const from=byeViewStart(),end=byeMaxWeek(),span=el('byeSpan').value;
- const count=span==='all'?99:Number(span)||4;
- const weekList=from<=end?Array.from({length:Math.min(count,end-from+1)},(_,i)=>from+i):[];
- const auto=el('byeStart').value==='auto';displayedAutoByeWeek=auto?visibleByeWeek():null;
- const current=visibleByeWeek();
- const byesHeader='<tr><th>Fantasy team</th><th>Lineup</th>'+weekList.map(w=>
-  '<th data-week="'+w+'" class="'+(w===current?'bye-current':'')+'">Week '+w+
-  '<span class="week-teams">'+(nflByes[w]?.length?nflByes[w].join(' · '):'No NFL byes')+'</span></th>').join('')+'</tr>';
- el('byeTable').querySelector('thead').innerHTML=byesHeader;
- const rows=weekList.length?teams.map(t=>{
-  const q=rosterQuality(t);const cells=weekList.map(w=>{
-   const b=byeImpact(t,w),cls=b.pts>=12?'byebad':b.pts>0?'byemid':'byeok';
-   let label=b.applied?(b.pts?'−'+fmt(b.pts)+' pts':(b.benchByes.length?'Bench '+b.benchByes.length:'None')):'Unknown';
-   let parts=[];
-   if(b.players.length)parts.push('<div class="risk-players">'+safe(b.players.join(', '))+'</div>');
-   if(b.covered.length)parts.push('<div class="risk-cover">Cover: '+safe(b.covered.map(x=>x.split(' → ')[1]).join(', '))+'</div>');
-   if(b.uncovered.length)parts.push('<div class="risk-cover byebad">No bench cover: '+safe(b.uncovered.length)+'</div>');
-   if(b.benchByes.length)parts.push('<div class="risk-cover">Bench bye: '+safe(b.benchByes.join(', '))+'</div>');
-   return '<td data-week="'+w+'" class="'+(w===current?'bye-current':'')+'"><span class="risk-number '+cls+'">'+label+'</span>'+parts.join('')+'</td>';
-  }).join('');
-  return '<tr><td><b>'+safe(t.name)+'</b></td><td><span class="'+(q.ok?'complete':'incomplete')+'">'+(q.ok?'Ready':'Check')+'</span></td>'+cells+'</tr>';
- }).join(''):'<tr><td colspan="2">No upcoming bye weeks. NFL byes ended in Week 14.</td></tr>';
- el('byeTable').querySelector('tbody').innerHTML=rows;
- const first=weekList[0];
- const affected=first==null?0:teams.filter(t=>byeImpact(t,first).players.length).length;
- const names=first==null?[]:nflByes[first]||[];
- el('byeSummary').innerHTML=first==null?'<strong>All 2026 NFL bye weeks are finished.</strong> Select an earlier week to review history.':
-  '<strong>Week '+first+'</strong> · '+(names.length?'NFL teams off: <span class="active">'+names.map(safe).join(' · ')+'</span>':'No NFL teams on bye')+
-  ' · <strong>'+affected+' / '+teams.length+'</strong> fantasy lineups currently have starters on bye'+(weekList.length>1?' · Showing W'+first+'–W'+weekList[weekList.length-1]:'');
- el('byeSource').textContent=(source==='sleeper'?'Current Sleeper roster'+(live?.syncedAt?' · last synced '+new Date(live.syncedAt).toLocaleString('en-GB'):''):'Offline Week 4 roster snapshot')+
-  ' · Estimated points lost after generic bench cover, not player projections. Future starting lineups may change.';
-}
-
-function showBracket(arr){if(!arr?.length)return '<span class="subtle">Sleeper has not published this bracket yet.</span>';
- const byId=Object.fromEntries(teams.map(t=>[t.id,t.name]));const label=x=>typeof x==='number'?(byId[x]||'Roster '+x):x&&typeof x==='object'?'TBD (prior winner/loser)':'TBD';
- return arr.map(m=>'<div class="fixture" style="margin-bottom:6px"><b>Round '+safe(m.r)+' · Match '+safe(m.m)+'</b><div>'+safe(label(m.t1))+' <span class="subtle">vs</span> '+safe(label(m.t2))+'</div><div class="ptiny">'+(m.w?'Winner: '+safe(label(m.w)):'Not decided')+'</div></div>').join('');
-}
-function renderBrackets(){el('winnersBracket').innerHTML=showBracket(realBrackets.winners);el('losersBracket').innerHTML=showBracket(realBrackets.losers);}
-function renderQuality(){const notes=[];
- if(source==='offline')notes.push('OFFLINE SNAPSHOT: W–L, PF, Max PF and rosters were saved in v5 after Week 4. These are not current Sleeper figures.');
- else{
-  const fallback=Array.from({length:Math.max(0,regularWeeks-completedWeeks)},(_,i)=>completedWeeks+i+1).filter(w=>scheduleFor(w).type==='v5 fallback');
-  if(fallback.length)notes.push('Fixtures use historical v5 backups for Weeks '+fallback.join(', ')+'. Confirm renamed franchises against Sleeper.');
-  const miss=teams.filter(t=>!rosterQuality(t).ok);if(miss.length)notes.push('Bye adjustments unavailable for '+miss.length+' roster(s): '+miss.map(t=>t.name).join(', ')+'.');
- }
- el('quality').innerHTML=notes.concat(warnings).map(x=>'<p>⚠ '+safe(x)+'</p>').join('')||'<p>League rosters and standings loaded; no obvious missing fields. No claim is made that the custom playoff bracket has been independently verified.</p>';
-}
-function renderAll(){renderWeekPicker();renderSchedule();renderRosterSelector();renderByeStartOptions();renderByeTable();renderBrackets();renderQuality();}
-async function sync(){if(busy)return;busy=true;el('syncBtn').disabled=true;el('syncBtn').textContent='↻ Syncing…';
- const id=el('leagueId').value.trim();if(!/^\d{12,22}$/.test(id)){busy=false;el('syncBtn').disabled=false;el('syncBtn').textContent='↻ Sync Sleeper';status('Enter a valid numerical Sleeper league ID.','error');return;}
- status('Connecting to Sleeper: league, managers, live rosters and future fixtures…');
- try{
-  const [league,rs,users,state]=await Promise.all([fetchJSON(API+'/league/'+id),fetchJSON(API+'/league/'+id+'/rosters'),fetchJSON(API+'/league/'+id+'/users'),fetchJSON(API+'/state/nfl')]);
-  if(!league?.league_id||!Array.isArray(rs)||!Array.isArray(users))throw Error('Sleeper returned missing league, roster or user data.');
-  if(String(league.season)!=='2026')throw Error('This Sleeper league is for '+league.season+', but the 2026 forecast was requested.');
-  if(rs.length!==10)throw Error('This forecast requires a 10-team league; Sleeper returned '+rs.length+'.');
-  const playoffStart=clamp(Number(league.settings?.playoff_week_start||16),2,18);
-  status('Sleeper connected. Fetching Weeks 1–'+(playoffStart-1)+' matchups, bracket information and player directory…');
-  const requests=Array.from({length:playoffStart-1},(_,i)=>fetchJSON(API+'/league/'+id+'/matchups/'+(i+1)));
-  const extra=[fetchJSON(API+'/league/'+id+'/winners_bracket'),fetchJSON(API+'/league/'+id+'/losers_bracket'),loadPlayers()];
-  const results=await Promise.allSettled([...requests,...extra]);
-  const matchups={};for(let i=0;i<requests.length;i++)if(results[i].status==='fulfilled')matchups[i+1]=results[i].value;
-  const winnerResult=results[requests.length],loserResult=results[requests.length+1],playerResult=results[requests.length+2];
-  let playerMap=playerResult.status==='fulfilled'?playerResult.value.map:read(PLAYERS_KEY)?.map||{};
-  const d={league,rs,users,state,matchups,brackets:{winners:winnerResult.status==='fulfilled'?winnerResult.value:[],losers:loserResult.status==='fulfilled'?loserResult.value:[]},playerMap,syncedAt:Date.now(),playerStale:playerResult.status!=='fulfilled'||playerResult.value.stale};
-  // Do not replace the visible state before essential core data has passed validation.
-  hydrate(d);store(STANDINGS_KEY,{...d,playerMap:undefined});store(ID_KEY,id);renderAll();runLab();
-  if(playerResult.status!=='fulfilled')warnings.push('Player directory request failed: player identities/bye adjustments may be unavailable.');
-  const miss=Object.keys(matchups).length!==requests.length;
-  if(miss)warnings.push('One or more weekly matchup API requests failed. Weeks with no valid schedule will pause forecasting.');
-  renderQuality();
-  status('✓ <b>'+safe(league.name)+'</b> synced: '+teams.length+' teams, current starters, '+Object.keys(matchups).length+' weeks of matchup data, and '+completedWeeks+' completed weeks. '+(miss?'Some weekly requests could not be loaded.':'Running the updated forecast…'),'ok');
-  busy=false;startSimulation();
- }catch(err){status('<b>Sync failed:</b> '+safe(err.message)+'. '+(source==='sleeper'?'Showing the last successfully loaded Sleeper data.':'Showing the offline v5 snapshot.')+' Check the league ID and internet connection, then retry.','error');console.error('Sleeper sync',err);}
- finally{busy=false;el('syncBtn').disabled=false;el('syncBtn').textContent='↻ Sync Sleeper';}
-}
-function copyTable(){if(!model)return;const lines=['Sunday Funday — '+(source==='sleeper'?'Sleeper synced':'OFFLINE v5')+' forecast','Team | Current | Proj Reg | Proj Final | Playoff | Toilet | Champion | Last'];
- teams.map((t,i)=>({t,i})).sort((a,b)=>model.projFinal[a.i]-model.projFinal[b.i]).forEach(({t,i})=>lines.push([t.name,model.cur[i],model.projReg[i],model.projFinal[i],pct(model.playoff[i]/model.sims),pct(model.toilet[i]/model.sims),pct(model.champ[i]/model.sims),pct(model.last[i]/model.sims)].join(' | ')));
- navigator.clipboard.writeText(lines.join('\n')).then(()=>{el('copyBtn').textContent='Copied ✓';setTimeout(()=>el('copyBtn').textContent='Copy for chat',1400)}).catch(()=>status('Clipboard failed — your browser may require HTTPS. Use Export CSV.','warn'));
-}
-function exportCSV(){if(!model)return;const rows=[['Team','Owner','Source','W','L','PF','MaxPF','Current','ProjReg','ProjectedWins','ProjFinal','AvgFinish','PlayoffProb','ToiletProb','ChampionProb','LastProb']];
- teams.forEach((t,i)=>rows.push([t.name,t.owner||'',source,t.w,t.l,t.pf,t.maxpf??'',model.cur[i],model.projReg[i],model.expWins[i],model.projFinal[i],model.expFinish[i],model.playoff[i]/model.sims,model.toilet[i]/model.sims,model.champ[i]/model.sims,model.last[i]/model.sims]));
- const csv=rows.map(row=>row.map(x=>'"'+String(x).replaceAll('"','""')+'"').join(',')).join('\n');
- const a=document.createElement('a'),url=URL.createObjectURL(new Blob([csv],{type:'text/csv'}));a.href=url;a.download='Sunday_Funday_Forecast_v7.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),250);
-}
-/* Sunday Funday v9: evidence-driven strength, temporal validation and accuracy lab. */
-const HISTORY_KEY='sf_v7_prior_seasons';
-const LAB_OPTIONS_KEY='sf_v7_lab_options';
-let historySeasons=read(HISTORY_KEY)||[];
-let labResult=null, testedRows=[], selectedBest=null;
-const defaultLabSettings={maxSignal:.15,regK:6,sdMode:'measured',fixedSd:22,shrinkGames:6};
-function settingNum(id,fallback=0){const n=Number(el(id)?.value);return Number.isFinite(n)?n:fallback}
-function mean(xs){return xs.length?xs.reduce((a,b)=>a+b,0)/xs.length:0}
-function sampleVariance(xs){if(xs.length<2)return null;const m=mean(xs);return xs.reduce((s,x)=>s+(x-m)*(x-m),0)/(xs.length-1)}
-function cleanScore(m){const p=m?.custom_points==null?Number(m?.points):Number(m.custom_points);return Number.isFinite(p)&&p>=0?p:null}
-function positionalEligibility(pos,slot){
- if(!pos)return false;
- if(slot==='FLEX')return ['WR','RB','TE'].includes(pos);
- if(slot==='WRRB_FLEX')return ['WR','RB'].includes(pos);
- if(slot==='REC_FLEX')return ['WR','TE'].includes(pos);
- if(slot==='SUPER_FLEX')return ['QB','RB','WR','TE'].includes(pos);
- if(slot==='IDP_FLEX')return ['DB','DL','LB'].includes(pos);
- if(slot==='DL')return ['DL','DE','DT'].includes(pos);
- if(slot==='DB')return ['DB','CB','S'].includes(pos);
- return slot===pos;
-}
-function rosterMaxEstimate(row,slots){
- if(!row?.players_points||typeof row.players_points!=='object'||!slots?.length||slots.length>13)return null;
- const playersWithScores=Object.entries(row.players_points).filter(([id,x])=>id!=='0'&&Number.isFinite(Number(x))).map(([id,pts])=>{
-  const p=players[id], pos=p?.pos||(/^[A-Z]{2,3}$/.test(id)?'DEF':'');
-  return {id,pos,pts:Number(pts)};
- });
- if(playersWithScores.length<slots.length||playersWithScores.some(x=>!x.pos))return null;
- // Dynamic programming over lineup slots, using each rostered player at most once.
- const n=slots.length,size=1<<n,dp=new Float64Array(size).fill(-Infinity);dp[0]=0;
- for(const p of playersWithScores){for(let mask=size-1;mask>=0;mask--){if(!Number.isFinite(dp[mask]))continue;
-  for(let s=0;s<n;s++){if(mask&(1<<s)||!positionalEligibility(p.pos,slots[s]))continue;
-   const next=mask|(1<<s),candidate=dp[mask]+p.pts;if(candidate>dp[next])dp[next]=candidate;
-  }
- }}
- return Number.isFinite(dp[size-1])?Math.max(0,dp[size-1]):null;
-}
-function seasonData(league,matchups,limit){
- const last=clamp(Number(league?.settings?.playoff_week_start||16)-1,1,17);
- const until=Math.min(limit??last,last),slots=activeSlots(league),weeks=[];
- for(let w=1;w<=until;w++){
-  const matches=matchups?.[w]||matchups?.[String(w)]||[];
-  if(!Array.isArray(matches)||!matches.length)continue;
-  const rows=[];
-  for(const m of matches){const score=cleanScore(m);if(score==null||m.matchup_id==null||m.roster_id==null)continue;
-   rows.push({id:Number(m.roster_id),pair:String(m.matchup_id),score,max:rosterMaxEstimate(m,slots)});
-  }
-  if(rows.length)weeks.push({week:w,rows});
- }
- return {year:String(league.season),id:String(league.league_id),slots,leagueName:league.name||'',weeks,regular:last};
-}
-function allSeasonData(){const data=[];
- if(source==='sleeper'&&leagueInfo)data.push(seasonData(leagueInfo,weekly,completedWeeks));
- for(const h of historySeasons)if(h?.weeks?.length&&!data.some(x=>x.id===h.id))data.push(h);
- return data.sort((a,b)=>Number(a.year)-Number(b.year));
-}
-function mergeDataForStats(data, throughWeek){
- const weeks=(data?.weeks||[]).filter(w=>w.week<=throughWeek).sort((a,b)=>a.week-b.week);
- const byTeam={};const leagueScores=[];
- for(const w of weeks)for(const r of w.rows){(byTeam[r.id]??={scores:[],max:[]}).scores.push(r.score);leagueScores.push(r.score);
-  if(r.max!=null)byTeam[r.id].max.push(r.max);
- }
- const scoreAvg=mean(leagueScores)||110;
- let variance=sampleVariance(leagueScores);
- // Multiple rosters can have different means: use within-team variance once available.
- const poolNumerator=Object.values(byTeam).reduce((a,t)=>a+((sampleVariance(t.scores)||0)*Math.max(0,t.scores.length-1)),0);
- const poolDenominator=Object.values(byTeam).reduce((a,t)=>a+Math.max(0,t.scores.length-1),0);
- if(poolDenominator>=12)variance=poolNumerator/poolDenominator;
- const leagueSD=clamp(Math.sqrt(variance??(22*22)),12,45);
- const gaps=Object.values(byTeam).filter(t=>t.scores.length&&t.max.length===t.scores.length).map(t=>mean(t.max)-mean(t.scores));
- return {byTeam,leagueAvg:scoreAvg,leagueSD,leagueGap:gaps.length?mean(gaps):0,observations:leagueScores.length,maxCoverage:leagueScores.length?Object.values(byTeam).reduce((s,t)=>s+t.max.length,0)/leagueScores.length:0};
-}
-function estimatedTeam(stats,id,cfg){
- const t=stats.byTeam[id],n=t?.scores.length||0,pf=n?mean(t.scores):stats.leagueAvg;
- const k=clamp(Number(cfg.regK)||0,0,40);
- const weight=n/(n+k||1);
- let mu=stats.leagueAvg+weight*(pf-stats.leagueAvg);
- if(n&&t.max.length===n&&stats.maxCoverage>=.7){
-  const gap=mean(t.max)-pf;
-  mu+=clamp(Number(cfg.maxSignal)||0,0,.8)*weight*(gap-stats.leagueGap);
- }
- let sd;
- if(cfg.sdMode==='fixed')sd=clamp(Number(cfg.fixedSd)||22,8,60);
- else{const localVar=sampleVariance(t?.scores||[]),leagueVar=stats.leagueSD**2;
-  const d=localVar==null?0:n-1,prior=Math.max(0,Number(cfg.shrinkGames)||6);
-  sd=Math.sqrt((d*(localVar??0)+prior*leagueVar)/Math.max(.01,d+prior));sd=clamp(sd,10,50);
- }
- return {mu:clamp(mu,15,275),sd,n,pf,max:n&&t.max.length===n?mean(t.max):null};
-}
-function currentTeamEstimates(cfg){
- if(source==='sleeper'&&leagueInfo){const data=seasonData(leagueInfo,weekly,completedWeeks);
-  const stats=mergeDataForStats(data,completedWeeks);
-  const byId=Object.fromEntries(teams.map(t=>[t.id,t]));
-  // If weekly results are incomplete, fall back to official Sleeper standings for mean strength.
-  if(stats.observations<Math.max(10,completedWeeks*teams.length*.7)){
-   const ppg=teams.map(t=>t.pf/Math.max(1,t.w+t.l+(t.ties||0)));
-   stats.leagueAvg=mean(ppg);
-   stats.byTeam={};for(const t of teams){const n=Math.max(0,t.w+t.l+(t.ties||0)),pf=t.pf/Math.max(1,n);
-    stats.byTeam[t.id]={scores:Array(n).fill(pf),max:t.maxpf!=null?Array(n).fill(t.maxpf/Math.max(1,n)):[]};
-   }
-   stats.maxCoverage=teams.every(t=>t.maxpf!=null)?1:0;
-   stats.leagueGap=mean(teams.filter(t=>t.maxpf!=null).map(t=>(t.maxpf-t.pf)/Math.max(1,t.w+t.l+(t.ties||0))));
-  }else{
-   // Season cumulative Max PF is official; use it for current prediction, not as a historical backtest feature.
-   const gaps=[];for(const t of teams){const x=stats.byTeam[t.id],n=t.w+t.l+(t.ties||0);
-    if(x&&n&&t.maxpf!=null){x.max=Array(x.scores.length).fill(t.maxpf/n);gaps.push(t.maxpf/n-t.pf/n)}
-   }
-   stats.maxCoverage=teams.filter(t=>t.maxpf!=null).length/teams.length;
-   if(gaps.length)stats.leagueGap=mean(gaps);
-  }
-  return {estimates:teams.map(t=>estimatedTeam(stats,t.id,cfg)),stats};
- }
- const n=Math.max(...teams.map(t=>t.w+t.l)),m=mean(teams.map(t=>t.pf/Math.max(1,t.w+t.l)));
- const gaps=teams.filter(t=>t.maxpf!=null).map(t=>(t.maxpf-t.pf)/Math.max(1,t.w+t.l));
- const leagueGap=mean(gaps);
- const estimates=teams.map(t=>{const gp=Math.max(1,t.w+t.l),pf=t.pf/gp,k=Number(cfg.regK)||0,shrink=gp/(gp+k||1);
-  return {mu:clamp(m+shrink*(pf-m)+((t.maxpf!=null)?shrink*Number(cfg.maxSignal||0)*((t.maxpf-t.pf)/gp-leagueGap):0),15,275),sd:cfg.sdMode==='fixed'?Number(cfg.fixedSd):22,n:gp,pf,max:t.maxpf==null?null:t.maxpf/gp};
- });
- return {estimates,stats:{leagueAvg:m,leagueSD:22,observations:0,maxCoverage:0}};
-}
-function activeCfg(){return {regK:settingNum('regK',6),maxSignal:settingNum('maxSignal',.15),sdMode:el('sdMode').value,fixedSd:settingNum('scoreSd',22),shrinkGames:6};}
-function normalCDF(z){return .5*(1+erf(z/Math.SQRT2))}
-function probability(a,b){return clamp(normalCDF((a.mu-b.mu)/Math.sqrt(a.sd*a.sd+b.sd*b.sd)),.001,.999)}
-function collectPredictionRows(data,cfg){
- const games=[];let maxSeen=0,slotsNeeded=0;
- for(const season of data){let past=[];
-  for(const w of season.weeks.slice().sort((a,b)=>a.week-b.week)){
-   const stats=mergeDataForStats({...season,weeks:past},w.week-1);
-   const pairing={};for(const row of w.rows)(pairing[row.pair]??=[]).push(row);
-   for(const group of Object.values(pairing)){
-    if(group.length!==2)continue;
-    const [a,b]=group,recA=stats.byTeam[a.id],recB=stats.byTeam[b.id];
-    if(!recA||!recB||recA.scores.length<2||recB.scores.length<2||a.score===b.score)continue;
-    const ea=estimatedTeam(stats,a.id,cfg),eb=estimatedTeam(stats,b.id,cfg),p=probability(ea,eb);
-    const y=a.score>b.score?1:0;
-    games.push({year:season.year,week:w.week,a:a.id,b:b.id,p,y,actualA:a.score,actualB:b.score,muA:ea.mu,muB:eb.mu,sdA:ea.sd,sdB:eb.sd,hasMax:stats.maxCoverage>=.7});
-    slotsNeeded++;if(stats.maxCoverage>=.7)maxSeen++;
-   }
-   past.push(w);
-  }
- }
- return {games,maxRate:slotsNeeded?maxSeen/slotsNeeded:0};
-}
-function evaluation(rows){
- const n=rows.length;if(!n)return {n:0,brier:null,logLoss:null,accuracy:null,mae:null};
- const brier=mean(rows.map(r=>(r.p-r.y)**2));const acc=mean(rows.map(r=>(r.p>=.5?1:0)===r.y?1:0));
- const logLoss=mean(rows.map(r=>-(r.y*Math.log(r.p)+(1-r.y)*Math.log(1-r.p))));
- const mae=mean(rows.flatMap(r=>[Math.abs(r.muA-r.actualA),Math.abs(r.muB-r.actualB)]));
- return {n,brier,logLoss,accuracy:acc,mae};
-}
-function temporalSplit(rows){
- const keys=[...new Set(rows.map(r=>r.year+':'+String(r.week).padStart(2,'0')))].sort();
- if(keys.length<7)return {train:rows,holdout:[],nweeks:keys.length};
- const cut=Math.max(5,Math.floor(keys.length*.7)),trainSet=new Set(keys.slice(0,cut));
- return {train:rows.filter(r=>trainSet.has(r.year+':'+String(r.week).padStart(2,'0'))),holdout:rows.filter(r=>!trainSet.has(r.year+':'+String(r.week).padStart(2,'0'))),nweeks:keys.length};
-}
-function modelGrid(maxOk){const xs=[];for(const k of [0,3,6,10,16])for(const w of (maxOk?[0,.15,.30,.45]:[0]))for(const sdMode of ['measured','fixed']){
- xs.push({regK:k,maxSignal:w,sdMode,fixedSd:22,shrinkGames:6});
- }return xs;
-}
-function runLab(applyUI=true){
- const seasons=allSeasonData();
- const pref=collectPredictionRows(seasons,{regK:6,maxSignal:0,sdMode:'measured',fixedSd:22,shrinkGames:6});
- if(!pref.games.length){labResult={data:seasons,n:0,rows:[],best:null};renderLab();return null;}
- const maxOk=pref.maxRate>=.65;
- const choices=modelGrid(maxOk),scored=[];
- for(const cfg of choices){const x=collectPredictionRows(seasons,cfg),split=temporalSplit(x.games);
-  const train=evaluation(split.train),hold=evaluation(split.holdout),overall=evaluation(x.games);
-  scored.push({cfg,train,hold,overall,games:x.games});
- }
- // Choose solely on training error; a held-out score isn't used in selection.
- scored.sort((a,b)=>a.train.brier-b.train.brier||a.train.mae-b.train.mae);
- labResult={data:seasons,n:pref.games.length,maxOk,maxRate:pref.maxRate,rows:scored,best:scored[0],weeks:temporalSplit(pref.games).nweeks};
- selectedBest=scored[0];if(applyUI)renderLab();return labResult;
-}
-function renderLab(){
- const x=labResult;const n=x?.n||0;
- el('labGames').textContent=n.toLocaleString('en-GB');
- el('labSeasons').textContent=(x?.data||[]).filter(d=>d.weeks.length).map(d=>d.year).join(', ')||'No synced seasons';
- el('labCoverage').textContent=x?fmt(x.maxRate*100,0)+'%':'—';
- const baseline=x?.rows.find(r=>r.cfg.regK===6&&r.cfg.maxSignal===0&&r.cfg.sdMode==='measured');
- el('labBrier').textContent=x?.best?.hold?.n?fmt(x.best.hold.brier,3):'—';
- el('labBrierHint').textContent=x?.best?.hold?.n?x.best.hold.n+' held-out games; lower is better':'Insufficient weeks for holdout';
- const confidence=n>=75&&x?.weeks>=10&&x?.best?.hold.n>=15;
- el('labStatus').innerHTML=!n?'Sync Sleeper to analyse completed results. You can optionally fetch the previous league seasons for a better sample.':
-  '<b>'+(confidence?'Useful historical sample':'Limited sample — exploratory only')+'</b> · '+n+' games from '+x.weeks+' evaluated weeks. Model selection uses earlier-week forecasts, and the displayed holdout was not used to select the winner. '+
-  (x.maxOk?'Bench-score coverage supports testing relative Max PF impact.':'Weekly Max PF could not be reconstructed sufficiently reliably; comparison excludes Max PF weighting.');
- el('labStatus').className='statusline '+(confidence?'ok':'warn');
- el('labApply').disabled=!confidence;
- const rows=x?.rows.slice(0,12)||[];
- el('labTable').querySelector('tbody').innerHTML=rows.length?rows.map((r,i)=>'<tr><td>'+((i===0)?'<span class="pinned">★</span> ':'')+'K='+r.cfg.regK+' · Max '+fmt(r.cfg.maxSignal*100,0)+'% · '+(r.cfg.sdMode==='fixed'?'Fixed 22':'Measured SD')+'</td><td>'+r.train.n+'</td><td>'+fmt(r.train.brier,3)+'</td><td>'+fmt(r.hold.brier,3)+'</td><td>'+fmt(r.hold.accuracy*100,1)+'%</td><td>'+fmt(r.hold.mae,1)+'</td></tr>').join(''):
-  '<tr><td colspan="6" style="text-align:left">No completed matchup pairs with two prior weeks of scores. Sync league data first.</td></tr>';
- const best=x?.best;const hold=best?.hold||{};
- if(best){
-  el('labWinner').textContent='Training winner: regression K='+best.cfg.regK+', '+fmt(best.cfg.maxSignal*100,0)+'% relative Max PF, '+(best.cfg.sdMode==='measured'?'measured variance':'fixed 22-point SD')+'.';
-  const holdRows=temporalSplit(best.games).holdout;const calibration=[0,.2,.4,.6,.8].map((min)=>{const sel=holdRows.filter(r=>r.p>=min&&r.p<min+.2);return {min,n:sel.length,p:mean(sel.map(r=>r.p)),actual:mean(sel.map(r=>r.y))};});
-  el('calibration').innerHTML=holdRows.length?calibration.filter(c=>c.n).map(c=>'<div class="calrow"><span>'+fmt(c.min*100,0)+'–'+fmt((c.min+.2)*100,0)+'%</span><div class="caltrack"><i style="width:'+fmt(c.p*100,1)+'%"></i></div><b>'+fmt(c.actual*100,0)+'%</b><span class="ptiny">'+c.n+' games</span></div>').join(''):'<div class="note">Need at least seven evaluated weeks to create a chronological holdout.</div>';
- }else{el('labWinner').textContent='No reliable historical evaluation yet.';el('calibration').innerHTML='';}
- renderStrengthTable();
-}
-function renderStrengthTable(){
- const c=activeCfg(),{estimates,stats}=currentTeamEstimates(c);
- if(el('modelMode').value==='legacy')for(let i=0;i<teams.length;i++){const t=teams[i],gp=Math.max(1,t.w+t.l+(t.ties||0));estimates[i].mu=.7*t.pf/gp+.3*(t.maxpf??t.pf)/gp;estimates[i].sd=20;}
- const plays=source==='sleeper'&&leagueInfo?mergeDataForStats(seasonData(leagueInfo,weekly,completedWeeks),completedWeeks):null;
- const perWeek={};if(plays){const byWeeks=seasonData(leagueInfo,weekly,completedWeeks).weeks;
- for(const w of byWeeks){const active=w.rows.filter(r=>r.score!=null);for(const a of active){const wins=active.reduce((s,b)=>s+(b.id!==a.id&&(a.score>b.score?1:a.score===b.score?0.5:0)),0);
-  (perWeek[a.id]??=[]).push(wins/Math.max(1,active.length-1));
- }} }
- el('strengthTable').querySelector('tbody').innerHTML=teams.map((t,i)=>{const e=estimates[i],eff=t.maxpf?Math.min(1,t.pf/t.maxpf):null;
-  return '<tr><td>'+safe(t.name)+'</td><td>'+fmt(e.pf,1)+'</td><td>'+fmt(t.maxpf!=null?t.maxpf/Math.max(1,t.w+t.l+(t.ties||0)):null,1)+'</td><td>'+((eff!=null)?fmt(eff*100,0)+'%':'—')+'</td><td><b>'+fmt(e.mu,1)+'</b></td><td>'+fmt(e.sd,1)+'</td><td>'+((perWeek[t.id]?.length)?fmt(mean(perWeek[t.id])*100,0)+'%':'—')+'</td></tr>';
- }).join('');
- el('sigmaLabel').textContent='League SD: '+fmt(stats.leagueSD,1)+' points';
-}
-function applyWinner(){if(!selectedBest||!labResult||labResult.n<75||labResult.best.hold.n<15)return;
- const c=selectedBest.cfg;el('regK').value=c.regK;el('maxSignal').value=c.maxSignal;el('sdMode').value=c.sdMode;el('scoreSd').value=c.fixedSd;
- el('modelMode').value='custom';store(LAB_OPTIONS_KEY,{regK:c.regK,maxSignal:c.maxSignal,sdMode:c.sdMode,fixedSd:c.fixedSd});
- renderStrengthTable();startSimulation();status('Applied the best configuration selected from historical training data. Review holdout performance before trusting probabilities.','ok');
-}
-async function loadHistory(){
- if(busy){status('Finish the current operation before loading history.','warn');return;}
- if(source!=='sleeper'||!leagueInfo){status('Sync the 2026 league first so the previous-league chain can be identified.','warn');return;}
- busy=true;el('histBtn').disabled=true;el('histBtn').textContent='Fetching history…';
- try{
-  let parent=leagueInfo.previous_league_id,loaded=[],seen=new Set([String(leagueInfo.league_id)]);
-  for(let i=0;i<3&&parent&&!seen.has(String(parent));i++){
-   const id=String(parent);seen.add(id);status('Loading historical season '+(i+1)+' of up to 3, league '+safe(id)+'…');
-   const league=await fetchJSON(API+'/league/'+id);
-   if(!league||league.sport!=='nfl')break;
-   const until=clamp(Number(league.settings?.playoff_week_start||16)-1,1,17);
-   const responses=await Promise.allSettled(Array.from({length:until},(_,j)=>fetchJSON(API+'/league/'+id+'/matchups/'+(j+1))));
-   const matches={};responses.forEach((x,j)=>{if(x.status==='fulfilled'&&Array.isArray(x.value))matches[j+1]=x.value});
-   const data=seasonData(league,matches,until);if(data.weeks.length)loaded.push(data);
-   parent=league.previous_league_id;
-  }
-  const combined=Object.fromEntries([...historySeasons,...loaded].map(d=>[d.id,d]));historySeasons=Object.values(combined).sort((a,b)=>+a.year-+b.year);
-  store(HISTORY_KEY,historySeasons);runLab();
-  status('✓ Loaded '+loaded.length+' historical seasons. '+(labResult?.n||0)+' historical walk-forward games available.','ok');
- }catch(err){status('Historical season retrieval failed: '+safe(err.message)+'. Previously loaded seasons were retained.','error');}
- finally{busy=false;el('histBtn').disabled=false;el('histBtn').textContent='↧ Load prior seasons';}
-}
-function downloadLab(){if(!labResult?.rows?.length)return;
- const lines=[['Config','K','RelativeMaxPF','SDMode','TrainN','TrainBrier','HoldoutN','HoldoutBrier','HoldoutAccuracy','HoldoutScoreMAE']];
- for(const x of labResult.rows)lines.push([`${x.cfg.regK}/${x.cfg.maxSignal}/${x.cfg.sdMode}`,x.cfg.regK,x.cfg.maxSignal,x.cfg.sdMode,x.train.n,x.train.brier,x.hold.n,x.hold.brier,x.hold.accuracy,x.hold.mae]);
- const csv=lines.map(r=>r.map(x=>'"'+String(x??'').replaceAll('"','""')+'"').join(',')).join('\n');const url=URL.createObjectURL(new Blob([csv],{type:'text/csv'})),a=document.createElement('a');a.href=url;a.download='Sunday_Funday_v7_Backtest.csv';a.click();setTimeout(()=>URL.revokeObjectURL(url),1000);
-}
-function modeSwitch(){const x=el('modelMode').value;
- if(x==='legacy'){el('regK').value=0;el('maxSignal').value=.3;el('sdMode').value='fixed';el('scoreSd').value=20;}
- else if(x==='adaptive'){el('regK').value=6;el('maxSignal').value=.15;el('sdMode').value='measured';el('scoreSd').value=22;}
- renderStrengthTable();startSimulation();
-}
-function initLab(){const s=read(LAB_OPTIONS_KEY);if(s){el('modelMode').value='custom';if(s.regK!=null)el('regK').value=s.regK;
-  if(s.maxSignal!=null)el('maxSignal').value=s.maxSignal;if(s.sdMode)el('sdMode').value=s.sdMode;if(s.fixedSd)el('scoreSd').value=s.fixedSd;
- }
- el('modelMode').addEventListener('change',modeSwitch);
- for(const id of ['regK','maxSignal','sdMode','scoreSd'])el(id).addEventListener('change',()=>{
-  el('modelMode').value='custom';store(LAB_OPTIONS_KEY,{regK:settingNum('regK'),maxSignal:settingNum('maxSignal'),sdMode:el('sdMode').value,fixedSd:settingNum('scoreSd')});
-  renderStrengthTable();startSimulation();
- });
- el('histBtn').addEventListener('click',loadHistory);el('labBtn').addEventListener('click',()=>runLab());
- el('labApply').addEventListener('click',applyWinner);el('labExport').addEventListener('click',downloadLab);
- el('labClear').addEventListener('click',()=>{historySeasons=[];store(HISTORY_KEY,[]);runLab();status('Stored previous-season data cleared. Current 2026 league data remains.','ok')});
- runLab();
-}
-
-
-/* Universal copy controls: copies visible table order, including the probability matrix. */
-let copyToastTimer;
-function tidyCell(s){return String(s??'').replace(/[\t\n\r]+/g,' ').replace(/\s+/g,' ').trim();}
-function tableData(target){
- const e=el(target);if(!e)return [];
- if(target==='matrix'){
-  const cells=Array.from(e.children).map(c=>tidyCell(c.textContent));
-  return Array.from({length:Math.ceil(cells.length/11)},(_,i)=>cells.slice(i*11,i*11+11)).filter(r=>r.length===11);
- }
- if(e.tagName==='TABLE'){
-  const heads=Array.from(e.querySelectorAll('thead th')).map(h=>tidyCell(h.textContent));
-  const body=Array.from(e.querySelectorAll('tbody tr')).map(tr=>Array.from(tr.children).map((c,i)=>{
-   if(target==='forecastTable'&&i===0)return tidyCell(c.querySelector('.team')?.textContent||c.textContent);
-   return tidyCell(c.innerText||c.textContent);
-  })).filter(r=>r.length===heads.length);
-  return heads.length?[heads,...body]:body;
- }
- if(target==='matchupCards'){
-  const week=tidyCell(el('weekSelect')?.selectedOptions[0]?.textContent||'');
-  return [['Week','Matchup'],...Array.from(e.querySelectorAll('.fixture')).map(c=>[week,tidyCell(c.innerText||c.textContent)])];
- }
- if(target==='rosterDetail'){
-  const name=tidyCell(el('rosterSelect')?.selectedOptions[0]?.textContent||'Roster');
-  const rows=[['Team','Group','Slot','Player','Position / status','NFL team / bye']];
-  for(const sec of e.querySelectorAll('.sect')){
-   const group=tidyCell(sec.querySelector('h3')?.textContent||'');
-   for(const p of sec.querySelectorAll('.person'))rows.push([name,group,tidyCell(p.querySelector('.slot')?.textContent),tidyCell(p.querySelector('.pname')?.textContent),tidyCell(p.querySelector('.pname+div')?.textContent),tidyCell(p.querySelector('.pteam')?.textContent)]);
-  }
-  return rows;
- }
- return [];
-}
-function toTSV(rows){return rows.map(row=>row.map(tidyCell).join('\t')).join('\n');}
-function toHtmlTable(rows){return '<table>'+rows.map((r,i)=>'<tr>'+r.map(c=>'<'+(i?'td':'th')+'>'+safe(tidyCell(c))+'</'+(i?'td':'th')+'>').join('')+'</tr>').join('')+'</table>';}
-function showCopyToast(text){const e=el('copyToast');if(!e)return;e.textContent=text;e.hidden=false;clearTimeout(copyToastTimer);copyToastTimer=setTimeout(()=>{e.hidden=true;},1900);}
-function showCopyFallback(text){el('copyTextArea').value=text;el('copyOverlay').hidden=false;el('copyTextArea').focus();el('copyTextArea').select();}
-async function writeCopy(rows){
- const value=toTSV(rows);
- try{
-  if(navigator.clipboard?.write&&typeof ClipboardItem!=='undefined'){
-   try{
-    const html=toHtmlTable(rows);
-    await navigator.clipboard.write([new ClipboardItem({'text/plain':new Blob([value],{type:'text/plain'}),'text/html':new Blob([html],{type:'text/html'})})]);
-   }catch(err){if(navigator.clipboard?.writeText)await navigator.clipboard.writeText(value);else throw err;}
-  }else if(navigator.clipboard?.writeText){await navigator.clipboard.writeText(value);}
-  else throw Error('Clipboard API unavailable');
-  showCopyToast('Copied ✓');return true;
- }catch(_){
-  const ta=document.createElement('textarea');ta.value=value;ta.setAttribute('readonly','');ta.style.cssText='position:fixed;top:0;left:-9999px;opacity:0;';document.body.appendChild(ta);
-  ta.select();ta.setSelectionRange(0,ta.value.length);
-  let ok=false;try{ok=document.execCommand('copy')}catch(_){}ta.remove();
-  if(ok){showCopyToast('Copied ✓');return true;}showCopyFallback(value);return false;
- }
-}
-function copyDataView(e){const rows=tableData(e.dataset.copyTarget);if(rows.length<2){showCopyToast('Nothing to copy yet');return;}
- writeCopy(rows).then(ok=>{if(!ok)return;const prev=e.textContent;e.textContent='Copied ✓';setTimeout(()=>{e.textContent=prev},1400);});}
-function setupCopyControls(){
- document.querySelectorAll('[data-copy-target]').forEach(b=>b.addEventListener('click',()=>copyDataView(b)));
- el('closeCopyDialog').addEventListener('click',()=>{el('copyOverlay').hidden=true});
- el('selectCopyText').addEventListener('click',()=>{el('copyTextArea').focus();el('copyTextArea').select()});
- el('copyOverlay').addEventListener('click',e=>{if(e.target===el('copyOverlay'))el('copyOverlay').hidden=true});
- document.addEventListener('keydown',e=>{if(e.key==='Escape')el('copyOverlay').hidden=true});
-}
-
-function boot(){const prior=read(ID_KEY);if(prior&&/^\d+$/.test(prior))el('leagueId').value=prior;
- const saved=read(STANDINGS_KEY);if(saved?.league?.league_id&&String(saved.league.league_id)===el('leagueId').value){try{saved.playerMap=read(PLAYERS_KEY)?.map||{};hydrate(saved);warnings.push('Displaying cached Sleeper data until refreshed.');}catch(e){console.warn('Cached league ignored',e)}}
- renderAll();initLab();startSimulation();el('syncBtn').addEventListener('click',sync);el('runBtn').addEventListener('click',startSimulation);
- el('csvBtn').addEventListener('click',exportCSV);setupCopyControls();
- el('weekSelect').addEventListener('change',renderMatchups);el('rosterSelect').addEventListener('change',renderRoster);
- el('byeStart').addEventListener('change',renderByeTable);el('byeSpan').addEventListener('change',renderByeTable);
- // Keep an open tab's auto week display current across Tuesday NFL week rollover.
- setInterval(()=>{if(el('byeStart').value==='auto'&&displayedAutoByeWeek!==visibleByeWeek())renderByeTable()},60000);
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&el('byeStart').value==='auto'&&displayedAutoByeWeek!==visibleByeWeek())renderByeTable()});
- el('leagueId').addEventListener('change',()=>{const id=el('leagueId').value.trim();if(/^\d+$/.test(id))el('openSleeper').href='https://sleeper.com/leagues/'+id});
- document.querySelectorAll('#forecastTable th[data-sort]').forEach(h=>h.addEventListener('click',()=>{
-  const key=h.dataset.sort;if(sortState.key===key)sortState.dir=sortState.dir==='asc'?'desc':'asc';else{sortState.key=key;sortState.dir=['name','current','projReg','projFinal'].includes(key)?'asc':'desc';}renderForecast();
- }));
- for(const id of ['simCount','seed'])el(id).addEventListener('change',()=>{el('runBtn').textContent='▶ Run '+Number(el('simCount').value).toLocaleString('en-GB')+' simulations';startSimulation()});
- // Automatically attempt a read-only refresh, retaining a clearly labelled local snapshot if it fails.
- setTimeout(function autoSyncWhenReady(){if(busy){setTimeout(autoSyncWhenReady,180);return;}sync();},250);
-}
-
-/* V9 lineup-optimized bye-week replacement estimate.
- * Uses observed Sleeper player-week points as a shrunk proxy, never claims to predict injuries or future performance.
- * Finds the best eligible lineup without player duplication for each future week. */
-const hqPlayerCache=new Map();
-function hqPlayerProxy(p){
- const base=POSITION_VALUE[p.pos]??(p.pos==='DEF'?7:10);
- if(source!=='sleeper'||!p.id||!weekly)return base;
- const key=String(p.id),cache=hqPlayerCache.get(key);if(cache)return cache;
- const scores=[];
- for(let w=1;w<=completedWeeks;w++){
-  for(const row of weekly[w]||[]){const val=row.players_points?.[key];
-   if(val!=null&&Number.isFinite(Number(val)))scores.push(Number(val));
-  }
- }
- const avg=scores.length?mean(scores):base;const estimate=clamp((3*base+scores.length*avg)/(3+scores.length),0,40);
- hqPlayerCache.set(key,estimate);return estimate;
-}
-function hqBestLineup(team,week,applyBye){
- const roster=rosterFor(team),slots=source==='sleeper'?activeSlots(leagueInfo):['QB','RB','RB','WR','WR','TE','FLEX','FLEX','K','DEF'];
- if(!slots.length||slots.length>13||roster.length>35)return null;
- const bye=applyBye?nflByes[week]||[]:[];
- const xs=roster.filter(p=>!p.empty&&p.id!=='0'&&!['IR','TAXI','RES'].includes(p.slot)&&p.pos&&p.nfl&&!bye.includes(p.nfl));
- if(xs.length<slots.length)return null;
- const size=1<<slots.length,dp=new Float64Array(size).fill(-Infinity);dp[0]=0;
- for(const p of xs){const pts=hqPlayerProxy(p);
-  for(let mask=size-1;mask>=0;mask--){if(!Number.isFinite(dp[mask]))continue;
-   for(let j=0;j<slots.length;j++){const bit=1<<j;if(mask&bit||!positionalEligibility(p.pos,slots[j]))continue;
-    const nm=mask|bit;if(dp[nm]<dp[mask]+pts)dp[nm]=dp[mask]+pts;
-   }
-  }
- }
- return Number.isFinite(dp[size-1])?dp[size-1]:null;
-}
-const originalByeImpact=byeImpact;
-byeImpact=function(team,week){
- const old=originalByeImpact(team,week),noBye=hqBestLineup(team,week,false),withBye=hqBestLineup(team,week,true);
- if(noBye===null)return old;
- // When no complete eligible lineup exists, conservatively charge an approximate missing-slot penalty.
- const estimate=withBye===null?Math.max(old.pts,Math.max(0,noBye)*.25):Math.max(0,noBye-withBye);
- return {...old,pts:estimate,applied:true};
-};
-
-
-/* V9 HEADQUARTERS: keep the established v7 engine, add presentation and calibrated head-to-head insights. */
-let hqActive='home', hqSnapshots={}, hqSnapshotKey='', hqRendering=false;
-function initV9(){
- const header=document.querySelector('main.wrap > header');header.insertAdjacentHTML('afterend',`
-<nav id="hqnav" class="hqnav" aria-label="Sunday Funday sections">
-<button type="button" data-hq="home" class="selected"><span class="ico">⌂</span>Home</button>
-<button type="button" data-hq="forecast"><span class="ico">🏆</span>Forecast</button>
-<button type="button" data-hq="games"><span class="ico">🔴</span>RedZone</button>
-<button type="button" data-hq="rosters"><span class="ico">👥</span>Teams</button>
-<button type="button" data-hq="toilet"><span class="ico">💩</span>Toilet</button>
-</nav>
-<div id="v9-view-home" class="hqview active">
- <div class="hqhero"><div class="hqrow"><span class="eyebrow">Sunday Funday · 2026</span><span id="hqSource" class="small">Offline preview</span></div>
-  <h2 id="hqGreeting">Every team. Every possible ending.</h2><p id="hqIntro">Live Sleeper results with 50,000 simulated seasons. Sync to refresh.</p></div>
- <div id="hqMetrics" class="hqmetrics"></div>
- <div class="hqtwocol"><section class="hqpanel"><h3>🔥 League headlines</h3><div id="hqHeadlines" class="hqempty">Run the simulation to see the latest league picture.</div></section>
- <section class="hqpanel"><div class="hqrow"><h3>⚔️ Week at a glance</h3><button type="button" class="secondary" id="hqAllGames" style="font-size:11px">All games →</button></div><p class="hqcaption">All five fantasy matchups and every NFL game in one place.</p><p class="hqcaption">NFL plays can appear independently of Sleeper scoring updates.</p></section></div>
- <section class="hqpanel"><div class="hqrow"><h3>📈 Power rankings</h3><button type="button" class="secondary copy-action" data-copy-target="hqPowerTable">Copy</button></div>
- <div class="tablewrap"><table id="hqPowerTable" class="hqtable"><thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>PF / week</th><th>Power</th><th>Change</th></tr></thead><tbody></tbody></table></div><p class="hqcaption" id="hqMovementNote">Probability changes will be shown after snapshots are saved on this device in multiple weeks.</p></section>
- <section class="panel" id="v9-connection"></section>
-</div>
-<div id="v9-view-forecast" class="hqview"></div>
-<div id="v9-view-games" class="hqview"></div>
-<div id="v9-view-rosters" class="hqview"></div>
-<div id="v9-view-toilet" class="hqview">
- <section class="hqhero"><div class="eyebrow">Bottom four · Two-round bracket</div><h2>💩 Toilet Bowl headquarters</h2><p>Last place is decided in the Toilet Bowl, not simply by finishing 10th in the regular season.</p></section>
- <section class="hqpanel"><div class="hqrow"><h3>Race for the 💩 crown</h3><button type="button" class="secondary copy-action" data-copy-target="hqToiletTable">Copy table</button></div><div class="tablewrap" style="overflow-x:visible"><table id="hqToiletTable" class="hqtable"><thead><tr><th>Team</th><th>Toilet Bowl</th><th>Finishes last</th><th>Projected finish</th></tr></thead><tbody></tbody></table></div></section>
-</div>
-<div id="v9-view-lab" class="hqview"></div>
-`);
- const panels=Array.from(document.querySelectorAll('main.wrap > section.panel'));
- const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
- panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
- const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.2</span>';}
- document.title='Sunday Funday — RedZone v9.2';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.2 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
- rzInit();
- document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
- el('hqAllGames').addEventListener('click',()=>hqTab('games'));
- const qs=new URLSearchParams(location.search),tab=qs.get('tab');if(['home','forecast','games','rosters','toilet'].includes(tab))hqTab(tab);
-}
-function hqTab(tab){
- hqActive=tab;document.querySelectorAll('.hqview').forEach(v=>v.classList.toggle('active',v.id==='v9-view-'+tab));
- document.querySelectorAll('[data-hq]').forEach(b=>{b.classList.toggle('selected',b.dataset.hq===tab);b.setAttribute('aria-current',b.dataset.hq===tab?'page':'false')});
- if(tab==='games')rzOpen();else rzStop();window.scrollTo({top:0,behavior:'instant'});
-}
-function hqLuck(){
- if(source!=='sleeper')return [];
- const sum=new Map(teams.map(t=>[t.id,{team:t,allPlay:0,actual:0,weeks:0}]));
- for(let wk=1;wk<=completedWeeks;wk++){
-  const wkEntries=weekly[wk]||[];if(wkEntries.length!==teams.length)continue;
-  const rows=wkEntries.map(e=>({id:+e.roster_id,p:cleanScore(e)}));
-  if(rows.some(r=>r.p==null||!sum.has(r.id)))continue;
-  for(const r of rows){const s=sum.get(r.id);s.allPlay+=rows.filter(x=>x.id!==r.id).reduce((a,x)=>a+(r.p>x.p?1:r.p===x.p?.5:0),0)/Math.max(1,rows.length-1);s.weeks++}
- }
- return [...sum.values()].filter(x=>x.weeks>0).map(s=>({...s,actual:s.team.w,expected:s.allPlay,delta:s.actual-s.allPlay}));
-}
-const hqWeeklyProjectionCache=new Map();
-function hqProjectedScore(teamName,week){
- if(!model)return null;
- const idx=teams.findIndex(t=>t.name===teamName);if(idx<0)return null;
- const key=String(teams[idx].id)+'-'+String(week);
- if(hqWeeklyProjectionCache.has(key))return hqWeeklyProjectionCache.get(key);
- const mu=Math.max(0,model.strength[idx]-(week>completedWeeks?byeImpact(teams[idx],week).pts:0));
- const estimate={mu,sd:model.sigma[idx],team:teams[idx]};hqWeeklyProjectionCache.set(key,estimate);return estimate;
-}
-function hqProbability(a,b,w){
- const x=hqProjectedScore(a,w),y=hqProjectedScore(b,w);if(!x||!y)return null;
- return clamp(normalCDF((x.mu-y.mu)/Math.max(1,Math.hypot(x.sd,y.sd))),.001,.999);
-}
-function hqCurrentFixtures(w){const games=scheduleFor(w).games;return games.map(([a,b])=>({a,b,p:hqProbability(a,b,w)}));}
-function hqWeekLabel(){return Math.min(regularWeeks,Math.max(1,currentWeek));}
-function hqPct(v){return Number.isFinite(v)?Math.round(v*100)+'%':'—'}
-function hqItem(tag,head,details){return `<div class="hqheadline"><div class="emoji">${tag}</div><div><b>${safe(head)}</b><div class="detail">${safe(details)}</div></div></div>`}
-function hqSnapshotRead(){hqSnapshotKey='sf_v9_snapshots_'+String(el('leagueId').value);hqSnapshots=read(hqSnapshotKey)||{};}
-function hqSnapshotBaseline(){
- if(source!=='sleeper'||!model)return null;
- hqSnapshotRead();const old=Object.entries(hqSnapshots).filter(([wk,v])=>Number(wk)<completedWeeks&&v?.odds).sort((a,b)=>Number(b[0])-Number(a[0]));
- return old.length?{wk:+old[0][0],odds:old[0][1].odds}:null;
-}
-function hqSaveWeek(){
- if(source!=='sleeper'||!model||!completedWeeks)return;
- hqSnapshotRead();if(!hqSnapshots[completedWeeks]){
-  const odds={};teams.forEach((t,i)=>odds[t.id]={title:model.champ[i]/model.sims,playoff:model.playoff[i]/model.sims,last:model.last[i]/model.sims});
-  hqSnapshots[completedWeeks]={timestamp:Date.now(),odds};
-  // Store at most 19 weekly local snapshots. No network writes.
-  for(const key of Object.keys(hqSnapshots))if(+key<completedWeeks-18)delete hqSnapshots[key];
-  store(hqSnapshotKey,hqSnapshots);
- }
-}
-function renderHQ(){
- if(hqRendering)return;hqRendering=true;
- try{
- const synced=source==='sleeper';el('hqSource').textContent=synced?'● Sleeper synced':'○ Offline snapshot';
- if(!model){el('hqGreeting').textContent='Every team. Every possible ending.';el('hqIntro').textContent='Sync Sleeper and run the simulation for updated forecasts.';return}
- const all=teams.map((t,i)=>({t,i,ch:model.champ[i]/model.sims,po:model.playoff[i]/model.sims,tb:model.toilet[i]/model.sims,lp:model.last[i]/model.sims,str:model.strength[i]}));
- const king=[...all].sort((a,b)=>b.ch-a.ch)[0],last=[...all].sort((a,b)=>b.lp-a.lp)[0];
- const highest=[...all].sort((a,b)=>b.str-a.str)[0];
- const closestTitle=[...all].sort((a,b)=>b.po-a.po)[0];
- el('hqGreeting').textContent=synced?'Week '+hqWeekLabel()+' — Sunday Funday':'League preview — sync for live standings';
- el('hqIntro').textContent='50,000-season probabilities · '+completedWeeks+' completed weeks · '+teams.length+' fantasy teams';
- const cells=[['Title favourite',king.t.name,hqPct(king.ch)+' championship probability'],['Most at risk',last.t.name,hqPct(last.lp)+' to finish last'],['Highest scoring forecast',highest.t.name,fmt(highest.str,1)+' pts / game'],['Playoff favourite',closestTitle.t.name,hqPct(closestTitle.po)+' chance of top four']];
- el('hqMetrics').innerHTML=cells.map(([k,v,desc])=>`<div class="hqmetric"><div class="hint">${safe(k)}</div><div class="number">${safe(v)}</div><div class="desc">${safe(desc)}</div></div>`).join('');
- const week=hqWeekLabel(),fixtures=hqCurrentFixtures(week),luck=hqLuck();
- const lucky=luck.sort((a,b)=>b.delta-a.delta)[0];const close=fixtures.filter(x=>x.p!=null).sort((a,b)=>Math.abs(a.p-.5)-Math.abs(b.p-.5))[0];
- const cards=[];
- if(synced&&lucky)cards.push(hqItem('🍀',lucky.team.name+' is the luckiest',fmt(lucky.delta,1)+' extra wins compared with all-play scoring'));
- if(close)cards.push(hqItem('⚔️',close.a+' v '+close.b,'Closest Week '+week+' pregame forecast: '+hqPct(close.p)+' / '+hqPct(1-close.p)));
- else cards.push(hqItem('📅','Upcoming fixtures','Sync Sleeper for verified pairings'));
- const byes=nflByes[week]||[];if(byes.length)cards.push(hqItem('✈️','NFL Week '+week+' byes',byes.join(', ')));
- el('hqHeadlines').innerHTML=cards.join('');
- /* Home focuses on league highlights; fantasy matchup previews are in Forecast / RedZone. */
- /* el('hqGames').innerHTML=fixtures.length?fixtures.map(g=>{
- const a=hqProjectedScore(g.a,week),b=hqProjectedScore(g.b,week),upcoming=week>completedWeeks;
- return `<div class="hqmini"><div><b>${safe(g.a)}</b><small>v ${safe(g.b)}</small><small>${upcoming&&a&&b?'Proj '+fmt(a.mu,0)+'–'+fmt(b.mu,0)+' fantasy pts':'Current scores on Games tab'}</small></div><div class="hqprob">${g.p!=null&&upcoming?hqPct(g.p):'—'}<small style="text-align:right">${upcoming?'win chance':'completed / live'}</small></div></div>`;
- }).join(''):'<div class="hqempty">No current fixtures loaded.</div>'; */
- const past=hqSnapshotBaseline();
- el('hqMovementNote').textContent=past?'Probability change vs your locally saved Week '+past.wk+' forecast. Snapshots are stored on this device only.':'Changes will appear after this device has captured forecasts from two different completed weeks.';
- el('hqPowerTable').querySelector('tbody').innerHTML=[...all].sort((a,b)=>b.str-a.str).map((x,n)=>{
- const old=past?.odds?.[x.t.id];const shift=old?((x.po-old.playoff)*100):null;
- return `<tr><td>${n+1}</td><td>${safe(x.t.name)}</td><td>${x.t.w}–${x.t.l}</td><td>${fmt(x.t.pf/Math.max(1,x.t.w+x.t.l),1)}</td><td>${fmt(x.str,1)}</td><td style="color:${shift>0?'#75e8a7':shift<0?'#ff9daa':'#9aadc2'}">${shift==null?'—':(shift>0?'+':'')+fmt(shift,1)+'pp'}</td></tr>`}).join('');
- el('hqToiletTable').querySelector('tbody').innerHTML=[...all].sort((a,b)=>b.lp-a.lp).map(x=>`<tr><td>${safe(x.t.name)}</td><td>${hqPct(x.tb)}</td><td><b style="color:#ff9daa">${hqPct(x.lp)}</b></td><td>${ord(model.projFinal[x.i])}</td></tr>`).join('');
- if(synced)hqSaveWeek();
- rzUpdateFantasyStamp();
- }finally{hqRendering=false}
-}
-function renderHQMatchups(){
- if(!model||!el('matchupCards'))return;
- const w=+el('weekSelect')?.value||hqWeekLabel();
- const widgets=Array.from(el('matchupCards').querySelectorAll('.fixture'));
- widgets.forEach(node=>node.querySelectorAll('.model-outlook').forEach(n=>n.remove()));
- if(w<=completedWeeks)return; // Actual final scores displayed unchanged.
- const fixtures=hqCurrentFixtures(w);
- widgets.forEach((node,i)=>{
-  const pair=fixtures[i];if(!pair||pair.p==null)return;
-  const a=hqProjectedScore(pair.a,w),b=hqProjectedScore(pair.b,w);if(!a||!b)return;
-  const strip=document.createElement('div');strip.className='model-outlook';
-  strip.innerHTML='<div>Projected points: <b>'+safe(pair.a)+' '+fmt(a.mu,1)+'</b> · <b>'+safe(pair.b)+' '+fmt(b.mu,1)+'</b></div><div class="chance">Win probability: '+safe(pair.a)+' '+hqPct(pair.p)+' / '+safe(pair.b)+' '+hqPct(1-pair.p)+'</div>';
-  node.appendChild(strip);
- });
-}
-const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
-const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
-const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();rzUpdateFantasyStamp()};
-
-
-const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();return hqOldHydrate(...args)};
-
-
-/* REDZONE v9.2 — NFL plays use an independent ESPN public feed.
- * Sleeper remains the authoritative source for league-scored fantasy points.
- * NFL endpoint is unofficial / unsupported and can be cached or CORS-blocked;
- * never synthesise an NFL play or describe missing position as confirmed. */
-const RZ_ESPN='https://site.api.espn.com/apis/site/v2/sports/football/nfl';
-let rzWeek=calendarNflWeek(),rzGames=[],rzFocused=null,rzDetailCache={},rzTimer=null,rzFantasyTimer=null,
-    rzFetching=false,rzDetailFetching=false,rzFallbackBusy=false,rzSummaryTries=new Map(),rzLastNFL=0,rzLastSleeper=0,rzErrors=0,rzMode='nfl',rzSeen=new Map(),rzHighlights=[];
-function rzInit(){
- const gameView=el('v9-view-games');
- gameView.insertAdjacentHTML('afterbegin',`<div class="rzhero"><div class="rztop"><div class="rztitle"><span class="rzblink"></span> Sunday Funday RedZone</div><span class="rzmeta" id="rzStatus">Waiting for NFL feed</span></div>
-  <div class="rzcontrols"><button id="rzNFL" type="button" class="active">🏈 NFL plays</button><button id="rzFantasyButton" type="button">🏆 Fantasy matchups</button>
-  <label class="rzsmall">Week <select id="rzWeekSelect"></select></label><button type="button" id="rzRefresh">↻ Refresh now</button></div>
-  <div class="rzsignal" id="rzFeedNote">NFL play feed: ESPN · Fantasy scores: Sleeper · independent update times.</div></div>
-  <div id="rzNFLPanel" class="rznfl"><div id="rzGrid" class="rzgrid"><p class="rzsmall">Loading games…</p></div><section class="rzdetail" id="rzFocus"><h3>Tap any NFL game</h3><p class="rzsmall">See the possession, current field position, drives and recent plays.</p></section>
-  <section class="rzdetail"><h3>⚡ Scoring and lead changes</h3><div id="rzAlerts" class="rzplays"><p class="rzsmall">New scoring changes appear here while this page is open.</p></div></section>
-  <p class="rzlegend">NFL scores, ball spots and play descriptions come from ESPN’s unofficial public feeds. They can be delayed, revised or blocked. Auto-checks every 12 seconds while this tab is visible; the focused game gets additional detail. A faster refresh does not guarantee fresher upstream data. No livestream video.</p></div>
-  <div class="rzfantasy" id="rzFantasyPanel"><div class="rzdetail"><h3>Sunday Funday — official fantasy points</h3><p class="rzsmall" id="rzFantasyStamp">Sleeper updates approximately every 45 seconds while RedZone is open. These are Sleeper points, not NFL play-derived estimates.</p></div></div>`);
- const oldMatchPanel=el('matchupCards')?.closest('section.panel');
- if(oldMatchPanel){el('rzFantasyPanel').appendChild(oldMatchPanel);const title=oldMatchPanel.querySelector('h2');if(title)title.textContent='All 5 fantasy matchups';}
- const sched=el('scheduleTable')?.closest('section.panel');
- if(sched){el('v9-view-forecast').appendChild(sched);const bar=sched.querySelector('.panel-title');if(bar){const sel=document.createElement('label');sel.className='control';sel.innerHTML='Week <select id="scheduleWeek" aria-label="Fixture week"></select>';bar.querySelector('.btnright')?.prepend(sel);}
- el('scheduleWeek')?.addEventListener('change',()=>renderSchedule());}
- el('rzWeekSelect').innerHTML=Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+'</option>').join('');el('rzWeekSelect').value=String(rzWeek);
- el('rzNFL').addEventListener('click',()=>rzSwitch('nfl'));el('rzFantasyButton').addEventListener('click',()=>rzSwitch('fantasy'));
- el('rzRefresh').addEventListener('click',()=>{rzLastNFL=0;rzLastSleeper=0;rzPoll(true)});
- el('rzWeekSelect').addEventListener('change',()=>{rzWeek=Number(el('rzWeekSelect').value);rzFocused=null;rzDetailCache={};rzSeen.clear();rzHighlights=[];rzGames=[];rzRender();rzPoll(true)});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&hqActive==='games')rzPoll(true)});
-}
-function rzSwitch(mode){rzMode=mode;el('rzNFL').classList.toggle('active',mode==='nfl');el('rzFantasyButton').classList.toggle('active',mode==='fantasy');el('rzNFLPanel').classList.toggle('hidden',mode!=='nfl');el('rzFantasyPanel').classList.toggle('visible',mode==='fantasy');if(mode==='fantasy')rzUpdateFantasyStamp()}
-function rzUpdateFantasyStamp(){const n=el('rzFantasyStamp');if(n)n.textContent=(rzLastSleeper?'Sleeper updated '+new Date(rzLastSleeper).toLocaleTimeString('en-GB')+' · ':'')+'Official Sleeper league points, not live NFL play-derived scores.'}
-function rzStop(){if(rzTimer)clearInterval(rzTimer);rzTimer=null;if(rzFantasyTimer)clearInterval(rzFantasyTimer);rzFantasyTimer=null}
-function rzOpen(){if(!el('rzGrid'))return;rzStop();rzPoll(true);rzSleeper();rzTimer=setInterval(()=>{if(!document.hidden&&hqActive==='games')rzPoll(false)},12000);rzFantasyTimer=setInterval(()=>{if(!document.hidden&&hqActive==='games')rzSleeper()},45000)}
-async function rzFetch(url,timeout=8000){const c=new AbortController(),kill=setTimeout(()=>c.abort(),timeout);
- try{const response=await fetch(url,{method:'GET',mode:'cors',cache:'no-store',credentials:'omit',signal:c.signal});if(!response.ok)throw Error('HTTP '+response.status);return await response.json()}
- finally{clearTimeout(kill)}}
-function rzSides(g){const arr=g.competitions?.[0]?.competitors||[];return {
- home:arr.find(x=>x.homeAway==='home')||{},away:arr.find(x=>x.homeAway==='away')||{}}}
-function rzAbbr(c){return c?.team?.abbreviation||'—'}
-function rzState(g){return g.status?.type?.name||g.competitions?.[0]?.status?.type?.name||'UNKNOWN'}
-function rzIsLive(g){return /IN_PROGRESS|HALFTIME|END_PERIOD/i.test(rzState(g))}
-function rzPeriod(g){const st=g.status||g.competitions?.[0]?.status||{},n=+st.period||0;const time=st.displayClock||'';if(rzState(g).includes('FINAL'))return 'FINAL';if(!rzIsLive(g))return 'Scheduled';return n===2&&rzState(g).includes('HALFTIME')?'HALF':n>4?'OT '+time:'Q'+n+' '+time}
-function rzSituation(g){return rzDetailCache[g.id]?.header?.competitions?.[0]?.situation || g.competitions?.[0]?.situation || null}
-function rzOffense(g,situation){const raw=situation?.possession;if(raw&&typeof raw==='object'){const id=String(raw.id||raw.$ref?.match(/competitors\/(\d+)/)?.[1]||'');if(!id)return '';const c=(g.competitions?.[0]?.competitors||[]).find(c=>String(c.id)===id||String(c.team?.id)===id);return rzAbbr(c)}
- const sides=rzSides(g);const id=String(raw||'');for(const c of [sides.home,sides.away])if(id===String(c.id)||id===String(c.team?.id)||id===rzAbbr(c))return rzAbbr(c);return ''}
-function rzFieldLoc(game,situation){
- const txt=String(situation?.downDistanceText||situation?.shortDownDistanceText||'');
- const found=txt.match(/\bat\s+([A-Z]{2,3})\s+(\d{1,2})\b/i);
- if(!found)return null;
- const off=rzOffense(game,situation);if(!off)return null;
- const val=Math.max(0,Math.min(50,Number(found[2]))),pct=found[1].toUpperCase()===off?val:100-val;
- return {percent:Math.max(9,Math.min(91,pct)),raw:txt};
-}
-function rzPlayersInGame(g){const sides=rzSides(g),abbrs=[rzAbbr(sides.home),rzAbbr(sides.away)];
- const rows=[];for(const t of teams){const roster=rosterFor(t)||[];const players=roster.filter(p=>p&&p.id!=='0'&&!p.empty&&!['BN','IR'].includes(p.slot)&&abbrs.includes(p.nfl));if(players.length)rows.push({team:t.name,players:players.map(p=>p.name)});}
- return rows.slice(0,10)}
-function rzLogScoreChanges(data){for(const g of data){const sides=rzSides(g),score=rzAbbr(sides.away)+' '+(sides.away.score??'—')+' – '+rzAbbr(sides.home)+' '+(sides.home.score??'—');const old=rzSeen.get(g.id);
- if(old&&old!==score&&rzIsLive(g))rzHighlights.unshift({event:g.shortName||g.name||'',note:score,at:Date.now()});rzSeen.set(g.id,score)}rzHighlights=rzHighlights.slice(0,12)}
-function rzRender(){const zone=el('rzGrid');if(!zone)return;
- if(!rzGames.length){zone.innerHTML='<p class="rzsmall">No NFL games loaded for this week yet. Tap Refresh now or check the connection.</p>';el('rzFocus').innerHTML='<h3>No selected game</h3><p class="rzsmall">NFL game details appear after the ESPN feed loads.</p>';return}
- const sorted=rzGames.slice().sort((a,b)=>(rzIsLive(b)?1:0)-(rzIsLive(a)?1:0)||((rzSituation(b)?.isRedZone?1:0)-(rzSituation(a)?.isRedZone?1:0))||rzPlayersInGame(b).length-rzPlayersInGame(a).length||new Date(a.date)-new Date(b.date));
- zone.innerHTML=sorted.map(g=>{const sides=rzSides(g),s=rzSituation(g),off=rzOffense(g,s),isLive=rzIsLive(g),isFinal=rzState(g).includes('FINAL'),dd=String(s?.downDistanceText||s?.shortDownDistanceText||'');
- const red=!!s?.isRedZone||/at\s+[A-Z]{2,3}\s+(?:1\d|\d)\b/.test(dd)&&!!s?.isRedZone;const loc=rzFieldLoc(g,s);
- let kickoff='';try{kickoff=new Date(g.date).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'})}catch(e){}
- const state=isLive?'<span class="rzstate live">● '+safe(rzPeriod(g))+'</span>':isFinal?'<span class="rzstate final">FINAL</span>':'<span class="rzstate">'+safe(kickoff)+'</span>';
- const last=s?.lastPlay?.text?String(s.lastPlay.text):'';const leagueStarters=rzPlayersInGame(g).reduce((n,r)=>n+r.players.length,0);const info=isLive?'<div class="rzdrive">'+(red?'<span class="rzalert">RED ZONE</span> ':'')+'<span class="fieldtext">'+safe(dd||'Position not yet published')+'</span>'+ (off?' · '+safe(off)+' ball':'')+(loc?'<div class="rzfield"><span class="rzball" style="left:'+loc.percent+'%"></span></div>':'')+(last?'<div class="rzfollow">'+safe(last.slice(0,135))+'</div>':'')+(leagueStarters?'<div class="rzfollow">'+leagueStarters+' Sunday Funday starters in this game</div>':'')+'</div>':'<div class="rzdrive">'+(isFinal?'Final score':'Kickoff '+safe(kickoff))+'</div>';
- return '<button type="button" class="rzgame'+(g.id===rzFocused?' selected':'')+(red?' rzred':'')+'" data-rz-game="'+safe(g.id)+'"><div class="rzhead">'+state+(isLive&&off?'<span class="rzsmall">'+safe(off)+' ▶</span>':'')+'</div><div class="rzscoreline"><span class="abbr">'+safe(rzAbbr(sides.away))+'</span><span class="score">'+safe(sides.away.score??'0')+'</span></div><div class="rzscoreline"><span class="abbr">'+safe(rzAbbr(sides.home))+'</span><span class="score">'+safe(sides.home.score??'0')+'</span></div>'+info+'</button>'}).join('');
- zone.querySelectorAll('[data-rz-game]').forEach(b=>b.addEventListener('click',()=>{rzFocused=b.dataset.rzGame;rzRender();rzFocusedFetch(true)}));
- const alerts=el('rzAlerts');alerts.innerHTML=rzHighlights.length?rzHighlights.map(x=>'<div class="rzplay"><small>'+new Date(x.at).toLocaleTimeString('en-GB')+' · '+safe(x.event)+'</small>Score change: <b>'+safe(x.note)+'</b></div>').join(''):'<p class="rzsmall">Score changes will appear here while RedZone stays open. Not a historical scoring feed.</p>';
- rzRenderFocus();
-}
-function rzRenderFocus(){const root=el('rzFocus'),g=rzGames.find(x=>x.id===rzFocused);if(!g){root.innerHTML='<h3>Tap an NFL game for full play detail</h3><p class="rzsmall">The cards above show scores, quarter and available live ball position.</p>';return}
- const data=rzDetailCache[g.id],s=rzSituation(g),off=rzOffense(g,s),loc=rzFieldLoc(g,s),live=rzIsLive(g),involved=rzPlayersInGame(g);
- let plays=data?.drives?.current?.plays||[];
- if(!Array.isArray(plays))plays=[];
- plays=plays.slice(-6).reverse();if(!plays.length&&s?.lastPlay?.text)plays=[s.lastPlay];
- let latest=plays.map(p=>'<div class="rzplay"><small>'+safe(p.clock?.displayValue||'')+' '+safe(p.type?.text||'')+'</small>'+safe(p.text||p.shortText||'Play detail unavailable')+'</div>').join('');
- if(!latest)latest='<p class="rzsmall">No drive plays currently published. Detailed play-by-play will appear when ESPN supplies it.</p>';
- const scoring=(data?.scoringPlays||[]).slice(-4).reverse().map(p=>'<div class="rzplay rzscoring"><small>'+safe(p.clock?.displayValue||'')+' · SCORING PLAY</small>'+safe(p.text||'Scoring update')+'</div>').join('');
- const field=live&&loc?'<div class="rzfield" style="height:35px"><span class="rzball" style="left:'+loc.percent+'%"></span></div>':'';
- root.innerHTML='<h3>🏈 '+safe(g.shortName||g.name)+' · '+safe(rzPeriod(g))+'</h3>'+
- '<div class="rzmeta">'+(live?safe(s?.downDistanceText||'Awaiting down and distance')+(off?' · '+safe(off)+' in possession':''):'Scheduled / completed')+'</div>'+field+
- '<div class="rzimpact"><b>Sunday Funday starters in this NFL game</b><div>'+(involved.length?involved.map(r=>safe(r.team)+': '+safe(r.players.join(', '))).join(' · '):'None identified in loaded rosters — sync Sleeper for accurate connections')+'</div></div>'+
- '<h3 style="margin-top:17px">Latest drive</h3><div class="rzplays">'+latest+'</div>'+
- (scoring?'<h3 style="margin-top:17px">Recent scoring plays</h3><div class="rzplays">'+scoring+'</div>':'')+
- '<p class="rzlegend" style="margin-top:10px">Play text from ESPN, fantasy points from Sleeper. NFL scores and play detail are not proof a fantasy score has been credited.</p>';
-}
-async function rzFocusedFetch(force=false){const id=rzFocused,g=rzGames.find(x=>x.id===id);if(!id||!g||rzDetailFetching||(!rzIsLive(g)&&!force))return;
- const cached=rzDetailCache[id];if(!force&&cached&&Date.now()-(cached._rzFetched||0)<15000)return;rzDetailFetching=true;
- try{const d=await rzFetch(RZ_ESPN+'/summary?event='+encodeURIComponent(id),9000);if(rzFocused!==id)return;d._rzFetched=Date.now();rzDetailCache[id]=d;rzRenderFocus()}
- catch(e){if(!cached){el('rzFocus').insertAdjacentHTML('beforeend','<p class="rzsmall">Play feed unavailable — game summary blocked or delayed. Scoreboard may still work.</p>')}}finally{rzDetailFetching=false}
-}
-async function rzFillMissingPositions(){
- // A single scoreboard does not always publish live situation or the last play.
- // Make at most TWO additional small summary requests every refresh cycle, prioritising
- // matchups containing Sunday Funday starters; no need to hit all NFL games each time.
- if(rzFallbackBusy||!rzGames.length||document.hidden||hqActive!=='games')return;
- const now=Date.now();const missing=rzGames.filter(g=>rzIsLive(g)&&g.id!==rzFocused&&(!rzSituation(g)?.downDistanceText||!rzSituation(g)?.lastPlay?.text)&&
-     now-(rzSummaryTries.get(g.id)||0)>28000).sort((a,b)=>rzPlayersInGame(b).length-rzPlayersInGame(a).length).slice(0,2);
- if(!missing.length)return;
- rzFallbackBusy=true;
- try{await Promise.all(missing.map(async g=>{rzSummaryTries.set(g.id,Date.now());try{
-    const data=await rzFetch(RZ_ESPN+'/summary?event='+encodeURIComponent(g.id),9000);data._rzFetched=Date.now();rzDetailCache[g.id]=data;
-  }catch(e){/* Scoreboard stays usable without detailed feed. */}}));if(hqActive==='games')rzRender();}
- finally{rzFallbackBusy=false}
-}
-async function rzPoll(force=false){if(rzFetching||document.hidden&& !force||hqActive!=='games'&& !force)return;
- if(!force&&Date.now()-rzLastNFL<11000)return;
- rzFetching=true;
- try{const d=await rzFetch(RZ_ESPN+'/scoreboard?season=2026&seasontype=2&week='+rzWeek+'&limit=100',11000);
- if(!Array.isArray(d.events))throw Error('No event list returned');rzLogScoreChanges(d.events);rzGames=d.events;rzLastNFL=Date.now();rzErrors=0;
- el('rzStatus').textContent='NFL checked '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+' · '+rzGames.filter(rzIsLive).length+' LIVE';
- el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+(rzLastSleeper?' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB'):' · Sleeper refresh pending')+' · Independent feeds';
- if(rzFocused&&!rzGames.some(g=>g.id===rzFocused))rzFocused=null;
- rzRender();if(rzFocused)rzFocusedFetch(false);rzFillMissingPositions();
- }catch(e){rzErrors++;el('rzStatus').textContent='NFL feed unavailable';el('rzFeedNote').textContent='Could not load ESPN live data ('+String(e?.message||'blocked')+'). Browser access/CORS or upstream feed may be restricted. No fake live data is shown.';
- if(!rzGames.length)el('rzGrid').innerHTML='<div class="rzdetail"><strong>Could not reach the independent NFL feed</strong><p class="rzsmall">The provider may block browser requests or be temporarily unavailable. Try Refresh now. Sleeper fantasy scores remain available separately.</p></div>';
- }finally{rzFetching=false}
-}
-async function rzSleeper(){if(hqActive!=='games'||document.hidden||source!=='sleeper'||busy)return;
- const id=el('leagueId').value.trim(),w=rzWeek;if(!/^\d+$/.test(id))return;
- try{const data=await rzFetch('https://api.sleeper.app/v1/league/'+id+'/matchups/'+w,9500);if(!Array.isArray(data))return;
- weekly[w]=data;rzLastSleeper=Date.now();if(+el('weekSelect').value!==w)el('weekSelect').value=String(w);
- renderMatchups();rzUpdateFantasyStamp();
- if(rzLastNFL)el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB')+' · Independent feeds';
- }catch(e){rzUpdateFantasyStamp()}
-}
-
-initV9();boot();
-
-</script></body></html>
+let selected='bal-cle';
+function gameById(id){ return games.find(g=>g.id===id) || games[0]; }
+function renderFeatured(){
+  const g = gameById(selected);
+  document.getElementById('featuredPanel').innerHTML = `
+    <div class="scoreband">
+      <div class="teamstack">
+        <div class="logo ${g.away.color}">${g.away.logo}</div>
+        <div class="teammeta">
+          <div class="teamabbr">${g.away.score}</div>
+          <div class="teamshort">${g.away.abbr}</div>
+          <div class="teamrec">${g.away.rec || '&nbsp;'}</div>
+        </div>
+      </div>
+      <div class="midscore">
+        <div class="period">${g.period}</div>
+        <div class="clock">${g.clock}</div>
+      </div>
+      <div class="teamstack right">
+        <div class="teammeta" style="text-align:right">
+          <div class="teamabbr">${g.home.score}</div>
+          <div class="teamshort">${g.home.abbr}</div>
+          <div class="teamrec">${g.home.rec || '&nbsp;'}</div>
+        </div>
+        <div class="posarrow">◀</div>
+        <div class="logo ${g.home.color}">${g.home.logo}</div>
+      </div>
+    </div>
+    <div class="fieldwrap">
+      <div class="field">
+        <div class="endzone left">BAL</div>
+        <div class="endzone right">CLE</div>
+        <div class="rzshade"></div>
+        <div class="firstdown" style="left:${g.firstPct}%"></div>
+        <div class="ball" style="left:${g.ballPct}%"></div>
+        <div class="yards">
+          <span>10</span><span>20</span><span>30</span><span>40</span><span>50</span><span>40</span><span>30</span><span>20</span><span>10</span><span></span>
+        </div>
+      </div>
+    </div>
+    <div class="infostrip">
+      <div>${g.down}</div>
+      <div><span class="muted">${g.ball}</span></div>
+      <div><span class="muted">${g.drive}</span></div>
+    </div>
+    <div class="impactcard">
+      <div class="playerpanel">4</div>
+      <div class="impactbody">
+        <div class="impacttitle"><span class="tagpill">TOUCHDOWN PENDING</span><span class="slashes">////</span></div>
+        <div class="bigimpact">${g.last}</div>
+        <div class="subimpact">Impact: ${g.impactMatchup} <span class="green">${g.pending}</span> Sleeper</div>
+        <div class="swing">Win probability swing: 74% <span class="green">→ 81%</span></div>
+      </div>
+    </div>`;
+}
+function renderGrid(){
+  const grid=document.getElementById('gamesGrid');
+  grid.innerHTML = games.map(g=>`<div class="gamecard live ${g.redzone?'active':''} ${selected===g.id?'active':''}" data-id="${g.id}">
+    <div class="meta">
+      <span class="livebadge"><span class="dot"></span>LIVE</span>
+      <span>${g.period}</span>
+      <span>${g.clock}</span>
+      ${g.redzone?'<span class="rzbadge">RZ</span>':''}
+    </div>
+    <div class="teamrow">
+      <div class="tinylogo ${g.away.color}"><span>${g.away.abbr}</span></div>
+      <div class="name">${g.away.abbr}</div>
+      <div class="pts">${g.away.score}</div>
+      <div></div>
+    </div>
+    <div class="teamrow" style="margin-top:8px">
+      <div class="tinylogo ${g.home.color}"><span>${g.home.abbr}</span></div>
+      <div class="name">${g.home.abbr}</div>
+      <div class="pts">${g.home.score}</div>
+      <div></div>
+    </div>
+    <div class="gamedrive">${g.driveShort}<span class="small">›</span></div>
+  </div>`).join('');
+  grid.querySelectorAll('.gamecard').forEach(card=>card.addEventListener('click',()=>{selected=card.dataset.id; renderFeatured(); renderGrid();}));
+}
+function renderImpact(){
+  const g = gameById(selected);
+  document.getElementById('impactPanel').innerHTML = `
+    <div class="matchhead"><div>🔥 Most affected matchup</div><div>Live impact</div></div>
+    <div class="matchbody">
+      <div class="avatar">
+        <div class="icon">😎</div>
+        <div>
+          <div class="label">${g.impactMatchup}</div>
+          <div class="score">${g.impactScore}</div>
+          <div class="delta">▲ ${g.impactDelta}</div>
+        </div>
+      </div>
+      <div class="vs">VS</div>
+      <div class="avatar cheese">
+        <div class="icon">🧀</div>
+        <div>
+          <div class="label">${g.impactOpp}</div>
+          <div class="score">${g.oppScore}</div>
+        </div>
+      </div>
+      <div class="liveimpact">
+        <h4>Live impact</h4>
+        <ul>
+          <li>${g.players[0]}</li>
+          <li class="green">${g.pending}</li>
+          <li>Win %: 74% → <span class="green">81%</span></li>
+        </ul>
+      </div>
+    </div>`;
+}
+renderFeatured(); renderGrid(); renderImpact();
+</script>
+</body>
+</html>
