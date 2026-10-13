@@ -457,6 +457,385 @@ body.rz-immersive-mode #hqnav{background:#051326dd;border-color:#23475e}
  #v9-view-games .rz-center-clock .time{font-size:20px}
  #v9-view-games .rz-center-clock .quarter{font-size:10px}
 }
+
+/* v9.3.1: RedZone-only layout repairs. Forecast, Sleeper and other tabs unchanged. */
+#v9-view-games .rz-cinema,
+#v9-view-games .rz-cinema *{box-sizing:border-box}
+#v9-view-games .rz-cinema{width:100%;min-width:0;max-width:100%}
+#v9-view-games .rz-stadium{display:block;min-width:0}
+#v9-view-games .rz-brand{width:100%;text-align:center}
+#v9-view-games .rz-head-controls{margin-top:18px}
+#v9-view-games .rz-stadium .rz-brandtop,
+#v9-view-games .rz-stadium .rz-brandsub{overflow-wrap:normal;white-space:normal}
+#v9-view-games .rz-head-controls{width:100%;min-width:0;align-items:center}
+#v9-view-games .rz-switcher{min-width:0}
+#v9-view-games .rz-head-right{min-width:0}
+#v9-view-games .rz-match-score{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) minmax(144px, .74fr) minmax(0,1fr);
+  gap:clamp(12px,2.3vw,32px);
+  align-items:center;
+  min-height:145px;
+  padding:20px clamp(16px,2.8vw,34px) 17px;
+}
+#v9-view-games .rz-team-side{min-width:0;display:grid;grid-template-columns:clamp(40px,5vw,66px) minmax(0,1fr);align-items:center;justify-content:start;gap:clamp(8px,1.4vw,16px)}
+#v9-view-games .rz-team-side.rz-right{display:grid;grid-template-columns:minmax(0,1fr) clamp(40px,5vw,66px);justify-content:end;gap:clamp(8px,1.4vw,16px)}
+#v9-view-games .rz-team-side.rz-right .rz-team-numbers{grid-column:1;grid-row:1;justify-self:end}
+#v9-view-games .rz-team-side.rz-right .rz-team-logo{grid-column:2;grid-row:1}
+#v9-view-games .rz-team-logo{width:clamp(40px,5vw,66px);height:clamp(40px,5vw,66px);min-width:0;overflow:hidden}
+#v9-view-games .rz-team-numbers{min-width:0}
+#v9-view-games .rz-main-pts{font-size:clamp(36px,5vw,72px);letter-spacing:-.04em;line-height:1;white-space:nowrap}
+#v9-view-games .rz-main-abbr{margin-top:4px;font-size:clamp(11px,1.2vw,16px);letter-spacing:.09em}
+#v9-view-games .rz-center-clock{min-width:0;max-width:100%;padding-inline:4px;line-height:1.15}
+#v9-view-games .rz-center-clock .quarter{font-size:clamp(11px,1.15vw,15px);letter-spacing:.12em}
+#v9-view-games .rz-center-clock .time{font-size:clamp(22px,2.8vw,42px);letter-spacing:-.02em;line-height:1.2;white-space:nowrap}
+#v9-view-games .rz-field-container{padding:0 clamp(9px,1.8vw,20px)}
+#v9-view-games .rz-svg-field{overflow:hidden}
+#v9-view-games .rz-statrow{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr) minmax(0,1fr);align-items:center;justify-content:stretch;gap:0;padding:0;margin:10px clamp(9px,1.8vw,20px) 0;min-width:0}
+#v9-view-games .rz-statrow>*{display:block;min-width:0;text-align:center;padding:11px 10px;overflow-wrap:break-word;line-height:1.45}
+#v9-view-games .rz-statrow>*+*{border-left:1px solid #244a60}
+#v9-view-games .rz-statrow b{font-size:clamp(12px,1.25vw,16px)}
+#v9-view-games .rz-feature-callout{min-width:0}
+#v9-view-games .rz-feature-callout>div:last-child{min-width:0;overflow-wrap:break-word}
+#v9-view-games .rz-cinema-grid{min-width:0;grid-template-columns:repeat(2,minmax(0,1fr));gap:12px}
+#v9-view-games .rz-cinema-game{width:100%;min-width:0;padding:14px;overflow:hidden}
+#v9-view-games .rz-cinema-game .rz-game-meta{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:8px;min-width:0;white-space:normal}
+#v9-view-games .rz-cinema-game .rz-game-meta>span{min-width:0;white-space:nowrap}
+#v9-view-games .rz-cinema-game .rz-teamrows{margin-top:10px;gap:6px}
+#v9-view-games .rz-cinema-game .rz-one-team{display:grid;grid-template-columns:29px minmax(0,1fr) auto;gap:9px;min-width:0;align-items:center}
+#v9-view-games .rz-cinema-game .rz-mini-logo{width:29px;height:29px;min-width:0}
+#v9-view-games .rz-cinema-game .rz-mini-abbr{min-width:0;overflow:hidden;text-overflow:ellipsis;font-size:16px}
+#v9-view-games .rz-cinema-game .rz-mini-pts{margin-left:0;justify-self:end;font-size:27px;line-height:1;font-variant-numeric:tabular-nums}
+#v9-view-games .rz-cinema-game .rz-game-drive{overflow-wrap:break-word;font-size:12px;line-height:1.4;min-height:24px}
+#v9-view-games .rz-impact-teams{grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:10px}
+#v9-view-games .rz-impact-teams .team{min-width:0;overflow-wrap:break-word}
+#v9-view-games .rz-impact-teams .team:last-child{text-align:right}
+#v9-view-games .rz-all-head h3{min-width:0}
+
+@media(max-width:900px){
+ #v9-view-games .rz-match-score{grid-template-columns:minmax(0,1fr) minmax(112px,.8fr) minmax(0,1fr);gap:12px;padding:16px 14px}
+ #v9-view-games .rz-main-pts{font-size:clamp(32px,5.2vw,56px)}
+ #v9-view-games .rz-center-clock .time{font-size:clamp(21px,3.2vw,34px)}
+ #v9-view-games .rz-team-side{grid-template-columns:40px minmax(0,1fr);gap:8px}
+ #v9-view-games .rz-team-side.rz-right{grid-template-columns:minmax(0,1fr) 40px;gap:8px}
+ #v9-view-games .rz-team-logo{width:40px;height:40px}
+}
+@media(max-width:600px){
+ body.rz-immersive-mode main.wrap{padding-left:8px;padding-right:8px}
+ #v9-view-games .rz-stadium{padding:18px 10px 13px}
+ #v9-view-games .rz-brandtop{font-size:clamp(23px,7vw,37px)}
+ #v9-view-games .rz-brandsub{font-size:clamp(32px,9vw,48px)}
+ #v9-view-games .rz-tagline{font-size:9px;letter-spacing:.18em}
+ #v9-view-games .rz-head-controls{gap:9px;margin-top:16px}
+ #v9-view-games .rz-switcher{flex:1 1 100%;display:grid;grid-template-columns:1fr 1fr;gap:8px}
+ #v9-view-games .rz-switcher button{width:100%;min-width:0;white-space:normal;line-height:1.2}
+ #v9-view-games .rz-head-right{flex:1 1 100%;display:flex;justify-content:flex-start;gap:9px}
+ #v9-view-games .rz-head-controls .rz-head-right button{margin-left:auto}
+ #v9-view-games .rz-feature-head{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:center;gap:9px;font-size:10px;letter-spacing:.07em;line-height:1.35}
+ #v9-view-games .rz-feature-head>span{min-width:0}
+ #v9-view-games .rz-feature-head>span:last-child{justify-self:end;text-align:right;font-size:9px}
+ /* Two clear rows: match clock at the top, scores + team badges below. */
+ #v9-view-games .rz-match-score{grid-template-columns:minmax(0,1fr) minmax(0,1fr);grid-template-rows:auto auto;gap:13px 12px;padding:15px 13px 17px;min-height:0;align-items:center}
+ #v9-view-games .rz-center-clock{grid-column:1/-1;grid-row:1;justify-self:stretch;width:100%;text-align:center;padding-bottom:11px;border-bottom:1px solid #23445b}
+ #v9-view-games .rz-center-clock .quarter{font-size:11px;letter-spacing:.16em}
+ #v9-view-games .rz-center-clock .time{font-size:clamp(25px,7.5vw,35px);letter-spacing:.02em}
+ #v9-view-games .rz-team-side{grid-column:1;grid-row:2;grid-template-columns:clamp(31px,9vw,42px) minmax(0,1fr);gap:8px;min-width:0}
+ #v9-view-games .rz-team-side.rz-right{grid-column:2;grid-row:2;grid-template-columns:minmax(0,1fr) clamp(31px,9vw,42px);gap:8px}
+ #v9-view-games .rz-team-logo{width:clamp(31px,9vw,42px);height:clamp(31px,9vw,42px)}
+ #v9-view-games .rz-main-pts{font-size:clamp(30px,9vw,46px);line-height:1}
+ #v9-view-games .rz-main-abbr{font-size:11px;margin-top:5px}
+ #v9-view-games .rz-featured{border-radius:19px}
+ #v9-view-games .rz-svg-field{aspect-ratio:3.9}
+ #v9-view-games .rz-statrow{grid-template-columns:repeat(2,minmax(0,1fr));gap:0;margin:9px 8px 0}
+ #v9-view-games .rz-statrow>*{padding:10px 6px;text-align:center;font-size:11px}
+ #v9-view-games .rz-statrow>*:first-child{grid-column:1/-1;border-bottom:1px solid #244a60;font-size:13px}
+ #v9-view-games .rz-statrow>*:nth-child(2){border-left:0}
+ #v9-view-games .rz-statrow>*:nth-child(3){border-left:1px solid #244a60}
+ #v9-view-games .rz-feature-sub{padding:10px 8px}
+ #v9-view-games .rz-feature-callout{padding:11px;gap:9px;align-items:flex-start}
+ #v9-view-games .rz-call-desc{font-size:14px;line-height:1.45}
+ #v9-view-games .rz-call-icon{font-size:23px}
+ #v9-view-games .rz-cinema-grid{gap:9px}
+ #v9-view-games .rz-cinema-game{padding:11px}
+ #v9-view-games .rz-cinema-game .rz-game-meta{grid-template-columns:minmax(0,1fr) auto;gap:5px;font-size:10px}
+ #v9-view-games .rz-cinema-game .rz-game-meta>span:last-child{grid-column:1/-1;justify-self:start}
+ #v9-view-games .rz-cinema-game .rz-game-meta>span:last-child:empty{display:none}
+ #v9-view-games .rz-cinema-game .rz-game-meta>span{overflow:hidden;text-overflow:ellipsis}
+ #v9-view-games .rz-cinema-game .rz-one-team{grid-template-columns:23px minmax(0,1fr) auto;gap:6px}
+ #v9-view-games .rz-cinema-game .rz-mini-logo{width:23px;height:23px}
+ #v9-view-games .rz-cinema-game .rz-mini-abbr{font-size:14px}
+ #v9-view-games .rz-cinema-game .rz-mini-pts{font-size:22px}
+ #v9-view-games .rz-cinema-game .rz-game-drive{font-size:11px}
+ #v9-view-games .rz-all-head{margin-top:16px}
+ #v9-view-games .rz-all-head h3{font-size:13px;letter-spacing:.09em}
+ #v9-view-games .rz-all-head select{padding:8px 9px;font-size:11px}
+}
+@media(max-width:365px){
+ #v9-view-games .rz-cinema-grid{grid-template-columns:1fr}
+ #v9-view-games .rz-feature-head{grid-template-columns:1fr}
+ #v9-view-games .rz-feature-head>span:last-child{justify-self:start}
+ #v9-view-games .rz-main-pts{font-size:30px}
+ #v9-view-games .rz-team-side,#v9-view-games .rz-team-side.rz-right{gap:5px}
+}
+@media(prefers-reduced-motion:reduce){#v9-view-games .rz-live-dot{animation:none}}
+
+
+/* v9.3.2 — app-wide responsive density, preserving data and touch targets. */
+:root { --app-gap:10px; --app-pad:12px; }
+main.wrap { max-width:1400px; }
+main.wrap > header { margin-bottom:7px; padding:2px 0 8px; }
+main.wrap > header .lead { gap:9px; }
+main.wrap > header .mark { width:40px; height:40px; border-radius:11px; font-size:22px; }
+main.wrap > header h1 { margin:0; font-size:clamp(20px,2.6vw,29px); line-height:1.1; }
+.hqnav { margin-bottom:9px; padding:6px 2px; }
+.hqnav button { padding:8px 7px; }
+.hqhero { padding:13px 15px; margin-bottom:8px; border-radius:15px; }
+.hqhero h2 { margin:5px 0 4px; font-size:clamp(21px,3vw,29px); line-height:1.12; }
+.hqhero p { font-size:12px; line-height:1.35; }
+.hqmetrics { margin:7px 0 9px; gap:7px; }
+.hqmetric { padding:11px; border-radius:12px; }
+.hqmetric .number { margin-top:4px; font-size:clamp(17px,2.4vw,25px); line-height:1.12; letter-spacing:-.025em; }
+.hqmetric .hint { font-size:10px; letter-spacing:.025em; }
+.hqmetric .desc { font-size:10px; line-height:1.3; margin-top:4px; }
+.hqtwocol { gap:8px; }
+.hqpanel { padding:12px; margin-bottom:9px; border-radius:13px; }
+.hqpanel h3 { margin:0 0 7px; font-size:15px; }
+.hqrow { gap:7px; }
+.hqheadline { padding:8px 0; gap:7px; }
+.hqheadline .emoji { width:25px; font-size:18px; }
+.hqheadline .detail { margin-top:2px; font-size:11px; line-height:1.35; }
+.hqcaption { line-height:1.35; margin:6px 0; }
+.panel { margin:8px 0; padding:11px 12px; border-radius:14px; }
+.panel-title { gap:7px; margin-bottom:7px; }
+.panel-title h2 { font-size:15px; line-height:1.25; }
+.section-intro { margin:0 0 7px; line-height:1.4; }
+.inlinehead { margin:8px 0 6px; }
+.copy-action { padding:6px 9px; min-height:34px; }
+.source-grid { margin:7px 0; gap:7px; }
+.meta { padding:9px; border-radius:11px; }
+.meta .v { font-size:17px; }
+.statusline { padding:7px 9px; margin-top:6px; line-height:1.4; }
+.grid { gap:8px; margin:9px 0; }
+.grid-two { gap:8px; }
+.sect { margin-bottom:9px; }
+.sect h3 { margin-bottom:4px; font-size:12px; }
+.fixture { padding:9px; }
+.rzlegend,.bye-foot,.note { line-height:1.4; }
+/* Keep tap targets usable and avoid the original mobile rule making both action buttons huge. */
+.panel-title .actions { gap:5px; }
+.panel-title .actions button { flex:0 0 auto; }
+button,select { touch-action: manipulation; }
+select,button.primary,button.secondary { min-height:34px; }
+.tablewrap { border-radius:9px; }
+th { padding:7px 6px; }
+td { padding:7px 6px; }
+.hqtable td,.hqtable th { padding:7px 6px; line-height:1.25; }
+#hqPowerTable td,#hqPowerTable th { padding:6px; line-height:1.25; }
+#hqToiletTable td,#hqToiletTable th { padding:7px 5px; line-height:1.25; }
+.matrix div { padding:5px 4px; }
+.risk-players,.risk-cover { line-height:1.25; margin-top:2px; }
+.bye-summary { padding:8px 10px; margin-bottom:8px; line-height:1.4; }
+/* Removes an empty duplicative teaser; RedZone has its own navigation. */
+#v9-view-home .hqtwocol>.hqpanel:nth-child(2) { display:none; }
+#v9-view-home .hqtwocol { grid-template-columns:minmax(0,1fr); }
+#v9-view-home .hqmetric .number { overflow-wrap:anywhere; }
+#v9-connection { padding:10px 12px; }
+#v9-connection .panel-title { gap:7px; }
+#v9-connection .syncrow { gap:6px; }
+#v9-view-forecast .panel-title .actions { width:auto; flex:0 0 auto; }
+#v9-view-forecast .panel-title .actions button { min-height:34px; }
+#v9-view-forecast .model-details { margin:4px 0 8px !important; padding-top:6px; }
+#v9-view-forecast #forecastTable td,#v9-view-forecast #forecastTable th { padding:6px; }
+#v9-view-forecast #forecastTable .pill { padding:2px 5px; font-size:10px; }
+#v9-view-forecast #forecastTable td:first-child { line-height:1.23; }
+#v9-view-forecast .schedule-grid { gap:5px; }
+#v9-view-forecast .schedule-game { padding:7px 9px; border-radius:8px; }
+#v9-view-forecast .schedule-teams { line-height:1.3; }
+#v9-view-rosters .roster-columns { gap:10px; }
+#v9-view-rosters .roster-card { padding:10px; margin:0; }
+#v9-view-rosters .roster-card strong { font-size:12px; }
+#v9-view-rosters .person { padding:5px 0; gap:6px; line-height:1.2; }
+#v9-view-rosters .pname { font-size:12px; }
+#v9-view-rosters .ptiny { font-size:10px; }
+#v9-view-rosters .pteam { font-size:10px; }
+#v9-view-rosters .roster-warning { padding:8px 10px; margin-bottom:7px; }
+#v9-view-rosters .roster-warning strong { margin-bottom:3px; }
+#v9-view-rosters .person.empty-slot { padding:7px 6px; }
+#byePanel .panel-title { gap:6px; }
+#byePanel .control,#byePanel .controls { gap:5px; }
+#byeTable th,#byeTable td { padding:6px; line-height:1.25; }
+#byeTable .risk-number { font-size:12px; line-height:1.2; }
+#byeTable .risk-players { font-size:10px; line-height:1.22; }
+#byeTable .risk-cover { font-size:10px; line-height:1.2; }
+#v9-view-games .rz-stadium { padding:14px 14px 11px; margin-bottom:8px; }
+#v9-view-games .rz-brandtop { line-height:1; }
+#v9-view-games .rz-brandsub { line-height:.95; }
+#v9-view-games .rz-tagline { margin-top:5px; }
+#v9-view-games .rz-head-controls { margin-top:10px; }
+#v9-view-games .rz-featured { border-radius:17px; }
+#v9-view-games .rz-feature-head { padding:8px 11px; }
+#v9-view-games .rz-match-score { min-height:0; }
+#v9-view-games .rz-statrow { margin-top:6px; }
+#v9-view-games .rz-statrow>* { padding:8px 7px; }
+#v9-view-games .rz-feature-sub { padding:8px 10px; }
+#v9-view-games .rz-feature-callout { padding:10px 11px; gap:8px; border-radius:12px; }
+#v9-view-games .rz-call-note { margin-top:3px; line-height:1.3; }
+#v9-view-games .rz-play-detail { padding:0 10px 10px; }
+#v9-view-games .rz-play-detail details { padding:8px 10px; }
+#v9-view-games .rz-all-head { margin:12px 3px 7px; }
+#v9-view-games .rz-all-head h3 { font-size:13px; }
+#v9-view-games .rz-cinema-grid { gap:8px; }
+#v9-view-games .rz-cinema-game { padding:9px; border-radius:12px; }
+#v9-view-games .rz-cinema-game .rz-game-meta { gap:5px; }
+#v9-view-games .rz-cinema-game .rz-teamrows { margin-top:6px; gap:3px; }
+#v9-view-games .rz-cinema-game .rz-one-team { gap:5px; }
+#v9-view-games .rz-cinema-game .rz-mini-logo { width:24px; height:24px; }
+#v9-view-games .rz-cinema-game .rz-mini-abbr { font-size:13px; }
+#v9-view-games .rz-cinema-game .rz-mini-pts { font-size:22px; }
+#v9-view-games .rz-cinema-game .rz-game-drive { min-height:0; margin-top:6px; padding-top:5px; line-height:1.25; }
+#v9-view-games .rz-live-impact { margin-top:9px; padding:10px; border-radius:13px; }
+#v9-view-games .rz-live-impact h3 { margin-bottom:6px; }
+#v9-view-games .rz-impact-label { margin-top:5px; }
+#v9-view-games .rz-ticker { margin:10px 0 5px; padding:9px 0; }
+#v9-view-games .rz-stamp { padding:6px 3px; line-height:1.35; }
+#v9-view-games .rzlegend { margin:4px 2px 0; line-height:1.35; }
+/* Don't repeat fallback team abbreviation next to the official abbreviation. */
+#v9-view-games .rz-cinema-game .rz-one-team:not(:has(.rz-mini-logo img)) { grid-template-columns:minmax(0,1fr) auto; }
+#v9-view-games .rz-cinema-game .rz-one-team:not(:has(.rz-mini-logo img)) .rz-mini-logo { display:none; }
+@media (max-width:850px) {
+ .wrap { padding:11px; }
+ .roster-columns { gap:9px; }
+}
+@media (max-width:600px) {
+ :root { --app-gap:7px; --app-pad:9px; }
+ body { padding-bottom:calc(72px + env(safe-area-inset-bottom)); }
+ .wrap { padding:8px 9px 8px; }
+ main.wrap > header { padding:1px 0 6px; margin-bottom:7px; }
+ main.wrap > header h1 { font-size:20px; }
+ main.wrap > header .mark { width:33px; height:33px; font-size:19px; border-radius:8px; }
+ .hqnav { padding:5px max(3px,env(safe-area-inset-left)) calc(5px + env(safe-area-inset-bottom)); }
+ .hqnav button { padding:7px 2px; border-radius:9px; font-size:10px; }
+ .hqnav button .ico { margin-bottom:1px; font-size:18px; }
+ .hqhero { padding:11px 12px; margin-bottom:7px; border-radius:14px; }
+ .hqhero h2 { font-size:21px; margin:4px 0 3px; }
+ .hqhero p { font-size:11px; line-height:1.28; }
+ .hqmetrics { gap:6px; margin:6px 0 7px; }
+ .hqmetric { padding:9px; border-radius:10px; }
+ .hqmetric .hint { font-size:9px; }
+ .hqmetric .number { font-size:18px; line-height:1.07; margin-top:3px; }
+ .hqmetric .desc { font-size:10px; margin-top:3px; line-height:1.24; }
+ .hqpanel { padding:10px; margin-bottom:7px; }
+ .hqpanel h3 { font-size:14px; margin-bottom:5px; }
+ .hqheadline { padding:7px 0; }
+ .hqheadline b { font-size:12px; }
+ .hqheadline .detail { font-size:10px; }
+ .hqmini { padding:6px 0; }
+ .panel { padding:9px; margin:7px 0; border-radius:12px; }
+ .panel-title { margin-bottom:6px; flex-wrap:wrap; }
+ .panel-title h2 { font-size:14px; }
+ .panel-title .actions { width:auto; margin-left:auto; }
+ .panel-title .actions button { min-height:32px; padding:6px 7px; flex:none; font-size:11px; }
+ .panel-title .copy-action { font-size:11px; }
+ .section-intro { font-size:11px; line-height:1.35; margin-bottom:5px; }
+ td,th { padding:6px 5px; }
+ .tablewrap table { min-width:0; }
+ .roster-columns { gap:7px; }
+ #v9-view-home #hqPowerTable { min-width:520px; }
+ #v9-view-home #hqPowerTable th,#v9-view-home #hqPowerTable td { font-size:11px; padding:5px; }
+ #v9-view-forecast .panel-title .actions { flex:0 0 auto; }
+ #v9-view-forecast #forecastTable { min-width:750px; }
+ #v9-view-forecast #forecastTable td,#v9-view-forecast #forecastTable th { font-size:11px; padding:5px; }
+ #v9-view-forecast #forecastTable td:first-child,#v9-view-forecast #forecastTable th:first-child { min-width:107px; max-width:126px; }
+ #v9-view-forecast #strengthTable { min-width:570px; }
+ #v9-view-forecast #strengthTable td,#v9-view-forecast #strengthTable th { padding:5px; font-size:11px; }
+ #v9-view-forecast .matrix { min-width:700px; grid-template-columns:140px repeat(10,minmax(52px,1fr)); }
+ #v9-view-forecast .matrix div { padding:4px 3px; font-size:10px; }
+ #v9-view-forecast .schedule-grid { gap:4px; }
+ #v9-view-forecast .schedule-game { padding:6px 7px; }
+ #v9-view-forecast .schedule-teams { font-size:11px; }
+ #v9-view-forecast #scheduleTable th,#v9-view-forecast #scheduleTable td { padding:6px 4px; }
+ #v9-view-rosters .roster-side { gap:5px; }
+ #v9-view-rosters .roster-card { min-width:0; flex:1 1 40%; padding:7px; border-radius:9px; }
+ #v9-view-rosters .roster-card div[style] { margin-top:4px !important; }
+ #v9-view-rosters .person { padding:4px 0; gap:6px; }
+ #v9-view-rosters .slot { min-width:37px; width:37px; font-size:9px; padding:3px 2px; }
+ #v9-view-rosters .pname { font-size:11px; }
+ #v9-view-rosters .pteam { min-width:64px; font-size:10px; }
+ #v9-view-rosters .ptiny { font-size:9px; }
+ #v9-view-rosters .roster-warning { padding:7px 8px; font-size:11px; line-height:1.28; }
+ #v9-view-rosters .sect { margin-bottom:7px; }
+ #v9-view-rosters .sect h3 { font-size:12px; margin:0 0 3px; }
+ #v9-view-rosters .roster-controls,#v9-view-rosters .controls { gap:6px; }
+ #byePanel .bye-summary { font-size:11px; line-height:1.35; }
+ #byePanel .bye-summary::after { content:" · Tap team rows to expand"; color:#9fc2d5; font-size:10px; }
+ #byePanel .controls { width:auto; gap:5px; }
+ #byePanel .panel-title { align-items:center; }
+ #byeTable td,#byeTable th { font-size:11px; padding:5px 4px; }
+ #byeTable td:first-child,#byeTable th:first-child { min-width:114px; max-width:126px; }
+ #byeTable td:nth-child(2),#byeTable th:nth-child(2) { min-width:56px; }
+ #byeTable td,#byeTable th { min-width:94px; }
+ #byeTable .risk-number { font-size:11px; }
+ #byeTable .risk-players,#byeTable .risk-cover { display:-webkit-box; -webkit-box-orient:vertical; -webkit-line-clamp:1; overflow:hidden; font-size:9px; line-height:1.2; }
+ #byeTable tbody tr.bye-expanded .risk-players,#byeTable tbody tr.bye-expanded .risk-cover { display:block; overflow:visible; }
+ #byeTable tbody tr { cursor:pointer; }
+ #byeTable tbody tr:focus-visible { outline:2px solid var(--teal); outline-offset:-2px; }
+ #byePanel #byeSource { font-size:10px; }
+ #hqToiletTable th,#hqToiletTable td { font-size:11px; padding:6px 4px; }
+ body.rz-immersive-mode main.wrap { padding:0 7px 8px; }
+ #v9-view-games .rz-stadium { margin:0 0 7px; padding:12px 9px 9px; }
+ #v9-view-games .rz-brandtop { font-size:clamp(23px,6.7vw,34px); }
+ #v9-view-games .rz-brandsub { font-size:clamp(29px,8vw,39px); }
+ #v9-view-games .rz-tagline { margin-top:3px; font-size:8px; letter-spacing:.12em; }
+ #v9-view-games .rz-head-controls { margin-top:9px; gap:6px; }
+ #v9-view-games .rz-switcher { gap:6px; }
+ #v9-view-games .rz-head-controls button,#v9-view-games .rz-head-controls select { font-size:10px; padding:7px 9px; min-height:34px; }
+ #v9-view-games .rz-head-right { gap:7px; }
+ #v9-view-games .rz-feature-head { padding:8px 10px; }
+ #v9-view-games .rz-match-score { gap:7px 11px; padding:9px 12px 10px; }
+ #v9-view-games .rz-center-clock { padding-bottom:7px; }
+ #v9-view-games .rz-center-clock .time { font-size:clamp(24px,7vw,30px); }
+ #v9-view-games .rz-team-side,#v9-view-games .rz-team-side.rz-right { gap:6px; }
+ #v9-view-games .rz-team-logo { height:31px; width:31px; }
+ #v9-view-games .rz-main-pts { font-size:clamp(30px,8.5vw,38px); }
+ #v9-view-games .rz-main-abbr { margin-top:2px; }
+ #v9-view-games .rz-svg-field { aspect-ratio:4.6; }
+ #v9-view-games .rz-field-container { padding:0 8px; }
+ #v9-view-games .rz-statrow { margin:6px 8px 0; }
+ #v9-view-games .rz-statrow>* { padding:7px 5px; font-size:10px; line-height:1.23; }
+ #v9-view-games .rz-statrow>*:first-child { font-size:11px; }
+ #v9-view-games .rz-feature-sub { padding:7px 8px; }
+ #v9-view-games .rz-feature-callout { padding:8px; }
+ #v9-view-games .rz-call-desc { font-size:13px; line-height:1.3; }
+ #v9-view-games .rz-call-note { font-size:11px; line-height:1.24; }
+ #v9-view-games .rz-play-detail { padding:0 8px 8px; }
+ #v9-view-games .rz-all-head { margin:10px 3px 6px; }
+ #v9-view-games .rz-all-head select { padding:7px 8px; min-height:34px; }
+ #v9-view-games .rz-cinema-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:6px; }
+ #v9-view-games .rz-cinema-game { padding:8px; }
+ #v9-view-games .rz-cinema-game .rz-game-meta { font-size:9px; gap:3px; }
+ #v9-view-games .rz-cinema-game .rz-mini-logo { width:20px; height:20px; }
+ #v9-view-games .rz-cinema-game .rz-mini-abbr { font-size:12px; }
+ #v9-view-games .rz-cinema-game .rz-mini-pts { font-size:19px; }
+ #v9-view-games .rz-cinema-game .rz-game-drive { font-size:10px; }
+ #v9-view-games .rz-cinema-game .rz-one-team { grid-template-columns:20px minmax(0,1fr) auto; gap:4px; }
+ #v9-view-games .rz-game-meta .rz-rzbadge { padding:3px 5px; font-size:9px; }
+ #v9-view-games .rz-live-impact { margin-top:7px; padding:9px; }
+ #v9-view-games .rz-ticker { margin-top:8px; }
+ #v9-view-games .rz-stamp { font-size:10px; }
+}
+@media(max-width:365px) {
+ #v9-view-games .rz-cinema-grid { grid-template-columns:repeat(2,minmax(0,1fr)); gap:5px; }
+ #v9-view-games .rz-cinema-game { padding:6px; }
+ #v9-view-games .rz-cinema-game .rz-game-meta { font-size:8px; }
+ #v9-view-games .rz-cinema-game .rz-mini-abbr { font-size:11px; }
+ #v9-view-games .rz-cinema-game .rz-mini-pts { font-size:18px; }
+ #v9-view-games .rz-cinema-game .rz-one-team { gap:3px; }
+ #v9-view-games .rz-cinema-game .rz-game-drive { font-size:9px; }
+ #v9-view-games .rz-match-score { gap:6px; padding:8px 9px; }
+ #v9-view-games .rz-feature-head { grid-template-columns:minmax(0,1fr) auto; gap:4px; font-size:9px; }
+ #v9-view-games .rz-feature-head>span:last-child { justify-self:end; font-size:9px; white-space:nowrap; }
+}
+
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v7</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -1469,9 +1848,9 @@ function initV9(){
  const panels=Array.from(document.querySelectorAll('main.wrap > section.panel'));
  const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
  panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
- const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3</span>';}
- document.title='Sunday Funday — RedZone v9.3';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
+ const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3.2</span>';}
+ document.title='Sunday Funday — RedZone v9.3.2';
+ const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.2 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
  rzInit();
  document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
  el('hqAllGames').addEventListener('click',()=>hqTab('games'));
@@ -1719,7 +2098,7 @@ async function rzSleeper(){if(hqActive!=='games'||document.hidden||source!=='sle
 
 /* Cinematic RedZone v9.3. Preserves all 9.2 API calls, autosync, and fantasy model. */
 const rzLogoURL=c=>{const url=String(c?.team?.logo||c?.team?.logos?.[0]?.href||'');return /^https:\/\/(?:[^/]+\.)?espn(?:cdn)?\.com\//i.test(url)?url:''};
-const rzLogo=c=>{const url=rzLogoURL(c);return '<strong class="rz-logo-fallback">'+safe(rzAbbr(c))+'</strong>'+(url?'<img alt="" loading="lazy" src="'+safe(url)+'">':'')};
+const rzLogo=c=>{const url=rzLogoURL(c);return '<strong class="rz-logo-fallback">🏈</strong>'+(url?'<img alt="" loading="lazy" onerror="this.remove()" src="'+safe(url)+'">':'')};
 const rzKickoff=g=>{try{return new Date(g.date).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'})}catch(_){return 'Scheduled'}};
 function rzSortedGames(){return rzGames.slice().sort((a,b)=>Number(rzIsLive(b))-Number(rzIsLive(a))||Number(!!rzSituation(b)?.isRedZone)-Number(!!rzSituation(a)?.isRedZone)||rzPlayersInGame(b).length-rzPlayersInGame(a).length||new Date(a.date)-new Date(b.date))}
 function rzGameScore(c,live){return live||c?.score&&rzState(c)!=='STATUS_SCHEDULED'?safe(c?.score??'—'):'—'}
@@ -1773,5 +2152,26 @@ function rzRender(){const grid=el('rzGrid');if(!grid)return;
 }
 
 initV9();boot();
+
+/* v9.3.2: full bye details remain available by tapping a row on a phone. */
+(function(){
+ const table=document.getElementById('byeTable');
+ if(!table)return;
+ table.addEventListener('click',event=>{
+   if(!window.matchMedia('(max-width:600px)').matches)return;
+   const tr=event.target.closest('tbody tr');if(!tr)return;
+   tr.classList.toggle('bye-expanded');tr.setAttribute('aria-expanded',String(tr.classList.contains('bye-expanded')));
+ });
+ table.addEventListener('keydown',event=>{
+   if(!window.matchMedia('(max-width:600px)').matches)return;
+   if(event.key!=='Enter'&&event.key!==' ')return;
+   const tr=event.target.closest('tbody tr');if(!tr)return;
+   event.preventDefault();tr.click();
+ });
+ const refresh=window.renderByeTable;
+ if(typeof refresh==='function')window.renderByeTable=function(...args){const v=refresh(...args);table.querySelectorAll('tbody tr').forEach(tr=>{tr.tabIndex=0;tr.setAttribute('aria-expanded','false')});return v};
+ table.querySelectorAll('tbody tr').forEach(tr=>{tr.tabIndex=0;tr.setAttribute('aria-expanded','false')});
+})();
+
 
 </script></body></html>
