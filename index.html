@@ -862,7 +862,8 @@ td { padding:7px 6px; }
 <label class="control">Fixed SD <input id="scoreSd" type="number" min="8" max="60" step="1" value="22"></label>
 <label class="control">Seed <input id="seed" type="number" value="20261012"></label></div>
 </div></details>
-<p class="section-intro" style="margin-top:9px">Regular rank = projected standings after Week 15. Final rank = projected finishing order after both playoff brackets. These are positions, not points. Win percentages use predicted scoring averages and volatility.</p>
+<p class="section-intro" style="margin-top:9px">Regular rank orders teams by average simulated wins; it is not their most likely exact position. The <b>Playoffs</b> and <b>Toilet</b> percentages show how often each team reaches those brackets across 50,000 simulated seasons. They are probabilities, not confirmed destinations.</p>
+<div id="forecastFreshness" class="statusline warn" role="status" style="margin:8px 0">Waiting for fresh Sleeper data. No outdated offline forecast is being presented as current.</div>
 <div class="tablewrap"><table id="forecastTable"><thead><tr><th data-sort="name">Team</th><th data-sort="current">Current rank</th><th data-sort="projReg">Regular rank</th><th data-sort="expWins">Est. wins</th><th data-sort="playoff">Playoffs</th><th data-sort="toilet">Toilet</th><th data-sort="champ">Champion</th><th data-sort="last">💩 Last</th><th data-sort="projFinal">Final rank</th></tr></thead><tbody></tbody></table></div>
 </section>
 <section class="panel" id="accuracyLab"><div class="panel-title"><h2>🧪 Model Accuracy Lab</h2></div>
@@ -1242,7 +1243,15 @@ function simulate(){
  return {sims,finish,playoff,toilet,champ,last,expWins,expPF,expFinish,cur:inverse(currentOrder()),projReg:inverse(regOrder),projFinal:inverse(finalOrder),strength,sigma,regression:cfg.regK,maxSignal:cfg.maxSignal};
 }
 
-function startSimulation(){if(busy)return;busy=true;el('runBtn').disabled=true;el('runBtn').textContent='Running…';
+function startSimulation(){
+ if(source!=='sleeper'){
+  model=null;
+  el('forecastTable').querySelector('tbody').innerHTML='<tr><td colspan="9" style="text-align:left">Waiting for Sleeper sync. A four-week historical sample is not a current projection.</td></tr>';
+  updateForecastFreshness();
+  status('Waiting for Sleeper live standings before producing a forecast.', 'warn');
+  return;
+ }
+ if(busy)return;busy=true;el('runBtn').disabled=true;el('runBtn').textContent='Running…';
  requestAnimationFrame(()=>setTimeout(()=>{
   try{model=simulate();renderForecast();renderMatrix();el('simCard').textContent=model.sims.toLocaleString('en-GB');
    if(source==='sleeper')status('✓ Synced Sleeper data. Monte Carlo model updated with <b>'+model.sims.toLocaleString('en-GB')+' simulated seasons</b> and confirmed standings.','ok');
@@ -1251,12 +1260,26 @@ function startSimulation(){if(busy)return;busy=true;el('runBtn').disabled=true;e
   finally{busy=false;el('runBtn').disabled=false;el('runBtn').textContent='▶ Run '+Number(el('simCount').value).toLocaleString('en-GB')+' simulations';}
  },20));
 }
-function renderForecast(){if(!model)return;const rows=teams.map((t,i)=>({t,i,current:model.cur[i],projReg:model.projReg[i],expWins:model.expWins[i],playoff:model.playoff[i]/model.sims,
+function updateForecastFreshness(){
+ const target=el('forecastFreshness');if(!target)return;
+ const stamp=Number(live?.syncedAt||0),age=stamp?Date.now()-stamp:Infinity;
+ if(source!=='sleeper'){
+  target.className='statusline warn';
+  target.textContent='Waiting for the current Sleeper standings. The saved Week 4 example is not a live projection.';
+ }else if(!stamp||age>60*60*1000){
+  target.className='statusline warn';
+  target.textContent='Cached Sleeper data'+(stamp?' from '+new Date(stamp).toLocaleString('en-GB'):'')+'. Probabilities can change after the next successful sync.';
+ }else{
+  target.className='statusline ok';
+  target.textContent='Sleeper synced '+new Date(stamp).toLocaleString('en-GB')+' · Forecast covers 10 teams after Week '+completedWeeks+'. Positions are estimates, not confirmed brackets.';
+ }
+}
+function renderForecast(){updateForecastFreshness();if(!model)return;const rows=teams.map((t,i)=>({t,i,current:model.cur[i],projReg:model.projReg[i],expWins:model.expWins[i],playoff:model.playoff[i]/model.sims,
  toilet:model.toilet[i]/model.sims,champ:model.champ[i]/model.sims,last:model.last[i]/model.sims,projFinal:model.projFinal[i],expFinal:model.expFinish[i]}));
  const {key,dir}=sortState,fac=dir==='asc'?1:-1;
  rows.sort((a,b)=>key==='name'?fac*a.t.name.localeCompare(b.t.name):fac*((a[key]??0)-(b[key]??0))||a.t.name.localeCompare(b.t.name));
  el('forecastTable').querySelector('tbody').innerHTML=rows.map(x=>{
-  const zone=x.projReg<=4?'<span class="pill playoff">Playoffs</span>':x.projReg>=7?'<span class="pill toilet">Toilet</span>':'<span class="pill middle">5th–6th</span>';
+  const zone='<span class="record-line">'+x.t.w+'–'+x.t.l+' · '+fmt(x.t.pf/Math.max(1,x.t.w+x.t.l+(x.t.ties||0)),1)+' pts/wk</span>';
   return '<tr><td><div class="team">'+safe(x.t.name)+'</div><div class="small">'+zone+'</div></td><td>'+ord(x.current)+'</td><td><b>'+ord(x.projReg)+'</b></td><td>'+fmt(x.expWins,1)+'</td>'+[
    '<td class="barcell"><div class="pct">'+pct(x.playoff)+'</div><div class="bar"><i style="width:'+(x.playoff*100)+'%"></i></div></td>',
    '<td class="barcell"><div class="pct">'+pct(x.toilet)+'</div><div class="bar red"><i style="width:'+(x.toilet*100)+'%"></i></div></td>',
@@ -1756,7 +1779,7 @@ function setupCopyControls(){
 
 function boot(){const prior=read(ID_KEY);if(prior&&/^\d+$/.test(prior))el('leagueId').value=prior;
  const saved=read(STANDINGS_KEY);if(saved?.league?.league_id&&String(saved.league.league_id)===el('leagueId').value){try{saved.playerMap=read(PLAYERS_KEY)?.map||{};hydrate(saved);warnings.push('Displaying cached Sleeper data until refreshed.');}catch(e){console.warn('Cached league ignored',e)}}
- renderAll();initLab();startSimulation();el('syncBtn').addEventListener('click',sync);el('runBtn').addEventListener('click',startSimulation);
+ renderAll();initLab();updateForecastFreshness();startSimulation();el('syncBtn').addEventListener('click',sync);el('runBtn').addEventListener('click',startSimulation);
  el('csvBtn').addEventListener('click',exportCSV);setupCopyControls();
  el('weekSelect').addEventListener('change',renderMatchups);el('rosterSelect').addEventListener('change',renderRoster);
  el('byeStart').addEventListener('change',renderByeTable);el('byeSpan').addEventListener('change',renderByeTable);
@@ -1849,8 +1872,8 @@ function initV9(){
  const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
  panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
  const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3.2</span>';}
- document.title='Sunday Funday — RedZone v9.3.2';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.2 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
+ document.title='Sunday Funday — RedZone v9.3.3';
+ const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.3 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
  rzInit();
  document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
  el('hqAllGames').addEventListener('click',()=>hqTab('games'));
@@ -1908,7 +1931,7 @@ function hqSaveWeek(){
 function renderHQ(){
  if(hqRendering)return;hqRendering=true;
  try{
- const synced=source==='sleeper';el('hqSource').textContent=synced?'● Sleeper synced':'○ Offline snapshot';
+ const synced=source==='sleeper';const hqAge=Date.now()-Number(live?.syncedAt||0);el('hqSource').textContent=synced?(hqAge<3600000?'● Sleeper synced':'○ Cached Sleeper — refresh'):'○ Awaiting Sleeper';
  if(!model){el('hqGreeting').textContent='Every team. Every possible ending.';el('hqIntro').textContent='Sync Sleeper and run the simulation for updated forecasts.';return}
  const all=teams.map((t,i)=>({t,i,ch:model.champ[i]/model.sims,po:model.playoff[i]/model.sims,tb:model.toilet[i]/model.sims,lp:model.last[i]/model.sims,str:model.strength[i]}));
  const king=[...all].sort((a,b)=>b.ch-a.ch)[0],last=[...all].sort((a,b)=>b.lp-a.lp)[0];
