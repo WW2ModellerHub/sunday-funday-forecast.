@@ -901,7 +901,7 @@ td { padding:7px 6px; }
 </section>
 <section class="panel data-quality"><div class="panel-title"><h2>🔎 Data quality</h2></div>
 <div id="quality" class="note"></div>
-<details class="model-details"><summary>Method & limitations</summary><p class="note">Scores are regression-adjusted; Max PF is a relative roster-depth signal; weekly SD is measured where possible. No future player projections or injury modelling. Bye penalties and custom brackets are approximate. Live weeks stay provisional.</p></details></section>
+<details class="model-details"><summary>Method & limitations</summary><p class="note">Scores are regression-adjusted; Max PF is a relative roster-depth signal; weekly SD is measured where possible. No future player projections or injury modelling. Bye-week replacement scoring is approximate, including low-end waiver estimates for uncovered positions; custom brackets are also approximate. Live weeks stay provisional.</p></details></section>
 <footer>Sunday Funday v9 · Rolling bye-week risk · Sleeper read-only</footer>
 </main><div class="copy-toast" id="copyToast" role="status" aria-live="polite" hidden></div>
 <div class="copy-overlay" id="copyOverlay" hidden role="dialog" aria-modal="true" aria-label="Manually copy table">
@@ -1828,15 +1828,50 @@ function hqBestLineup(team,week,applyBye){
  }
  return Number.isFinite(dp[size-1])?dp[size-1]:null;
 }
-const originalByeImpact=byeImpact;
+/* v9.3.4 — position-specific replacement model.
+ * Old code charged up to 25% of the entire team score for even a SINGLE
+ * missing kicker/defence. This produced unrealistic weekly deductions.
+ * Approximate a legal best lineup with low-end waiver replacements for
+ * uncovered positions, rather than treating missing starters as a zero.
+ * This is an estimated replacement baseline, not a projection for a named free agent.
+ */
+const previousByeImpact=byeImpact;
+const STREAM_REPLACEMENT={QB:14,RB:7.5,WR:7.2,TE:5.5,WRRB_FLEX:6.7,FLEX:6.7,REC_FLEX:6.5,SUPER_FLEX:7,K:6.0,DEF:6.0};
+function hqLineupWithStreaming(team,week){
+ const rs=rosterFor(team),slots=source==='sleeper'?activeSlots(leagueInfo):['QB','RB','RB','WR','WR','TE','FLEX','FLEX','K','DEF'];
+ if(!rs.length||!slots.length||slots.length>13||rs.length>35)return null;
+ const byes=nflByes[week]||[];
+ const available=rs.filter(p=>!p.empty&&p.id!=='0'&&!['IR','TAXI','RES'].includes(p.slot)&&p.pos&&p.nfl&&!byes.includes(p.nfl));
+ const size=1<<slots.length,dp=new Float64Array(size).fill(-Infinity);dp[0]=0;
+ for(const p of available){
+  const value=hqPlayerProxy(p);
+  for(let mask=size-1;mask>=0;mask--){
+   if(!Number.isFinite(dp[mask]))continue;
+   for(let j=0;j<slots.length;j++){
+    const bit=1<<j;
+    if((mask&bit)||!positionalEligibility(p.pos,slots[j]))continue;
+    const target=mask|bit;
+    dp[target]=Math.max(dp[target],dp[mask]+value);
+   }
+  }
+ }
+ let best=-Infinity;
+ for(let mask=0;mask<size;mask++){
+  if(!Number.isFinite(dp[mask]))continue;
+  let total=dp[mask];
+  for(let j=0;j<slots.length;j++)if(!(mask&(1<<j)))total+=(STREAM_REPLACEMENT[slots[j]]??6);
+  if(total>best)best=total;
+ }
+ return Number.isFinite(best)?best:null;
+}
 byeImpact=function(team,week){
- const old=originalByeImpact(team,week),noBye=hqBestLineup(team,week,false),withBye=hqBestLineup(team,week,true);
- if(noBye===null)return old;
- // When no complete eligible lineup exists, conservatively charge an approximate missing-slot penalty.
- const estimate=withBye===null?Math.max(old.pts,Math.max(0,noBye)*.25):Math.max(0,noBye-withBye);
- return {...old,pts:estimate,applied:true};
+ const old=previousByeImpact(team,week);
+ if(source!=='sleeper')return old;
+ const before=hqBestLineup(team,week,false);
+ const after=hqLineupWithStreaming(team,week);
+ if(before===null||after===null)return old;
+ return {...old,pts:Math.max(0,before-after),applied:true,replacementMethod:'position-specific streaming'};
 };
-
 
 /* V9 HEADQUARTERS: keep the established v7 engine, add presentation and calibrated head-to-head insights. */
 let hqActive='home', hqSnapshots={}, hqSnapshotKey='', hqRendering=false;
@@ -1871,9 +1906,9 @@ function initV9(){
  const panels=Array.from(document.querySelectorAll('main.wrap > section.panel'));
  const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
  panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
- const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3.2</span>';}
- document.title='Sunday Funday — RedZone v9.3.3';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.3 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
+ const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3.4</span>';}
+ document.title='Sunday Funday — RedZone v9.3.4';
+ const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.4 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
  rzInit();
  document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
  el('hqAllGames').addEventListener('click',()=>hqTab('games'));
