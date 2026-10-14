@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#07111f"><title>Sunday Funday — v7 Rolling Byes</title>
+<meta name="theme-color" content="#07111f"><title>Sunday Funday — v10</title>
 <style>
 :root{
   --bg:#07111f; --panel:#0d1b2d; --panel2:#10243a; --line:#24384f;
@@ -965,8 +965,19 @@ td { padding:7px 6px; }
  #v9-view-games .rz-cinema-game .rz-mini-abbr {font-size:12px;}
  #v9-view-games .rz-cinema-game .rz-mini-pts {font-size:17px;}
 }
+
+/* v10 broadcast, probability, records and spotlight additions */
+.v10-ticker{display:flex;align-items:center;gap:10px;overflow:hidden;margin:9px 0 12px;padding:9px 12px;border:1px solid #28516a;border-radius:12px;background:linear-gradient(90deg,#0b2637,#102338)}
+.v10-ticker strong{flex:none;color:#ff6677;font-size:10px;letter-spacing:.12em}.v10-ticker-track{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:#d8e7f5;font-size:12px}
+.v10-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:10px}.v10-card{background:#0c2033;border:1px solid #27445e;border-radius:14px;padding:13px}
+.v10-card h3{margin:0 0 9px;font-size:15px}.v10-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:10px;align-items:center;padding:7px 0;border-top:1px solid #1f3b51;font-size:12px}.v10-row:first-of-type{border-top:0}
+.v10-pill{display:inline-flex;padding:4px 7px;border-radius:999px;background:#15374b;color:#7ff4d9;font-size:10px;font-weight:900}.v10-muted{color:#91a8bd;font-size:11px;line-height:1.45}
+.v10-prob{margin-top:8px}.v10-prob-head{display:flex;justify-content:space-between;gap:8px;font-size:11px}.v10-prob-track{height:9px;margin-top:5px;background:#61283a;border-radius:99px;overflow:hidden}.v10-prob-track i{display:block;height:100%;background:linear-gradient(90deg,#20d6b2,#62f1cf);border-radius:inherit}
+.v10-spotlight{display:grid;grid-template-columns:150px minmax(0,1fr);gap:13px;align-items:start}.v10-avatar{aspect-ratio:1;border-radius:18px;display:grid;place-items:center;background:radial-gradient(circle at 30% 20%,#285d79,#0a1726 72%);font-size:44px;border:1px solid #31566e}.v10-big{font-size:24px;font-weight:1000;letter-spacing:-.04em}.v10-record{display:grid;grid-template-columns:42px minmax(0,1fr);gap:10px;padding:10px 0;border-top:1px solid #213c51}.v10-record:first-child{border-top:0}.v10-record .icon{font-size:27px}.v10-record b{display:block}.v10-record small{color:#91a8bd}
+.v10-tv-button{background:#ff334f!important;color:#fff!important;border-color:#ff6d80!important}.v10-tv-exit{display:none;position:fixed;right:18px;top:18px;z-index:10002}.v10-tv .v10-tv-exit{display:block}.v10-tv #hqnav,.v10-tv main.wrap>header,.v10-tv #rzAllGames,.v10-tv #rzFantasyPanel{display:none!important}.v10-tv main.wrap{max-width:none;padding:0}.v10-tv #v9-view-games{padding:0}.v10-tv .rz-cinema{min-height:100vh;border-radius:0;margin:0;padding:clamp(12px,2vw,28px)}
+@media(max-width:700px){.v10-grid{grid-template-columns:1fr}.v10-spotlight{grid-template-columns:85px minmax(0,1fr)}.v10-avatar{font-size:30px}.v10-big{font-size:19px}.v10-ticker{margin-bottom:8px}.v10-row{padding:6px 0}}
 </style></head><body><main class="wrap">
-<header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v7</span></h1>
+<header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
 </header>
 <section class="panel"><div class="panel-title"><h2>⚡ Sleeper league connection</h2><div class="small" id="lastSync">Not yet synced</div></div>
@@ -2012,36 +2023,41 @@ function initV9(){
 <button type="button" data-hq="games"><span class="ico">🔴</span>RedZone</button>
 <button type="button" data-hq="rosters"><span class="ico">👥</span>Teams</button>
 <button type="button" data-hq="toilet"><span class="ico">💩</span>Toilet</button>
+<button type="button" data-hq="records"><span class="ico">🏅</span>Records</button>
 </nav>
 <div id="v9-view-home" class="hqview active">
  <div class="hqhero"><div class="hqrow"><span class="eyebrow">Sunday Funday · 2026</span><span id="hqSource" class="small">Offline preview</span></div>
   <h2 id="hqGreeting">Every team. Every possible ending.</h2><p id="hqIntro">Live Sleeper results with 50,000 simulated seasons. Sync to refresh.</p></div>
- <div id="hqMetrics" class="hqmetrics"></div>
+  <div id="hqMetrics" class="hqmetrics"></div>
+  <div class="v10-ticker" aria-live="polite"><strong>BREAKING</strong><div class="v10-ticker-track" id="v10Ticker">Sync Sleeper for verified league headlines. No fictional news is shown.</div></div>
  <div class="hqtwocol"><section class="hqpanel"><h3>🔥 League headlines</h3><div id="hqHeadlines" class="hqempty">Run the simulation to see the latest league picture.</div></section>
  <section class="hqpanel"><div class="hqrow"><h3>⚔️ Week at a glance</h3><button type="button" class="secondary" id="hqAllGames" style="font-size:11px">All games →</button></div><p class="hqcaption">All five fantasy matchups and every NFL game in one place.</p><p class="hqcaption">NFL plays can appear independently of Sleeper scoring updates.</p></section></div>
  <section class="hqpanel"><div class="hqrow"><h3>📈 Power rankings</h3><button type="button" class="secondary copy-action" data-copy-target="hqPowerTable">Copy</button></div>
  <div class="tablewrap"><table id="hqPowerTable" class="hqtable"><thead><tr><th>Rank</th><th>Team</th><th>Record</th><th>PF / week</th><th>Power</th><th>Change</th></tr></thead><tbody></tbody></table></div><p class="hqcaption" id="hqMovementNote">Probability changes will be shown after snapshots are saved on this device in multiple weeks.</p></section>
  <section class="panel" id="v9-connection"></section>
 </div>
-<div id="v9-view-forecast" class="hqview"></div>
+<div id="v9-view-forecast" class="hqview"><section class="hqpanel"><div class="hqrow"><h3>📍 Live playoff picture</h3><div><span class="v10-pill" id="v10PlayoffStamp">MODEL</span> <button id="v10LabBtn" class="secondary" type="button" style="font-size:11px">🧪 Accuracy Lab</button></div></div><div id="v10Playoff"><p class="v10-muted">Run the forecast to calculate the top-four race.</p></div></section></div>
 <div id="v9-view-games" class="hqview"></div>
-<div id="v9-view-rosters" class="hqview"></div>
+<div id="v9-view-rosters" class="hqview"><section class="hqpanel"><div class="hqrow"><h3>⭐ Player spotlight</h3><label class="control">Player <select id="v10PlayerSelect" aria-label="Player spotlight"></select></label></div><div id="v10Spotlight"><p class="v10-muted">Sync Sleeper to explore every rostered player.</p></div></section></div>
 <div id="v9-view-toilet" class="hqview">
  <section class="hqhero"><div class="eyebrow">Bottom four · Two-round bracket</div><h2>💩 Toilet Bowl headquarters</h2><p>Last place is decided in the Toilet Bowl, not simply by finishing 10th in the regular season.</p></section>
  <section class="hqpanel"><div class="hqrow"><h3>Race for the 💩 crown</h3><button type="button" class="secondary copy-action" data-copy-target="hqToiletTable">Copy table</button></div><div class="tablewrap" style="overflow-x:visible"><table id="hqToiletTable" class="hqtable"><thead><tr><th>Team</th><th>Toilet Bowl</th><th>Finishes last</th><th>Projected finish</th></tr></thead><tbody></tbody></table></div></section>
 </div>
-<div id="v9-view-lab" class="hqview"></div>
+<div id="v9-view-lab" class="hqview"><section class="hqhero"><div class="hqrow"><div><div class="eyebrow">Prediction audit</div><h2>🧪 Accuracy & calibration</h2></div><button id="v10BackForecast" class="secondary" type="button">← Forecast</button></div><p>Compare model settings on earlier weeks, then judge the selected model on a later holdout. A winner is not applied unless the sample meets the built-in reliability threshold.</p></section></div>
+<div id="v9-view-records" class="hqview"><section class="hqhero"><div class="eyebrow">League history · verified loaded results</div><h2>🏅 Hall of Fame & Shame</h2><p>Records are calculated only from completed Sleeper matchup scores available on this device.</p></section><div class="v10-grid"><section class="v10-card"><h3>🏆 Hall of Fame</h3><div id="v10Fame"><p class="v10-muted">Sync Sleeper to calculate records.</p></div></section><section class="v10-card"><h3>🫣 Hall of Shame</h3><div id="v10Shame"><p class="v10-muted">Sync Sleeper to calculate records.</p></div></section></div></div>
 `);
  const panels=Array.from(document.querySelectorAll('main.wrap > section.panel'));
  const mappings=['home','forecast','lab','forecast','forecast','games','games','rosters','rosters','toilet','lab'];
  panels.forEach((p,i)=>{if(i===0){el('v9-connection').replaceWith(p);p.id='v9-connection';}else el('v9-view-'+(mappings[i]||'lab')).appendChild(p)});
- const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v9.3.4</span>';}
- document.title='Sunday Funday — RedZone v9.3.4';
- const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v9.3.4 · Powered by public Sleeper data · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
+  const h=header.querySelector('h1');if(h){h.innerHTML='Sunday Funday <span style="color:var(--teal)">v10</span>';}
+  document.title='Sunday Funday — v10';
+  const p=document.querySelector('main.wrap > footer');if(p){p.textContent='Sunday Funday v10 · Public Sleeper data · Independent NFL feed · Forecasts are estimates';el('v9-view-lab').appendChild(p)}
  rzInit();
  document.querySelectorAll('[data-hq]').forEach(b=>b.addEventListener('click',()=>hqTab(b.dataset.hq)));
- el('hqAllGames').addEventListener('click',()=>hqTab('games'));
- const qs=new URLSearchParams(location.search),tab=qs.get('tab');if(['home','forecast','games','rosters','toilet'].includes(tab))hqTab(tab);
+  el('hqAllGames').addEventListener('click',()=>hqTab('games'));
+  el('v10LabBtn')?.addEventListener('click',()=>hqTab('lab'));el('v10BackForecast')?.addEventListener('click',()=>hqTab('forecast'));
+  el('v10PlayerSelect')?.addEventListener('change',v10RenderSpotlight);
+  const qs=new URLSearchParams(location.search),tab=qs.get('tab');if(['home','forecast','games','rosters','toilet','records'].includes(tab))hqTab(tab);
 }
 function hqTab(tab){
  hqActive=tab;document.body.classList.toggle('rz-immersive-mode',tab==='games');document.querySelectorAll('.hqview').forEach(v=>v.classList.toggle('active',v.id==='v9-view-'+tab));
@@ -2125,8 +2141,9 @@ function renderHQ(){
  return `<tr><td>${n+1}</td><td>${safe(x.t.name)}</td><td>${x.t.w}–${x.t.l}</td><td>${fmt(x.t.pf/Math.max(1,x.t.w+x.t.l),1)}</td><td>${fmt(x.str,1)}</td><td style="color:${shift>0?'#75e8a7':shift<0?'#ff9daa':'#9aadc2'}">${shift==null?'—':(shift>0?'+':'')+fmt(shift,1)+'pp'}</td></tr>`}).join('');
  el('hqToiletTable').querySelector('tbody').innerHTML=[...all].sort((a,b)=>b.lp-a.lp).map(x=>`<tr><td>${safe(x.t.name)}</td><td>${hqPct(x.tb)}</td><td><b style="color:#ff9daa">${hqPct(x.lp)}</b></td><td>${ord(model.projFinal[x.i])}</td></tr>`).join('');
  if(synced)hqSaveWeek();
- rzUpdateFantasyStamp();
- }finally{hqRendering=false}
+  rzUpdateFantasyStamp();
+  renderV10();
+  }finally{hqRendering=false}
 }
 function renderHQMatchups(){
  if(!model||!el('matchupCards'))return;
@@ -2139,13 +2156,13 @@ function renderHQMatchups(){
   const pair=fixtures[i];if(!pair||pair.p==null)return;
   const a=hqProjectedScore(pair.a,w),b=hqProjectedScore(pair.b,w);if(!a||!b)return;
   const strip=document.createElement('div');strip.className='model-outlook';
-  strip.innerHTML='<div>Projected points: <b>'+safe(pair.a)+' '+fmt(a.mu,1)+'</b> · <b>'+safe(pair.b)+' '+fmt(b.mu,1)+'</b></div><div class="chance">Win probability: '+safe(pair.a)+' '+hqPct(pair.p)+' / '+safe(pair.b)+' '+hqPct(1-pair.p)+'</div>';
+   strip.innerHTML='<div>Projected points: <b>'+safe(pair.a)+' '+fmt(a.mu,1)+'</b> · <b>'+safe(pair.b)+' '+fmt(b.mu,1)+'</b></div><div class="chance">Win probability: '+safe(pair.a)+' '+hqPct(pair.p)+' / '+safe(pair.b)+' '+hqPct(1-pair.p)+'</div><div class="v10-prob" role="img" aria-label="'+safe(pair.a)+' '+hqPct(pair.p)+' win probability"><div class="v10-prob-head"><span>'+safe(pair.a)+'</span><span>'+safe(pair.b)+'</span></div><div class="v10-prob-track"><i style="width:'+fmt(pair.p*100,1)+'%"></i></div></div>';
   node.appendChild(strip);
  });
 }
 const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
-const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();rzUpdateFantasyStamp()};
+const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp()};
 
 
 const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();return hqOldHydrate(...args)};
@@ -2163,14 +2180,14 @@ function rzInit(){
  gameView.insertAdjacentHTML('afterbegin',`<div class="rz-cinema">
   <header class="rz-stadium"><div class="rz-brand"><div class="rz-brandtop"><span class="ball">🏈</span>Sunday Funday</div><div class="rz-brandsub">REDZONE <span class="rz-live-dot" title="Live when data arrives"></span></div><div class="rz-tagline">Fantasy football for the lads</div></div>
    <div class="rz-head-controls"><div class="rz-switcher"><button id="rzNFL" type="button" class="active">🏈 NFL REDZONE</button><button id="rzFantasyButton" type="button">🏆 Fantasy scores</button></div>
-   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button></div></div></header>
+   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button><button id="v10TV" class="v10-tv-button" type="button" title="Full-screen Sunday Funday TV">▣ TV</button></div></div></header>
   <div id="rzNFLPanel" class="rznfl"><section class="rz-featured"><div class="rz-feature-head"><span><span class="rz-live-dot"></span> NFL · FEATURED GAME</span><span id="rzFeaturedBadge">AWAITING GAME</span></div><div id="rzFocus"><div class="rz-empty">Connecting to NFL scoreboard…</div></div></section>
   <div class="rz-all-head"><h3>▮ ALL GAMES</h3><label><select id="rzFilter" aria-label="Filter NFL games"><option value="live">Live first</option><option value="redzone">Red zone</option><option value="all">All games</option></select></label></div>
   <div id="rzGrid" class="rz-cinema-grid"><div class="rz-empty">Loading NFL games…</div></div><section class="rz-live-impact" id="rzImpact"><h3>🔥 Sunday Funday · Fantasy impact</h3><div class="rz-impact-label">Once league rosters sync, this panel links NFL plays to the managers involved.</div></section>
   <section class="rz-ticker"><h3>⚡ Score changes since opening RedZone</h3><div id="rzAlerts" class="rzplays"><p class="rzsmall">Score changes will appear as they are reported.</p></div></section>
   <div class="rz-stamp"><span id="rzStatus">Waiting for NFL feed</span> · <span id="rzFeedNote">ESPN NFL play feed · Sleeper fantasy scoring · independent updates</span></div><p class="rzlegend">NFL plays and field positions use an unofficial feed and may be delayed or unavailable. Sleeper remains authoritative for league points. Checks run while this tab is visible; no fictional live data is used.</p></div>
   <div class="rzfantasy" id="rzFantasyPanel"><div class="rzdetail"><h3>🏆 Official Sunday Funday fantasy scores</h3><p class="rzsmall" id="rzFantasyStamp">Updating from Sleeper independently of NFL plays.</p></div></div>
- </div>`);
+  </div><button id="v10TVExit" class="v10-tv-exit secondary" type="button">Exit TV</button>`);
  const oldMatchPanel=el('matchupCards')?.closest('section.panel');
  if(oldMatchPanel){el('rzFantasyPanel').appendChild(oldMatchPanel);const title=oldMatchPanel.querySelector('h2');if(title)title.textContent='All 5 fantasy matchups';}
  const sched=el('scheduleTable')?.closest('section.panel');
@@ -2178,7 +2195,8 @@ function rzInit(){
  el('scheduleWeek')?.addEventListener('change',()=>renderSchedule());}
  el('rzWeekSelect').innerHTML=Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+'</option>').join('');el('rzWeekSelect').value=String(rzWeek);
  el('rzNFL').addEventListener('click',()=>rzSwitch('nfl'));el('rzFantasyButton').addEventListener('click',()=>rzSwitch('fantasy'));
- el('rzRefresh').addEventListener('click',()=>{rzLastNFL=0;rzLastSleeper=0;rzPoll(true)});
+  el('rzRefresh').addEventListener('click',()=>{rzLastNFL=0;rzLastSleeper=0;rzPoll(true)});
+  el('v10TV').addEventListener('click',v10ToggleTV);el('v10TVExit').addEventListener('click',v10ToggleTV);
  el('rzFilter').addEventListener('change',()=>rzRender());
  el('rzWeekSelect').addEventListener('change',()=>{rzWeek=Number(el('rzWeekSelect').value);rzFocused=null;rzDetailCache={};rzSeen.clear();rzHighlights=[];rzGames=[];rzRender();rzPoll(true)});
  document.addEventListener('visibilitychange',()=>{if(!document.hidden&&hqActive==='games')rzPoll(true)});
@@ -2344,8 +2362,50 @@ function rzRender(){const grid=el('rzGrid');if(!grid)return;
  return '<button type="button" class="rz-cinema-game'+(g.id===rzFocused?' selected':'')+(red?' hot':'')+'" data-rz-game="'+safe(g.id)+'"><div class="rz-game-meta"><span>'+state+'</span><span>'+safe(live?rzPeriod(g):final?'FT':rzKickoff(g))+'</span><span>'+(red?'<span class="rz-rzbadge">RZ</span>':'')+'</span></div><div class="rz-teamrows">'+row(sides.away)+row(sides.home)+'</div><div class="rz-game-drive">'+safe(info)+'</div></button>';}).join(''):'<div class="rz-empty">No games currently in the red zone. Choose Live first to see the rest.</div>';
  grid.querySelectorAll('[data-rz-game]').forEach(b=>b.addEventListener('click',()=>{rzFocused=b.dataset.rzGame;rzRender();rzFocusedFetch(true)}));
  const alerts=el('rzAlerts');if(alerts)alerts.innerHTML=rzHighlights.length?rzHighlights.slice(0,5).map(x=>'<div class="rzplay"><small>'+new Date(x.at).toLocaleTimeString('en-GB')+' · '+safe(x.event)+'</small>NFL score update: '+safe(x.note)+' · Fantasy scores update separately</div>').join(''):'<p class="rzsmall">No new scoring changes detected since this tab opened.</p>';
- rzRenderFocus();
+  rzRenderFocus();
+  v10RenderTicker();v10RenderSpotlight();
 }
+
+/* v10 additions. Every card below is derived from loaded Sleeper/NFL data; an
+ * unavailable feed produces an explicit empty state rather than sample data. */
+function v10ToggleTV(){
+ const entering=!document.body.classList.contains('v10-tv');document.body.classList.toggle('v10-tv',entering);
+ if(entering&&document.documentElement.requestFullscreen)document.documentElement.requestFullscreen().catch(()=>{});
+ if(!entering&&document.fullscreenElement&&document.exitFullscreen)document.exitFullscreen().catch(()=>{});
+}
+document.addEventListener('fullscreenchange',()=>{if(!document.fullscreenElement)document.body.classList.remove('v10-tv')});
+function v10AllRosteredPlayers(){
+ const rows=[];for(const t of teams)for(const p of rosterFor(t)||[])if(p&&!p.empty&&p.id&&p.id!=='0')rows.push({...p,ownerTeam:t});
+ return rows.sort((a,b)=>String(a.name).localeCompare(String(b.name)));
+}
+function v10RenderSpotlight(){
+ const select=el('v10PlayerSelect'),root=el('v10Spotlight');if(!select||!root)return;
+ const all=v10AllRosteredPlayers(),old=select.value;select.innerHTML=all.map(p=>'<option value="'+safe(p.ownerTeam.id+'|'+p.id)+'">'+safe(p.name)+' · '+safe(p.ownerTeam.name)+'</option>').join('');
+ if(old&&[...select.options].some(o=>o.value===old))select.value=old;if(!all.length){root.innerHTML='<p class="v10-muted">Sync Sleeper to load current players. No placeholder player is shown.</p>';return}
+ const [tid,pid]=String(select.value||select.options[0].value).split('|'),p=all.find(x=>String(x.ownerTeam.id)===tid&&String(x.id)===pid)||all[0];
+ const week=Math.max(1,currentWeek),entry=(weekly[week]||[]).find(x=>Number(x.roster_id)===Number(p.ownerTeam.id));const fantasy=Number(entry?.players_points?.[p.id]);
+ const nflGame=rzGames.find(g=>{const s=rzSides(g);return [rzAbbr(s.home),rzAbbr(s.away)].includes(p.nfl)}),play=nflGame?rzPlayText(nflGame):'';
+ root.innerHTML='<div class="v10-spotlight"><div class="v10-avatar" aria-hidden="true">'+safe(p.pos||'NFL')+'</div><div><div class="v10-big">'+safe(p.name)+'</div><div class="v10-muted">'+safe([p.pos,p.nfl].filter(Boolean).join(' · ')||'Position unavailable')+' · owned by <b>'+safe(p.ownerTeam.name)+'</b> · '+safe(p.slot||'roster')+'</div><div class="v10-grid" style="margin-top:10px"><div class="v10-card"><span class="v10-muted">Sleeper Week '+week+' points</span><div class="v10-big">'+(Number.isFinite(fantasy)?fmt(fantasy,1):'—')+'</div></div><div class="v10-card"><span class="v10-muted">NFL game state</span><div style="font-weight:900;margin-top:4px">'+safe(nflGame?(rzIsLive(nflGame)?rzPeriod(nflGame):rzState(nflGame).includes('FINAL')?'Final':'Scheduled'):'Feed not loaded')+'</div></div></div>'+(play?'<p class="v10-muted" style="margin:10px 0 0"><b>Latest published play:</b> '+safe(play)+'</p>':'<p class="v10-muted" style="margin:10px 0 0">Live statistics appear only when the NFL feed publishes a matching game; Sleeper remains authoritative for fantasy points.</p>')+'</div></div>';
+}
+function v10RenderPlayoff(){
+ const root=el('v10Playoff');if(!root)return;if(!model){root.innerHTML='<p class="v10-muted">Run the forecast to calculate the playoff race.</p>';return}
+ const rows=teams.map((t,i)=>({t,i,p:model.playoff[i]/model.sims,rank:model.projReg[i]})).sort((a,b)=>a.rank-b.rank);
+ root.innerHTML=rows.map((x,n)=>'<div class="v10-row"><div><b>'+(n<4?'● ':'○ ')+safe(x.t.name)+'</b><div class="v10-muted">Current '+x.t.w+'–'+x.t.l+' · projected '+ord(x.rank)+'</div></div><strong>'+hqPct(x.p)+'</strong></div>').join('');
+ const stamp=el('v10PlayoffStamp');if(stamp)stamp.textContent=(source==='sleeper'?'SLEEPER + ':'CACHED + ')+model.sims.toLocaleString('en-GB')+' SIMS';
+}
+function v10RecordLine(icon,title,detail){return '<div class="v10-record"><div class="icon">'+icon+'</div><div><b>'+safe(title)+'</b><small>'+safe(detail)+'</small></div></div>'}
+function v10RenderRecords(){
+ const fame=el('v10Fame'),shame=el('v10Shame');if(!fame||!shame)return;const games=[];
+ for(let w=1;w<=completedWeeks;w++){const entries=weekly[w]||[],by={};for(const e of entries)if(e.matchup_id!=null&&cleanScore(e)!=null)(by[e.matchup_id]??=[]).push(e);for(const pair of Object.values(by))if(pair.length===2){const a=pair[0],b=pair[1],ta=teams.find(t=>t.id===+a.roster_id),tb=teams.find(t=>t.id===+b.roster_id);if(ta&&tb)games.push({w,a:ta,b:tb,sa:cleanScore(a),sb:cleanScore(b)})}}
+ if(!games.length){fame.innerHTML=shame.innerHTML='<p class="v10-muted">No completed Sleeper matchup pairs are loaded. Sync the league or load historical seasons in the Accuracy Lab.</p>';return}
+ const perf=games.flatMap(g=>[{team:g.a.name,opp:g.b.name,score:g.sa,against:g.sb,w:g.w},{team:g.b.name,opp:g.a.name,score:g.sb,against:g.sa,w:g.w}]);
+ const high=[...perf].sort((a,b)=>b.score-a.score)[0],low=[...perf].sort((a,b)=>a.score-b.score)[0],wins=perf.filter(x=>x.score>x.against),losses=perf.filter(x=>x.score<x.against);
+ const narrow=[...wins].sort((a,b)=>(a.score-a.against)-(b.score-b.against))[0],blowout=[...losses].sort((a,b)=>(b.against-b.score)-(a.against-a.score))[0],hardLuck=[...losses].sort((a,b)=>b.score-a.score)[0];
+ fame.innerHTML=v10RecordLine('🚀','Highest score — '+high.team,fmt(high.score,2)+' points · Week '+high.w)+(narrow?v10RecordLine('🪡','Narrowest win — '+narrow.team,fmt(narrow.score-narrow.against,2)+'-point margin vs '+narrow.opp+' · Week '+narrow.w):'')+v10RecordLine('📚','Record scope',games.length+' completed matchups loaded from this league season');
+ shame.innerHTML=v10RecordLine('🧊','Lowest score — '+low.team,fmt(low.score,2)+' points · Week '+low.w)+(blowout?v10RecordLine('💥','Biggest defeat — '+blowout.team,fmt(blowout.against-blowout.score,2)+'-point loss to '+blowout.opp+' · Week '+blowout.w):'')+(hardLuck?v10RecordLine('😭','Best losing score — '+hardLuck.team,fmt(hardLuck.score,2)+' points vs '+hardLuck.opp+' · Week '+hardLuck.w):'');
+}
+function v10RenderTicker(){const n=el('v10Ticker');if(!n)return;const bits=[];if(source==='sleeper')bits.push('Sleeper synced: '+teams.length+' teams · results through Week '+completedWeeks);if(model){const top=teams.map((t,i)=>({t,p:model.champ[i]/model.sims})).sort((a,b)=>b.p-a.p)[0];bits.push('Title favourite: '+top.t.name+' '+hqPct(top.p))}const liveGames=rzGames.filter(rzIsLive);if(liveGames.length)bits.push(liveGames.length+' NFL game'+(liveGames.length===1?'':'s')+' live');const rz=liveGames.filter(g=>rzSituation(g)?.isRedZone);if(rz.length)bits.push(rz.map(g=>g.shortName||g.name).join(', ')+' in the red zone');if(rzHighlights[0])bits.push('Latest NFL score change: '+rzHighlights[0].note);n.textContent=bits.join('  •  ')||'Sync Sleeper for verified league headlines. No fictional news is shown.'}
+function renderV10(){v10RenderTicker();v10RenderPlayoff();v10RenderSpotlight();v10RenderRecords()}
 
 initV9();boot();
 
