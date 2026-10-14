@@ -836,6 +836,135 @@ td { padding:7px 6px; }
  #v9-view-games .rz-feature-head>span:last-child { justify-self:end; font-size:9px; white-space:nowrap; }
 }
 
+
+/* v9.3.5 — predictable RedZone tile geometry and logo positioning. */
+#v9-view-games .rz-cinema-game {
+  display:flex;
+  flex-direction:column;
+  height:auto;
+  min-height:0;
+  overflow:hidden;
+}
+#v9-view-games .rz-cinema-game .rz-game-meta {
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  flex-wrap:nowrap;
+  gap:6px;
+  min-width:0;
+  line-height:1.2;
+  min-height:16px;
+}
+#v9-view-games .rz-cinema-game .rz-game-meta > span {
+  display:block;
+  min-width:0;
+  max-width:100%;
+  white-space:nowrap;
+}
+#v9-view-games .rz-cinema-game .rz-game-meta > span:nth-child(2) { margin-left:auto; text-align:right; }
+#v9-view-games .rz-cinema-game .rz-game-meta > span:last-child:empty { display:none; }
+#v9-view-games .rz-cinema-game .rz-game-meta > span:last-child:not(:empty) { flex:0 0 auto; }
+#v9-view-games .rz-cinema-game .rz-teamrows {
+  display:grid;
+  gap:4px;
+  margin-top:7px;
+  min-width:0;
+}
+#v9-view-games .rz-cinema-game .rz-one-team,
+#v9-view-games .rz-cinema-game .rz-one-team:has(.rz-mini-logo img) {
+  display:grid;
+  grid-template-columns:24px minmax(0,1fr) auto;
+  min-height:26px;
+  align-items:center;
+  gap:7px;
+  min-width:0;
+}
+#v9-view-games .rz-cinema-game .rz-mini-logo {
+  position:relative;
+  isolation:isolate;
+  display:grid;
+  place-items:center;
+  width:24px;
+  height:24px;
+  min-width:0;
+  overflow:hidden;
+  flex-shrink:0;
+  border-radius:5px;
+  line-height:1;
+}
+#v9-view-games .rz-cinema-game .rz-mini-logo img,
+#v9-view-games .rz-team-logo img {
+  position:absolute;
+  display:block;
+  inset:0;
+  width:100%;
+  height:100%;
+  max-width:100%;
+  max-height:100%;
+  object-fit:contain;
+  z-index:1;
+}
+#v9-view-games .rz-cinema-game .rz-mini-logo:has(img) .rz-logo-fallback,
+#v9-view-games .rz-team-logo:has(img) .rz-logo-fallback {display:none;}
+#v9-view-games .rz-cinema-game .rz-mini-logo .rz-logo-fallback {
+  display:grid;
+  place-items:center;
+  font-size:9px;
+  line-height:1;
+  width:100%;
+  height:100%;
+}
+#v9-view-games .rz-cinema-game .rz-mini-abbr {
+  display:block;
+  font-size:13px;
+  line-height:1.1;
+  font-weight:1000;
+  min-width:0;
+  overflow:hidden;
+  white-space:nowrap;
+  text-overflow:ellipsis;
+}
+#v9-view-games .rz-cinema-game .rz-mini-pts {
+  font-size:20px;
+  justify-self:end;
+  line-height:1;
+  white-space:nowrap;
+  margin-left:0;
+}
+#v9-view-games .rz-cinema-game .rz-game-drive {
+  margin-top:7px;
+  padding-top:6px;
+  border-top:1px solid #24475d;
+  min-height:0;
+  line-height:1.2;
+  white-space:normal;
+  overflow-wrap:anywhere;
+}
+/* Kickoff is already in the header. Do not repeat it at the bottom. */
+#v9-view-games .rz-cinema-game.is-upcoming .rz-game-drive {display:none;}
+#v9-view-games .rz-cinema-game.is-upcoming .rz-teamrows {margin-bottom:1px;}
+#v9-view-games .rz-cinema-game .rz-team-logo {position:relative;overflow:hidden;}
+@media(max-width:600px){
+ #v9-view-games .rz-cinema-grid {grid-template-columns:repeat(2,minmax(0,1fr));gap:7px;}
+ #v9-view-games .rz-cinema-game {padding:8px 9px;border-radius:12px;}
+ #v9-view-games .rz-cinema-game .rz-game-meta {display:flex;gap:4px;font-size:9px;}
+ #v9-view-games .rz-cinema-game .rz-one-team,
+ #v9-view-games .rz-cinema-game .rz-one-team:has(.rz-mini-logo img) {grid-template-columns:22px minmax(0,1fr) auto;gap:6px;min-height:24px;}
+ #v9-view-games .rz-cinema-game .rz-mini-logo {width:22px;height:22px;}
+ #v9-view-games .rz-cinema-game .rz-mini-abbr {font-size:13px;}
+ #v9-view-games .rz-cinema-game .rz-mini-pts {font-size:18px;}
+ #v9-view-games .rz-cinema-game .rz-teamrows {gap:3px;margin-top:7px;}
+}
+@media(max-width:355px){
+ #v9-view-games .rz-cinema-grid {gap:5px;}
+ #v9-view-games .rz-cinema-game {padding:7px;}
+ #v9-view-games .rz-cinema-game .rz-game-meta {font-size:8px;gap:3px;}
+ #v9-view-games .rz-cinema-game .rz-one-team,
+ #v9-view-games .rz-cinema-game .rz-one-team:has(.rz-mini-logo img) {grid-template-columns:20px minmax(0,1fr) auto;gap:4px;min-height:23px;}
+ #v9-view-games .rz-cinema-game .rz-mini-logo {width:20px;height:20px;}
+ #v9-view-games .rz-cinema-game .rz-mini-abbr {font-size:12px;}
+ #v9-view-games .rz-cinema-game .rz-mini-pts {font-size:17px;}
+}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v7</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -2156,9 +2285,18 @@ async function rzSleeper(){if(hqActive!=='games'||document.hidden||source!=='sle
 
 /* Cinematic RedZone v9.3. Preserves all 9.2 API calls, autosync, and fantasy model. */
 const rzLogoURL=c=>{const url=String(c?.team?.logo||c?.team?.logos?.[0]?.href||'');return /^https:\/\/(?:[^/]+\.)?espn(?:cdn)?\.com\//i.test(url)?url:''};
-const rzLogo=c=>{const url=rzLogoURL(c);return '<strong class="rz-logo-fallback">🏈</strong>'+(url?'<img alt="" loading="lazy" onerror="this.remove()" src="'+safe(url)+'">':'')};
+const rzLogo=c=>{const url=rzLogoURL(c);return '<strong class="rz-logo-fallback">'+safe(rzAbbr(c).slice(0,2))+'</strong>'+(url?'<img alt="" loading="lazy" onerror="this.remove()" src="'+safe(url)+'">':'')};
 const rzKickoff=g=>{try{return new Date(g.date).toLocaleString('en-GB',{weekday:'short',hour:'2-digit',minute:'2-digit',timeZone:'Europe/London'})}catch(_){return 'Scheduled'}};
-function rzSortedGames(){return rzGames.slice().sort((a,b)=>Number(rzIsLive(b))-Number(rzIsLive(a))||Number(!!rzSituation(b)?.isRedZone)-Number(!!rzSituation(a)?.isRedZone)||rzPlayersInGame(b).length-rzPlayersInGame(a).length||new Date(a.date)-new Date(b.date))}
+function rzSortedGames(){
+ const phase=g=>rzIsLive(g)?0:rzState(g).includes('FINAL')?2:1;
+ return rzGames.slice().sort((a,b)=>{
+  const pa=phase(a),pb=phase(b);if(pa!==pb)return pa-pb;
+  if(pa===0){const rz=Number(!!rzSituation(b)?.isRedZone)-Number(!!rzSituation(a)?.isRedZone);if(rz)return rz;
+   const starters=rzPlayersInGame(b).length-rzPlayersInGame(a).length;if(starters)return starters;}
+  const date=new Date(a.date)-new Date(b.date);
+  return Number.isFinite(date)?(pa===2?-date:date):0;
+ });
+}
 function rzGameScore(c,live){return live||c?.score&&rzState(c)!=='STATUS_SCHEDULED'?safe(c?.score??'—'):'—'}
 function rzPlayText(g){const situation=rzSituation(g);return String(situation?.lastPlay?.text||rzDetailCache[g.id]?.drives?.current?.plays?.at(-1)?.text||'')}
 function rzFantasyGameFor(g){const involved=rzPlayersInGame(g);const full=matchupsAsCards(rzWeek);for(const row of involved){const pair=full.find(([a,b])=>a?.t?.name===row.team||b?.t?.name===row.team);if(pair)return {pair,owner:row.team,players:row.players}}
@@ -2201,7 +2339,7 @@ function rzRender(){const grid=el('rzGrid');if(!grid)return;
  const flt=el('rzFilter')?.value||'live';const shown=flt==='redzone'?sorted.filter(g=>rzIsLive(g)&&!!rzSituation(g)?.isRedZone):sorted;
  grid.innerHTML=shown.length?shown.map(g=>{const sides=rzSides(g),s=rzSituation(g),live=rzIsLive(g),final=rzState(g).includes('FINAL'),red=live&&!!s?.isRedZone;
  const state=live?'<span><span class="rz-live-dot"></span> LIVE</span>':final?'FINAL':'UPCOMING';
- const info=live?s?.downDistanceText||s?.shortDownDistanceText||'Ball position pending':final?'Final score':'Kickoff '+rzKickoff(g);
+ const info=live?s?.downDistanceText||s?.shortDownDistanceText||'Ball position pending':final?'Final score':'';
  const row=c=>'<div class="rz-one-team"><div class="rz-mini-logo">'+rzLogo(c)+'</div><span class="rz-mini-abbr">'+safe(rzAbbr(c))+'</span><span class="rz-mini-pts">'+(live||final?safe(c?.score??'—'):'—')+'</span></div>';
  return '<button type="button" class="rz-cinema-game'+(g.id===rzFocused?' selected':'')+(red?' hot':'')+'" data-rz-game="'+safe(g.id)+'"><div class="rz-game-meta"><span>'+state+'</span><span>'+safe(live?rzPeriod(g):final?'FT':rzKickoff(g))+'</span><span>'+(red?'<span class="rz-rzbadge">RZ</span>':'')+'</span></div><div class="rz-teamrows">'+row(sides.away)+row(sides.home)+'</div><div class="rz-game-drive">'+safe(info)+'</div></button>';}).join(''):'<div class="rz-empty">No games currently in the red zone. Choose Live first to see the rest.</div>';
  grid.querySelectorAll('[data-rz-game]').forEach(b=>b.addEventListener('click',()=>{rzFocused=b.dataset.rzGame;rzRender();rzFocusedFetch(true)}));
