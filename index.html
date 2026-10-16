@@ -244,7 +244,7 @@ header .hero-note{display:none}
 
 
 /* League-wide v9.1 refinements */
-#v9-view-lab{display:none!important}
+#v9-view-lab.active{display:block!important}
 #scheduleTable{width:100%;min-width:0!important;table-layout:fixed}
 #scheduleTable th:first-child,#scheduleTable td:first-child{width:80px;text-align:left;vertical-align:top}
 #scheduleTable th:last-child,#scheduleTable td:last-child{width:92px;text-align:left;vertical-align:top}
@@ -993,7 +993,7 @@ td { padding:7px 6px; }
 <div class="section-intro" id="syncDetail">Sleeper sync updates rosters, results and fixtures. Current scores are provisional.</div>
 </section>
 
-<section class="panel"><div class="panel-title"><h2>🏆 League forecast</h2><div class="actions"><button class="secondary copy-action" type="button" data-copy-target="forecastTable" data-copy-title="League forecast">Copy table</button><button class="secondary" id="csvBtn">CSV</button></div></div>
+<section class="panel"><div class="panel-title"><h2>🏆 Season outlook · Monte Carlo</h2><div class="actions"><button class="secondary copy-action" type="button" data-copy-target="forecastTable" data-copy-title="Season outlook">Copy table</button><button class="secondary" id="csvBtn">CSV</button></div></div>
 <details class="model-details" style="margin:10px 0"><summary>Advanced forecast settings</summary><div style="padding:9px 0"><div class="controls v7mode"><label class="control">Forecast engine <select id="modelMode"><option value="adaptive" selected>Adaptive · regression + team SD</option><option value="legacy">Original v6 · 70/30 and SD 20</option><option value="custom">Custom / backtest winner</option></select></label>
 <label class="control">Volatility <select id="sdMode"><option value="measured" selected>Measured by team (shrunken)</option><option value="fixed">Fixed points</option></select></label><span id="sigmaLabel" class="small">League SD: —</span></div>
 <div class="controls"><label class="control">Simulations <select id="simCount"><option value="20000">20,000</option><option value="50000" selected>50,000</option><option value="100000">100,000</option></select></label>
@@ -1002,7 +1002,7 @@ td { padding:7px 6px; }
 <label class="control">Fixed SD <input id="scoreSd" type="number" min="8" max="60" step="1" value="22"></label>
 <label class="control">Seed <input id="seed" type="number" value="20261012"></label></div>
 </div></details>
-<p class="section-intro" style="margin-top:9px">Regular rank orders teams by average simulated wins; it is not their most likely exact position. The <b>Playoffs</b> and <b>Toilet</b> percentages show how often each team reaches those brackets across 50,000 simulated seasons. They are probabilities, not confirmed destinations.</p>
+<p class="section-intro" style="margin-top:9px"><b>Season model:</b> PF, relative Max PF, regression and observed weekly volatility estimate each roster’s long-run strength. Regular rank orders teams by average simulated wins; <b>Playoffs</b> and <b>Toilet</b> show how often each team reaches those brackets across 50,000 simulated seasons. This model is not used as the primary single-game projection.</p>
 <div id="forecastFreshness" class="statusline warn" role="status" style="margin:8px 0">Waiting for fresh Sleeper data. No outdated offline forecast is being presented as current.</div>
 <div class="tablewrap"><table id="forecastTable"><thead><tr><th data-sort="name">Team</th><th data-sort="current">Current rank</th><th data-sort="projReg">Regular rank</th><th data-sort="expWins">Est. wins</th><th data-sort="playoff">Playoffs</th><th data-sort="toilet">Toilet</th><th data-sort="champ">Champion</th><th data-sort="last">💩 Last</th><th data-sort="projFinal">Final rank</th></tr></thead><tbody></tbody></table></div>
 </section>
@@ -1022,8 +1022,8 @@ td { padding:7px 6px; }
 <section class="panel"><div class="panel-title"><h2>📊 Team scoring</h2><button class="secondary copy-action" type="button" data-copy-target="strengthTable" data-copy-title="Team scoring">Copy table</button></div>
 <div class="tablewrap"><table id="strengthTable" class="strength-table"><thead><tr><th>Team</th><th>PF / week</th><th>Max PF / week</th><th>Lineup efficiency</th><th>Forecast / week</th><th>Weekly SD</th><th>All-play win %</th></tr></thead><tbody></tbody></table></div></section>
 <section class="panel"><div class="panel-title"><h2>🎯 Finishing probabilities</h2><button class="secondary copy-action" type="button" data-copy-target="matrix" data-copy-title="Finishing position probabilities">Copy table</button></div><div class="tablewrap"><div class="matrix" id="matrix"></div></div></section>
-<section class="panel"><div class="panel-title"><h2>🏟 Weekly matchups</h2><div class="controls"><label class="control">Week <select id="weekSelect"></select></label><span id="weekState" class="small"></span><button class="secondary copy-action" type="button" data-copy-target="matchupCards" data-copy-title="Weekly matchups">Copy</button></div></div>
-<div class="pairings" id="matchupCards"></div><p class="hqcaption hqclarity">Pregame forecast only. Scores shown as projections are average model outcomes, not actual scores or live Sleeper projections.</p></section>
+<section class="panel"><div class="panel-title"><h2>🏟 Weekly matchup forecast</h2><div class="controls"><label class="control">Week <select id="weekSelect"></select></label><span id="weekState" class="small"></span><button class="secondary copy-action" type="button" data-copy-target="matchupCards" data-copy-title="Weekly matchups">Copy</button></div></div>
+<div class="pairings" id="matchupCards"></div><p class="hqcaption hqclarity" id="weeklyModelNote">Single-game forecasts use the current starting lineups and Sleeper’s player-level weekly projections when available. PF/Max PF remain separate season-strength inputs.</p></section>
 <section class="panel"><div class="panel-title"><h2>📅 Fixtures by week</h2><div class="btnright"><span class="small" id="scheduleStatus">Offline v5 fixtures</span><button class="secondary copy-action" type="button" data-copy-target="scheduleTable" data-copy-title="Remaining schedule">Copy table</button></div></div>
 <div class="tablewrap" style="overflow-x:visible"><table id="scheduleTable"><thead><tr><th>Week</th><th style="text-align:left">Fixtures</th><th>Source</th></tr></thead><tbody></tbody></table></div></section>
 <section class="panel"><div class="panel-title"><h2>🧑‍🤝‍🧑 League rosters</h2><div class="controls"><label class="control">Team <select id="rosterSelect"></select></label><button class="secondary copy-action" type="button" data-copy-target="rosterDetail" data-copy-title="Current roster">Copy roster</button></div></div>
@@ -1208,6 +1208,7 @@ const seededRosters = {
 
 const LEAGUE_DEFAULT='1388984626868912128';
 const API='https://api.sleeper.app/v1';
+const SLEEPER_PROJECTIONS='https://api.sleeper.com/projections/nfl';
 const STANDINGS_KEY='sf_v6_live';
 const PLAYERS_KEY='sf_v6_players';
 const ID_KEY='sf_v6_leagueid';
@@ -1217,6 +1218,7 @@ let live=null, model=null, busy=false, source='offline', currentWeek=calendarNfl
 let teams=structuredClone(baseline).map((t,i)=>({...t,id:i+1}));
 let rosters=offlineRosters();
 let weekly={}, players={}, leagueInfo=null, realBrackets={winners:[],losers:[]}, warnings=[];
+let weeklyProjectionCache={},weeklyProjectionFetches={};
 let sortState={key:'projFinal',dir:'asc'};
 function $ (sel){return document.querySelector(sel)}
 function el(id){return document.getElementById(id)}
@@ -1437,6 +1439,35 @@ function renderWeekPicker(){const s=el('weekSelect'),old=s.value;
  s.innerHTML=Array.from({length:regularWeeks},(_,i)=>'<option value="'+(i+1)+'">Week '+(i+1)+'</option>').join('');
  s.value=old&&+old<=regularWeeks?old:String(clamp(currentWeek,1,regularWeeks)); renderMatchups();
 }
+function scoreSleeperProjection(row){
+ const stats=row?.stats||{},settings=leagueInfo?.scoring_settings||{};let total=0,matched=0;
+ for(const [key,multiplier] of Object.entries(settings)){const value=Number(stats[key]),weight=Number(multiplier);if(Number.isFinite(value)&&Number.isFinite(weight)){total+=value*weight;matched++;}}
+ const fallback=Number(stats.pts_half_ppr);
+ return Number.isFinite(total)&&matched?total:(Number.isFinite(fallback)?fallback:null);
+}
+async function fetchWeeklyProjections(week,force=false){
+ week=Number(week);if(!week||source!=='sleeper'||!leagueInfo)return null;
+ if(weeklyProjectionCache[week]&&!force)return weeklyProjectionCache[week];
+ if(weeklyProjectionFetches[week])return weeklyProjectionFetches[week];
+ const note=el('weeklyModelNote');if(note)note.textContent='Loading Sleeper player projections for Week '+week+'…';
+ weeklyProjectionFetches[week]=(async()=>{try{
+  const season=String(leagueInfo.season||new Date().getFullYear()),positions=['QB','RB','WR','TE','K','DEF'];
+  const calls=positions.map(pos=>fetchJSON(SLEEPER_PROJECTIONS+'/'+season+'/'+week+'?season_type=regular&position='+encodeURIComponent(pos)+'&order_by=pts_half_ppr'));
+  const settled=await Promise.allSettled(calls),rows=settled.flatMap(x=>x.status==='fulfilled'&&Array.isArray(x.value)?x.value:[]),map={};let stamp=0,provider='Sleeper';
+  for(const row of rows){if(!row?.player_id)continue;const status=String(row.status||row.player?.injury_status||''),scored=scoreSleeperProjection(row),confirmedZero=scored==null&&/^(out|ir|pup|suspended|inactive)$/i.test(status),points=confirmedZero?0:scored;if(points==null)continue;map[String(row.player_id)]={points,opponent:row.opponent||'',status,confirmedZero,updated:Number(row.last_modified||row.updated_at||0),provider:row.company||'Sleeper'};stamp=Math.max(stamp,Number(row.last_modified||row.updated_at||0));if(row.company)provider=row.company;}
+  if(!Object.keys(map).length)throw Error('No scored player projections returned');
+  weeklyProjectionCache[week]={map,stamp,fetchedAt:Date.now(),provider,positionsLoaded:settled.filter(x=>x.status==='fulfilled').length};
+  renderMatchups();return weeklyProjectionCache[week];
+ }catch(err){weeklyProjectionCache[week]={map:{},error:String(err?.message||err),fetchedAt:Date.now()};renderMatchups();return weeklyProjectionCache[week];}
+ finally{delete weeklyProjectionFetches[week];}})();
+ return weeklyProjectionFetches[week];
+}
+function weeklyLineupProjection(teamName,week){
+ const team=teams.find(t=>t.name===teamName),data=weeklyProjectionCache[Number(week)];if(!team||!data||data.error)return null;
+ const starters=rosterFor(team).filter(p=>p&&!p.empty&&p.id!=='0'&&!NON_STARTER.has(p.slot));let total=0,known=0;const missing=[],zeroed=[];
+ for(const p of starters){const row=data.map[String(p.id)];if(row&&Number.isFinite(row.points)){total+=row.points;known++;if(row.confirmedZero)zeroed.push(p.name+' ('+(row.status||'unavailable')+')');}else missing.push(p.name);}
+ return {mu:total,known,required:starters.length,coverage:starters.length?known/starters.length:0,missing,zeroed,provider:data.provider||'Sleeper',stamp:data.stamp||data.fetchedAt};
+}
 function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),arr=matchupsAsCards(w),actual=w<=completedWeeks,weekInfo=scheduleFor(w);
  el('weekState').textContent=actual?'✓ Completed (Sleeper official)':(w===currentWeek?'● Current NFL week · provisional':'Upcoming fixtures');
  if(arr.length){
@@ -1445,7 +1476,13 @@ function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),ar
    return '<div class="fixture"><div class="who"><span>'+safe(a.t.name)+'</span><span class="score">'+fmt(p1,2)+'</span></div><div class="foot">'+(comparable?'FINAL':'Live / scheduled — not final')+'</div><div class="who" style="margin-top:8px"><span>'+safe(b.t.name)+'</span><span class="score">'+fmt(p2,2)+'</span></div></div>';
   }).join('');
  }else if(weekInfo.games.length){el('matchupCards').innerHTML=weekInfo.games.map(([a,b])=>'<div class="fixture"><div class="who"><span>'+safe(a)+'</span><span class="vs">VS</span><span>'+safe(b)+'</span></div><div class="foot">'+safe(weekInfo.type)+' · no confirmed scores</div></div>').join('');
- }else el('matchupCards').innerHTML='<div class="note">No matchups available for this week.</div>';
+  }else el('matchupCards').innerHTML='<div class="note">No matchups available for this week.</div>';
+ const projection=weeklyProjectionCache[w],note=el('weeklyModelNote');
+ if(!actual&&source==='sleeper'&&!projection&&!weeklyProjectionFetches[w])fetchWeeklyProjections(w);
+ if(note){if(actual)note.textContent='Completed weeks show official Sleeper scores. Season forecasts remain separate.';
+  else if(weeklyProjectionFetches[w])note.textContent='Loading Sleeper player projections for Week '+w+'…';
+  else if(projection?.error)note.textContent='Sleeper player projections are unavailable ('+projection.error+'). Matchup cards fall back to clearly labelled season-model context.';
+  else if(projection)note.textContent='Single-game model: current starters scored from Sleeper’s '+String(projection.provider||'player-level')+' Week '+w+' projections under Sunday Funday scoring. PF/Max PF are used only for the separate season outlook.';}
 }
 function renderSchedule(){
  const sel=el('scheduleWeek');const defaultWeek=Math.max(1,Math.min(regularWeeks,Math.max(calendarNflWeek(),completedWeeks+1)));
@@ -2125,7 +2162,7 @@ function renderHQ(){
  const lucky=luck.sort((a,b)=>b.delta-a.delta)[0];const close=fixtures.filter(x=>x.p!=null).sort((a,b)=>Math.abs(a.p-.5)-Math.abs(b.p-.5))[0];
  const cards=[];
  if(synced&&lucky)cards.push(hqItem('🍀',lucky.team.name+' is the luckiest',fmt(lucky.delta,1)+' extra wins compared with all-play scoring'));
- if(close)cards.push(hqItem('⚔️',close.a+' v '+close.b,'Closest Week '+week+' pregame forecast: '+hqPct(close.p)+' / '+hqPct(1-close.p)));
+ if(close)cards.push(hqItem('⚔️',close.a+' v '+close.b,'Closest Week '+week+' season-strength baseline: '+hqPct(close.p)+' / '+hqPct(1-close.p)+' · open RedZone for player-level weekly projections'));
  else cards.push(hqItem('📅','Upcoming fixtures','Sync Sleeper for verified pairings'));
  const byes=nflByes[week]||[];if(byes.length)cards.push(hqItem('✈️','NFL Week '+week+' byes',byes.join(', ')));
  el('hqHeadlines').innerHTML=cards.join('');
@@ -2153,19 +2190,23 @@ function renderHQMatchups(){
  if(w<=completedWeeks)return; // Actual final scores displayed unchanged.
  const fixtures=hqCurrentFixtures(w);
  widgets.forEach((node,i)=>{
-  const pair=fixtures[i];if(!pair||pair.p==null)return;
-  const a=hqProjectedScore(pair.a,w),b=hqProjectedScore(pair.b,w);if(!a||!b)return;
-  const strip=document.createElement('div');strip.className='model-outlook';
-   strip.innerHTML='<div>Projected points: <b>'+safe(pair.a)+' '+fmt(a.mu,1)+'</b> · <b>'+safe(pair.b)+' '+fmt(b.mu,1)+'</b></div><div class="chance">Win probability: '+safe(pair.a)+' '+hqPct(pair.p)+' / '+safe(pair.b)+' '+hqPct(1-pair.p)+'</div><div class="v10-prob" role="img" aria-label="'+safe(pair.a)+' '+hqPct(pair.p)+' win probability"><div class="v10-prob-head"><span>'+safe(pair.a)+'</span><span>'+safe(pair.b)+'</span></div><div class="v10-prob-track"><i style="width:'+fmt(pair.p*100,1)+'%"></i></div></div>';
-  node.appendChild(strip);
- });
+   const pair=fixtures[i];if(!pair||pair.p==null)return;
+   const seasonA=hqProjectedScore(pair.a,w),seasonB=hqProjectedScore(pair.b,w);if(!seasonA||!seasonB)return;
+   const weeklyA=weeklyLineupProjection(pair.a,w),weeklyB=weeklyLineupProjection(pair.b,w),weeklyReady=weeklyA?.coverage>=.8&&weeklyB?.coverage>=.8;
+   const ia=teams.findIndex(t=>t.name===pair.a),ib=teams.findIndex(t=>t.name===pair.b),weeklyP=weeklyReady?clamp(normalCDF((weeklyA.mu-weeklyB.mu)/Math.max(1,Math.hypot(model.sigma[ia]||22,model.sigma[ib]||22))),.001,.999):null;
+   const displayedP=weeklyP??pair.p,headline=weeklyReady?'Sleeper weekly starters':'Season model context',muA=weeklyReady?weeklyA.mu:seasonA.mu,muB=weeklyReady?weeklyB.mu:seasonB.mu;
+   const strip=document.createElement('div');strip.className='model-outlook';
+   const zeroNotes=weeklyReady?[...(weeklyA.zeroed||[]).map(x=>pair.a+': '+x+' = 0.0'),...(weeklyB.zeroed||[]).map(x=>pair.b+': '+x+' = 0.0')]:[];
+    strip.innerHTML='<div><b>'+headline+':</b> '+safe(pair.a)+' <b>'+fmt(muA,1)+'</b> · '+safe(pair.b)+' <b>'+fmt(muB,1)+'</b></div><div class="chance">Single-game win probability: '+safe(pair.a)+' '+hqPct(displayedP)+' / '+safe(pair.b)+' '+hqPct(1-displayedP)+'</div><div class="v10-prob" role="img" aria-label="'+safe(pair.a)+' '+hqPct(displayedP)+' win probability"><div class="v10-prob-head"><span>'+safe(pair.a)+'</span><span>'+safe(pair.b)+'</span></div><div class="v10-prob-track"><i style="width:'+fmt(displayedP*100,1)+'%"></i></div></div>'+(weeklyReady?'<div class="ptiny">Player-level Week '+w+' projections · '+weeklyA.known+'/'+weeklyA.required+' and '+weeklyB.known+'/'+weeklyB.required+' starters accounted for.'+(zeroNotes.length?' Zero projection: '+safe(zeroNotes.join('; '))+'.':'')+' Season strength: '+fmt(seasonA.mu,1)+' vs '+fmt(seasonB.mu,1)+'.</div>':'<div class="ptiny">Weekly player projections are loading or incomplete; this fallback is labelled season context and is not presented as Sleeper’s single-game forecast.</div>');
+   node.appendChild(strip);
+  });
 }
 const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
 const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp()};
 
 
-const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();return hqOldHydrate(...args)};
+const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();weeklyProjectionCache={};weeklyProjectionFetches={};return hqOldHydrate(...args)};
 
 
 /* REDZONE v9.2 — NFL plays use an independent ESPN public feed.
@@ -2189,7 +2230,7 @@ function rzInit(){
   <div class="rzfantasy" id="rzFantasyPanel"><div class="rzdetail"><h3>🏆 Official Sunday Funday fantasy scores</h3><p class="rzsmall" id="rzFantasyStamp">Updating from Sleeper independently of NFL plays.</p></div></div>
   </div><button id="v10TVExit" class="v10-tv-exit secondary" type="button">Exit TV</button>`);
  const oldMatchPanel=el('matchupCards')?.closest('section.panel');
- if(oldMatchPanel){el('rzFantasyPanel').appendChild(oldMatchPanel);const title=oldMatchPanel.querySelector('h2');if(title)title.textContent='All 5 fantasy matchups';}
+ if(oldMatchPanel){el('rzFantasyPanel').appendChild(oldMatchPanel);const title=oldMatchPanel.querySelector('h2');if(title)title.textContent='Weekly matchups · Sleeper player projections';}
  const sched=el('scheduleTable')?.closest('section.panel');
  if(sched){el('v9-view-forecast').appendChild(sched);const bar=sched.querySelector('.panel-title');if(bar){const sel=document.createElement('label');sel.className='control';sel.innerHTML='Week <select id="scheduleWeek" aria-label="Fixture week"></select>';bar.querySelector('.btnright')?.prepend(sel);}
  el('scheduleWeek')?.addEventListener('change',()=>renderSchedule());}
