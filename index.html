@@ -265,6 +265,11 @@ header .hero-note{display:none}
 .person.empty-slot .pname{color:#ffd2dc}
 .fixture .model-outlook{padding:9px 0 0;margin-top:10px;border-top:1px solid #294255;color:#d8ecfb;font-size:12px;line-height:1.55}
 .fixture .model-outlook .chance{color:#77ebcd;font-weight:800}
+.fixture .model-outlook.live-update{border-top-color:#31cdb3;background:linear-gradient(90deg,rgba(30,197,165,.08),transparent);margin-left:-7px;margin-right:-7px;padding:9px 7px 0;border-radius:8px}
+.live-odds-badge{display:inline-flex;align-items:center;gap:5px;margin-right:6px;padding:2px 6px;border-radius:999px;background:#173d3a;color:#71f1d0;font-size:9px;font-weight:1000;letter-spacing:.08em;text-transform:uppercase;vertical-align:1px}
+.live-odds-badge:before{content:"";width:6px;height:6px;border-radius:50%;background:#ff5d70;box-shadow:0 0 8px #ff5d70}
+.live-odds-badge.delayed{background:#44351c;color:#ffda86}.live-odds-badge.delayed:before{background:#ffbd4a;box-shadow:none}
+.fixture .live-scoreline{color:#bdd4e5;font-weight:750;margin-top:3px}
 .hqcaption.hqclarity{font-size:12px;color:#a8becf;margin-top:10px}
 @media(max-width:780px){.schedule-grid{grid-template-columns:1fr}#scheduleTable th:first-child,#scheduleTable td:first-child{width:56px}#scheduleTable th:last-child,#scheduleTable td:last-child{display:none}}
 @media(max-width:600px){#scheduleTable th,#scheduleTable td{font-size:11px;padding:10px 5px}#scheduleTable th:first-child,#scheduleTable td:first-child{width:48px}#scheduleTable .schedule-game{padding:8px}#hqToiletTable th:nth-child(4),#hqToiletTable td:nth-child(4){display:none}#hqToiletTable th:first-child,#hqToiletTable td:first-child{width:45%}#hqToiletTable th:nth-child(2),#hqToiletTable td:nth-child(2){width:24%}#hqToiletTable th:nth-child(3),#hqToiletTable td:nth-child(3){width:31%}#hqToiletTable th,#hqToiletTable td{font-size:11px;padding:10px 5px}}
@@ -1436,8 +1441,8 @@ function renderMatrix(){if(!model)return;const rows=teams.map((t,i)=>({t,i})).so
  const p=c/model.sims;return '<div class="heat" style="background:rgba(36,231,197,'+(0.04+clamp(p*3.5,0,1)*.55)+')">'+pct(p)+'</div>';}).join('')).join('');
 }
 function renderWeekPicker(){const s=el('weekSelect'),old=s.value;
- s.innerHTML=Array.from({length:regularWeeks},(_,i)=>'<option value="'+(i+1)+'">Week '+(i+1)+'</option>').join('');
- s.value=old&&+old<=regularWeeks?old:String(clamp(currentWeek,1,regularWeeks)); renderMatchups();
+ const maxWeek=Math.max(18,regularWeeks);s.innerHTML=Array.from({length:maxWeek},(_,i)=>'<option value="'+(i+1)+'">Week '+(i+1)+'</option>').join('');
+ s.value=old&&+old<=maxWeek?old:String(clamp(currentWeek,1,maxWeek)); renderMatchups();
 }
 function scoreSleeperProjection(row){
  const stats=row?.stats||{},settings=leagueInfo?.scoring_settings||{};let total=0,matched=0;
@@ -1449,22 +1454,29 @@ async function fetchWeeklyProjections(week,force=false){
  week=Number(week);if(!week||source!=='sleeper'||!leagueInfo)return null;
  if(weeklyProjectionCache[week]&&!force)return weeklyProjectionCache[week];
  if(weeklyProjectionFetches[week])return weeklyProjectionFetches[week];
+ const prior=weeklyProjectionCache[week];
  const note=el('weeklyModelNote');if(note)note.textContent='Loading Sleeper player projections for Week '+week+'…';
  weeklyProjectionFetches[week]=(async()=>{try{
   const season=String(leagueInfo.season||new Date().getFullYear()),positions=['QB','RB','WR','TE','K','DEF'];
   const calls=positions.map(pos=>fetchJSON(SLEEPER_PROJECTIONS+'/'+season+'/'+week+'?season_type=regular&position='+encodeURIComponent(pos)+'&order_by=pts_half_ppr'));
   const settled=await Promise.allSettled(calls),rows=settled.flatMap(x=>x.status==='fulfilled'&&Array.isArray(x.value)?x.value:[]),map={};let stamp=0,provider='Sleeper';
-  for(const row of rows){if(!row?.player_id)continue;const status=String(row.status||row.player?.injury_status||''),scored=scoreSleeperProjection(row),confirmedZero=scored==null&&/^(out|ir|pup|suspended|inactive)$/i.test(status),points=confirmedZero?0:scored;if(points==null)continue;map[String(row.player_id)]={points,opponent:row.opponent||'',status,confirmedZero,updated:Number(row.last_modified||row.updated_at||0),provider:row.company||'Sleeper'};stamp=Math.max(stamp,Number(row.last_modified||row.updated_at||0));if(row.company)provider=row.company;}
+  for(const row of rows){if(!row?.player_id)continue;const status=String(row.status||row.player?.injury_status||''),scored=scoreSleeperProjection(row),confirmedZero=/^(out|ir|pup|suspended|inactive)$/i.test(status),points=confirmedZero?0:scored;if(points==null)continue;map[String(row.player_id)]={points,opponent:row.opponent||'',status,confirmedZero,updated:Number(row.last_modified||row.updated_at||0),provider:row.company||'Sleeper'};stamp=Math.max(stamp,Number(row.last_modified||row.updated_at||0));if(row.company)provider=row.company;}
   if(!Object.keys(map).length)throw Error('No scored player projections returned');
   weeklyProjectionCache[week]={map,stamp,fetchedAt:Date.now(),provider,positionsLoaded:settled.filter(x=>x.status==='fulfilled').length};
   renderMatchups();return weeklyProjectionCache[week];
- }catch(err){weeklyProjectionCache[week]={map:{},error:String(err?.message||err),fetchedAt:Date.now()};renderMatchups();return weeklyProjectionCache[week];}
+ }catch(err){const message=String(err?.message||err);if(prior?.map&&Object.keys(prior.map).length){weeklyProjectionCache[week]={...prior,lastError:message,lastFailedAt:Date.now()};}else weeklyProjectionCache[week]={map:{},error:message,fetchedAt:Date.now()};renderMatchups();return weeklyProjectionCache[week];}
  finally{delete weeklyProjectionFetches[week];}})();
  return weeklyProjectionFetches[week];
 }
+function matchupEntryForTeam(teamName,week){const team=typeof teamName==='object'?teamName:teams.find(t=>t.name===teamName);return (weekly[Number(week)]||[]).find(x=>Number(x.roster_id)===Number(team?.id))||null}
+function lineupStartersForWeek(team,week){
+ const matchup=matchupEntryForTeam(team,week),ids=Array.isArray(matchup?.starters)?matchup.starters.map(String):[];
+ if(ids.length){const byId=new Map((rosterFor(team)||[]).map(p=>[String(p.id),p]));return ids.map((id,i)=>id==='0'||id==='null'?{id:'0',name:'EMPTY STARTER',empty:true,slot:activeSlots(leagueInfo)[i]||'FLEX'}:(byId.get(id)||playerFor(id,activeSlots(leagueInfo)[i]||'FLEX')))}
+ return (rosterFor(team)||[]).filter(p=>p&&!NON_STARTER.has(p.slot));
+}
 function weeklyLineupProjection(teamName,week){
  const team=teams.find(t=>t.name===teamName),data=weeklyProjectionCache[Number(week)];if(!team||!data||data.error)return null;
- const starters=rosterFor(team).filter(p=>p&&!p.empty&&p.id!=='0'&&!NON_STARTER.has(p.slot));let total=0,known=0;const missing=[],zeroed=[];
+ const starters=lineupStartersForWeek(team,week);let total=0,known=0;const missing=[],zeroed=[];
  for(const p of starters){const row=data.map[String(p.id)];if(row&&Number.isFinite(row.points)){total+=row.points;known++;if(row.confirmedZero)zeroed.push(p.name+' ('+(row.status||'unavailable')+')');}else missing.push(p.name);}
  return {mu:total,known,required:starters.length,coverage:starters.length?known/starters.length:0,missing,zeroed,provider:data.provider||'Sleeper',stamp:data.stamp||data.fetchedAt};
 }
@@ -1473,16 +1485,16 @@ function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),ar
  if(arr.length){
   el('matchupCards').innerHTML=arr.map(([a,b])=>{
    let p1=Number(a.pts||0),p2=Number(b.pts||0);const comparable=actual;
-   return '<div class="fixture"><div class="who"><span>'+safe(a.t.name)+'</span><span class="score">'+fmt(p1,2)+'</span></div><div class="foot">'+(comparable?'FINAL':'Live / scheduled — not final')+'</div><div class="who" style="margin-top:8px"><span>'+safe(b.t.name)+'</span><span class="score">'+fmt(p2,2)+'</span></div></div>';
+   return '<div class="fixture" data-team-a="'+safe(a.t.name)+'" data-team-b="'+safe(b.t.name)+'"><div class="who"><span>'+safe(a.t.name)+'</span><span class="score">'+fmt(p1,2)+'</span></div><div class="foot">'+(comparable?'FINAL':'Live / scheduled — not final')+'</div><div class="who" style="margin-top:8px"><span>'+safe(b.t.name)+'</span><span class="score">'+fmt(p2,2)+'</span></div></div>';
   }).join('');
- }else if(weekInfo.games.length){el('matchupCards').innerHTML=weekInfo.games.map(([a,b])=>'<div class="fixture"><div class="who"><span>'+safe(a)+'</span><span class="vs">VS</span><span>'+safe(b)+'</span></div><div class="foot">'+safe(weekInfo.type)+' · no confirmed scores</div></div>').join('');
+  }else if(weekInfo.games.length){el('matchupCards').innerHTML=weekInfo.games.map(([a,b])=>'<div class="fixture" data-team-a="'+safe(a)+'" data-team-b="'+safe(b)+'"><div class="who"><span>'+safe(a)+'</span><span class="vs">VS</span><span>'+safe(b)+'</span></div><div class="foot">'+safe(weekInfo.type)+' · no confirmed scores</div></div>').join('');
   }else el('matchupCards').innerHTML='<div class="note">No matchups available for this week.</div>';
  const projection=weeklyProjectionCache[w],note=el('weeklyModelNote');
  if(!actual&&source==='sleeper'&&!projection&&!weeklyProjectionFetches[w])fetchWeeklyProjections(w);
  if(note){if(actual)note.textContent='Completed weeks show official Sleeper scores. Season forecasts remain separate.';
   else if(weeklyProjectionFetches[w])note.textContent='Loading Sleeper player projections for Week '+w+'…';
   else if(projection?.error)note.textContent='Sleeper player projections are unavailable ('+projection.error+'). Matchup cards fall back to clearly labelled season-model context.';
-  else if(projection)note.textContent='Single-game model: current starters scored from Sleeper’s '+String(projection.provider||'player-level')+' Week '+w+' projections under Sunday Funday scoring. PF/Max PF are used only for the separate season outlook.';}
+  else if(projection)note.textContent=(projection.lastError?'Using the last verified player projections because the latest refresh failed. ':'')+'Single-game model: current starters scored from Sleeper’s '+String(projection.provider||'player-level')+' Week '+w+' projections under Sunday Funday scoring. PF/Max PF are used only for the separate season outlook.';}
 }
 function renderSchedule(){
  const sel=el('scheduleWeek');const defaultWeek=Math.max(1,Math.min(regularWeeks,Math.max(calendarNflWeek(),completedWeeks+1)));
@@ -2182,22 +2194,51 @@ function renderHQ(){
   renderV10();
   }finally{hqRendering=false}
 }
+function rzGameProgress(g){
+ if(!g)return null;if(rzState(g).includes('FINAL'))return 1;if(!rzIsLive(g))return 0;
+ const status=g.status||g.competitions?.[0]?.status||{},period=Number(status.period||0);if(/HALFTIME/i.test(rzState(g)))return .5;if(period>4)return .96;
+ const m=String(status.displayClock||'').match(/(\d+):(\d+)/),left=m?Number(m[1])*60+Number(m[2]):450;
+ return clamp(((Math.max(1,period)-1)*900+(900-left))/3600,0,.995);
+}
+function rzNFLGameForTeam(abbr){const wanted=rzNormTeam(abbr);return rzGames.find(g=>{const s=rzSides(g);return [rzNormTeam(rzAbbr(s.home)),rzNormTeam(rzAbbr(s.away))].includes(wanted)})||null}
+function liveTeamForecast(teamName,w){
+ const team=teams.find(t=>t.name===teamName),base=weeklyLineupProjection(teamName,w),projection=weeklyProjectionCache[Number(w)];if(!team||!base||base.coverage<.999||!projection||projection.error)return null;
+ const entry=matchupEntryForTeam(team,w),raw=entry?.custom_points==null?Number(entry?.points):Number(entry.custom_points),current=Number.isFinite(raw)?raw:0;
+ const starters=lineupStartersForWeek(team,w);let remaining=0,mapped=0,projected=0,started=current!==0,active=0,finished=0,totalWeight=0,remainingWeight=0;
+ for(const p of starters){const row=projection.map[String(p.id)];if(!row||!Number.isFinite(row.points))continue;const points=Number(row.points);if(row.confirmedZero){mapped++;continue}if(points!==0)projected++;
+  const bye=(nflByes[Number(w)]||[]).includes(p.nfl),game=bye?null:rzNFLGameForTeam(p.nfl);let fraction=1;
+  if(bye){fraction=0;mapped++;finished++;}
+  else if(game){mapped++;const progress=rzGameProgress(game);fraction=progress==null?1:1-progress;if(rzIsLive(game)){started=true;active++}else if(rzState(game).includes('FINAL')){started=true;finished++}}
+  fraction=clamp(fraction,0,1);const playerNow=Number(entry?.players_points?.[String(p.id)]),residual=p.pos==='DEF'&&game&&rzIsLive(game)&&Number.isFinite(playerNow)?fraction*(points-playerNow):points*fraction,weight=Math.max(Math.abs(points),1);remaining+=residual;totalWeight+=weight;remainingWeight+=weight*fraction;
+ }
+ const stateCoverage=projected?mapped/projected:1;if(started&&stateCoverage<.8)return {ready:false,stateCoverage};
+ const expectedFinal=started?current+remaining:base.mu,idx=teams.findIndex(t=>t.name===teamName),ratio=totalWeight?clamp(remainingWeight/totalWeight,0,1):0;
+ return {ready:true,current,expectedFinal,remaining,unresolved:remainingWeight>0,sd:remainingWeight>0?Math.max(1,(model?.sigma?.[idx]||22)*Math.sqrt(ratio)):0,started,active,finished,stateCoverage,base};
+}
+function liveMatchupForecast(a,b,w){
+ const left=liveTeamForecast(a,w),right=liveTeamForecast(b,w);if(!left?.ready||!right?.ready||(!left.started&&!right.started))return null;
+ const spread=left.expectedFinal-right.expectedFinal,sd=Math.hypot(left.sd,right.sd),allFinal=!left.unresolved&&!right.unresolved;let p;
+ if(allFinal)p=left.current===right.current ? .5 : (left.current>right.current ? 1 : 0);else p=clamp(normalCDF(spread/Math.max(1,sd)),.001,.999);
+ const updated=rzCurrentSleeperStamp(),delayed=!rzSleeperWeekFresh()||!updated||rzSleeperErrors>0||rzErrors>0||Date.now()-updated>(rzLiveMode()?30000:90000);return {left,right,p,allFinal,updated:updated||Date.now(),delayed};
+}
 function renderHQMatchups(){
- if(!model||!el('matchupCards'))return;
- const w=+el('weekSelect')?.value||hqWeekLabel();
- const widgets=Array.from(el('matchupCards').querySelectorAll('.fixture'));
- widgets.forEach(node=>node.querySelectorAll('.model-outlook').forEach(n=>n.remove()));
- if(w<=completedWeeks)return; // Actual final scores displayed unchanged.
- const fixtures=hqCurrentFixtures(w);
+ if(!el('matchupCards'))return;
+ const w=+el('weekSelect')?.value||hqWeekLabel(),widgets=Array.from(el('matchupCards').querySelectorAll('.fixture'));
+ widgets.forEach(node=>node.querySelectorAll('.model-outlook').forEach(n=>n.remove()));if(w<=completedWeeks)return;
+ const fallback=model?hqCurrentFixtures(w):[];
  widgets.forEach((node,i)=>{
-   const pair=fixtures[i];if(!pair||pair.p==null)return;
-   const seasonA=hqProjectedScore(pair.a,w),seasonB=hqProjectedScore(pair.b,w);if(!seasonA||!seasonB)return;
-   const weeklyA=weeklyLineupProjection(pair.a,w),weeklyB=weeklyLineupProjection(pair.b,w),weeklyReady=weeklyA?.coverage>=.8&&weeklyB?.coverage>=.8;
-   const ia=teams.findIndex(t=>t.name===pair.a),ib=teams.findIndex(t=>t.name===pair.b),weeklyP=weeklyReady?clamp(normalCDF((weeklyA.mu-weeklyB.mu)/Math.max(1,Math.hypot(model.sigma[ia]||22,model.sigma[ib]||22))),.001,.999):null;
-   const displayedP=weeklyP??pair.p,headline=weeklyReady?'Sleeper weekly starters':'Season model context',muA=weeklyReady?weeklyA.mu:seasonA.mu,muB=weeklyReady?weeklyB.mu:seasonB.mu;
-   const strip=document.createElement('div');strip.className='model-outlook';
-   const zeroNotes=weeklyReady?[...(weeklyA.zeroed||[]).map(x=>pair.a+': '+x+' = 0.0'),...(weeklyB.zeroed||[]).map(x=>pair.b+': '+x+' = 0.0')]:[];
-    strip.innerHTML='<div><b>'+headline+':</b> '+safe(pair.a)+' <b>'+fmt(muA,1)+'</b> · '+safe(pair.b)+' <b>'+fmt(muB,1)+'</b></div><div class="chance">Single-game win probability: '+safe(pair.a)+' '+hqPct(displayedP)+' / '+safe(pair.b)+' '+hqPct(1-displayedP)+'</div><div class="v10-prob" role="img" aria-label="'+safe(pair.a)+' '+hqPct(displayedP)+' win probability"><div class="v10-prob-head"><span>'+safe(pair.a)+'</span><span>'+safe(pair.b)+'</span></div><div class="v10-prob-track"><i style="width:'+fmt(displayedP*100,1)+'%"></i></div></div>'+(weeklyReady?'<div class="ptiny">Player-level Week '+w+' projections · '+weeklyA.known+'/'+weeklyA.required+' and '+weeklyB.known+'/'+weeklyB.required+' starters accounted for.'+(zeroNotes.length?' Zero projection: '+safe(zeroNotes.join('; '))+'.':'')+' Season strength: '+fmt(seasonA.mu,1)+' vs '+fmt(seasonB.mu,1)+'.</div>':'<div class="ptiny">Weekly player projections are loading or incomplete; this fallback is labelled season context and is not presented as Sleeper’s single-game forecast.</div>');
+   const names=node.dataset.teamA&&node.dataset.teamB?{a:node.dataset.teamA,b:node.dataset.teamB,p:model?hqProbability(node.dataset.teamA,node.dataset.teamB,w):null}:fallback[i];if(!names)return;
+   const seasonA=model?hqProjectedScore(names.a,w):null,seasonB=model?hqProjectedScore(names.b,w):null;
+   const weeklyA=weeklyLineupProjection(names.a,w),weeklyB=weeklyLineupProjection(names.b,w),weeklyReady=weeklyA?.coverage>=.999&&weeklyB?.coverage>=.999;
+   const ia=teams.findIndex(t=>t.name===names.a),ib=teams.findIndex(t=>t.name===names.b),weeklyP=weeklyReady?clamp(normalCDF((weeklyA.mu-weeklyB.mu)/Math.max(1,Math.hypot(model?.sigma?.[ia]||22,model?.sigma?.[ib]||22))),.001,.999):null;
+   const liveCandidate=w===rzWeek&&weeklyReady,live=liveCandidate?liveMatchupForecast(names.a,names.b,w):null,liveUnavailable=liveCandidate&&!live&&[matchupEntryForTeam(names.a,w),matchupEntryForTeam(names.b,w)].some(x=>Math.abs(cleanScore(x)||0)>0),displayedP=live?.p??weeklyP??names.p;if(!Number.isFinite(displayedP))return;
+   const headline=live?'Live projected finish':liveUnavailable?'Pregame baseline · live update unavailable':weeklyReady?'Sleeper weekly starters':'Season model context',muA=live?live.left.expectedFinal:weeklyReady?weeklyA.mu:seasonA?.mu,muB=live?live.right.expectedFinal:weeklyReady?weeklyB.mu:seasonB?.mu;
+   const chanceLabel=live?(live.allFinal?'Final result probability':'Live win probability'):liveUnavailable?'Pregame baseline probability':'Pregame win probability',strip=document.createElement('div');strip.className='model-outlook'+(live||liveUnavailable?' live-update':'');
+   const zeroNotes=weeklyReady?[...(weeklyA.zeroed||[]).map(x=>names.a+': '+x+' = 0.0'),...(weeklyB.zeroed||[]).map(x=>names.b+': '+x+' = 0.0')]:[];
+   const liveLine=live?'<div class="live-scoreline"><span class="live-odds-badge'+(live.delayed?' delayed':'')+'">'+(live.delayed?'Delayed':'Live')+'</span>Official score '+safe(names.a)+' '+fmt(live.left.current,2)+' · '+safe(names.b)+' '+fmt(live.right.current,2)+' · Sleeper '+new Date(live.updated).toLocaleTimeString('en-GB')+'</div>':liveUnavailable?'<div class="live-scoreline"><span class="live-odds-badge delayed">Delayed</span>Official scores are loaded, but live NFL starter-state coverage is incomplete.</div>':'';
+   const detail=live?(live.delayed?'Update delayed — holding the last verified estimate while the feeds retry. ':'')+'Official Sleeper score plus player projections for the portions of NFL games still remaining. Uncertainty reduces as starters finish.':liveUnavailable?'The percentage remains the labelled pregame baseline until enough verified NFL game-state data is available; no live movement is invented.':weeklyReady?'Player-level Week '+w+' projections · '+weeklyA.known+'/'+weeklyA.required+' and '+weeklyB.known+'/'+weeklyB.required+' starters accounted for.'+(zeroNotes.length?' Zero projection: '+safe(zeroNotes.join('; '))+'.':'')+(seasonA&&seasonB?' Season strength: '+fmt(seasonA.mu,1)+' vs '+fmt(seasonB.mu,1)+'.':''):'Weekly player projections are loading or incomplete; this fallback is labelled season context and is not presented as Sleeper’s single-game forecast.';
+   const leftPct=live&&!live.allFinal?clamp(Math.round(displayedP*100),1,99):Math.round(displayedP*100),rightPct=100-leftPct;
+   strip.innerHTML='<div><b>'+headline+':</b> '+safe(names.a)+' <b>'+fmt(muA,1)+'</b> · '+safe(names.b)+' <b>'+fmt(muB,1)+'</b></div>'+liveLine+'<div class="chance">'+chanceLabel+': '+safe(names.a)+' '+leftPct+'% / '+safe(names.b)+' '+rightPct+'%</div><div class="v10-prob" role="img" aria-label="'+safe(names.a)+' '+leftPct+'% win probability"><div class="v10-prob-head"><span>'+safe(names.a)+'</span><span>'+safe(names.b)+'</span></div><div class="v10-prob-track"><i style="width:'+fmt(displayedP*100,1)+'%"></i></div></div><div class="ptiny">'+detail+'</div>';
    node.appendChild(strip);
   });
 }
@@ -2215,7 +2256,8 @@ const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWee
  * never synthesise an NFL play or describe missing position as confirmed. */
 const RZ_ESPN='https://site.api.espn.com/apis/site/v2/sports/football/nfl';
 let rzWeek=calendarNflWeek(),rzGames=[],rzFocused=null,rzDetailCache={},rzTimer=null,rzFantasyTimer=null,
-    rzFetching=false,rzDetailFetching=false,rzFallbackBusy=false,rzSummaryTries=new Map(),rzLastNFL=0,rzLastSleeper=0,rzErrors=0,rzMode='nfl',rzSeen=new Map(),rzHighlights=[];
+    rzFetching=false,rzSleeperFetching=false,rzDetailFetching=false,rzFallbackBusy=false,rzSummaryTries=new Map(),rzLastNFL=0,rzLastSleeper=0,rzLastNFLWeek=0,rzLastSleeperWeek=0,rzLastSleeperLeague='',rzErrors=0,rzSleeperErrors=0,rzMode='nfl',rzSeen=new Map(),rzHighlights=[];
+const RZ_NFL_LIVE_MS=5000,RZ_NFL_IDLE_MS=18000,RZ_SLEEPER_LIVE_MS=10000,RZ_SLEEPER_IDLE_MS=30000;
 function rzInit(){
  const gameView=el('v9-view-games');
  gameView.insertAdjacentHTML('afterbegin',`<div class="rz-cinema">
@@ -2236,26 +2278,36 @@ function rzInit(){
  el('scheduleWeek')?.addEventListener('change',()=>renderSchedule());}
  el('rzWeekSelect').innerHTML=Array.from({length:18},(_,i)=>'<option value="'+(i+1)+'">'+(i+1)+'</option>').join('');el('rzWeekSelect').value=String(rzWeek);
  el('rzNFL').addEventListener('click',()=>rzSwitch('nfl'));el('rzFantasyButton').addEventListener('click',()=>rzSwitch('fantasy'));
-  el('rzRefresh').addEventListener('click',()=>{rzLastNFL=0;rzLastSleeper=0;rzPoll(true)});
+ el('rzRefresh').addEventListener('click',()=>rzRefreshNow());
   el('v10TV').addEventListener('click',v10ToggleTV);el('v10TVExit').addEventListener('click',v10ToggleTV);
  el('rzFilter').addEventListener('change',()=>rzRender());
- el('rzWeekSelect').addEventListener('change',()=>{rzWeek=Number(el('rzWeekSelect').value);rzFocused=null;rzDetailCache={};rzSeen.clear();rzHighlights=[];rzGames=[];rzRender();rzPoll(true)});
- document.addEventListener('visibilitychange',()=>{if(!document.hidden&&hqActive==='games')rzPoll(true)});
+ el('rzWeekSelect').addEventListener('change',()=>{rzWeek=Number(el('rzWeekSelect').value);rzFocused=null;rzDetailCache={};rzSeen.clear();rzHighlights=[];rzGames=[];rzRender();rzUpdateFantasyStamp();rzRefreshNow()});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden)rzStop();else if(hqActive==='games')rzOpen()});
 }
-function rzSwitch(mode){rzMode=mode;el('rzNFL').classList.toggle('active',mode==='nfl');el('rzFantasyButton').classList.toggle('active',mode==='fantasy');el('rzNFLPanel').classList.toggle('hidden',mode!=='nfl');el('rzFantasyPanel').classList.toggle('visible',mode==='fantasy');if(mode==='fantasy')rzUpdateFantasyStamp()}
-function rzUpdateFantasyStamp(){const n=el('rzFantasyStamp');if(n)n.textContent=(rzLastSleeper?'Sleeper updated '+new Date(rzLastSleeper).toLocaleTimeString('en-GB')+' · ':'')+'Official Sleeper league points, not live NFL play-derived scores.'}
-function rzStop(){if(rzTimer)clearInterval(rzTimer);rzTimer=null;if(rzFantasyTimer)clearInterval(rzFantasyTimer);rzFantasyTimer=null}
-function rzOpen(){if(!el('rzGrid'))return;rzStop();rzPoll(true);rzSleeper();rzTimer=setInterval(()=>{if(!document.hidden&&hqActive==='games')rzPoll(false)},12000);rzFantasyTimer=setInterval(()=>{if(!document.hidden&&hqActive==='games')rzSleeper()},45000)}
+function rzSwitch(mode){rzMode=mode;el('rzNFL').classList.toggle('active',mode==='nfl');el('rzFantasyButton').classList.toggle('active',mode==='fantasy');el('rzNFLPanel').classList.toggle('hidden',mode!=='nfl');el('rzFantasyPanel').classList.toggle('visible',mode==='fantasy');if(mode==='fantasy'){rzUpdateFantasyStamp();rzSleeper(true)}}
+function rzHasLiveGames(){return rzGames.some(rzIsLive)}
+function rzLiveMode(){if(rzGames.length){if(rzHasLiveGames())return true;const now=Date.now();return rzGames.some(g=>!rzState(g).includes('FINAL')&&new Date(g.date).getTime()-now<30*60*1000&&new Date(g.date).getTime()>now-15*60*1000)}return rzWeek===currentWeek&&rzWeek>completedWeeks&&(rzErrors>0||(weekly[rzWeek]||[]).some(x=>(cleanScore(x)||0)>0))}
+function rzNFLDelay(){return Math.min(60000,(rzLiveMode()?RZ_NFL_LIVE_MS:RZ_NFL_IDLE_MS)*Math.max(1,2**Math.min(rzErrors,2)))}
+function rzSleeperDelay(){return Math.min(60000,(rzLiveMode()?RZ_SLEEPER_LIVE_MS:RZ_SLEEPER_IDLE_MS)*Math.max(1,2**Math.min(rzSleeperErrors,2)))}
+function rzSleeperWeekFresh(){return rzLastSleeperWeek===rzWeek&&rzLastSleeperLeague===el('leagueId')?.value.trim()}
+function rzCurrentSleeperStamp(){return rzSleeperWeekFresh()?rzLastSleeper:Number(live?.syncedAt||0)}
+function rzUpdateFantasyStamp(){const n=el('rzFantasyStamp');if(!n)return;const stamp=rzCurrentSleeperStamp(),fresh=rzSleeperWeekFresh(),cadence=rzLiveMode()?'Auto-refreshing official scores about every 10 seconds while games are active.':'Scores refresh about every 30 seconds until games go live.';if(fresh)n.textContent=(rzSleeperErrors?'Update delayed — retrying; last successful check ':'Sleeper updated ')+new Date(stamp).toLocaleTimeString('en-GB')+' · '+cadence;else if(stamp)n.textContent='Cached league sync '+new Date(stamp).toLocaleTimeString('en-GB')+' · Week '+rzWeek+' live check pending · '+cadence;else n.textContent='Week '+rzWeek+' official scores have not been checked yet · '+cadence}
+function rzStop(){if(rzTimer)clearTimeout(rzTimer);rzTimer=null;if(rzFantasyTimer)clearTimeout(rzFantasyTimer);rzFantasyTimer=null}
+function rzScheduleNFL(delay=rzNFLDelay()){if(rzTimer)clearTimeout(rzTimer);if(document.hidden||hqActive!=='games')return;rzTimer=setTimeout(async()=>{rzTimer=null;await rzPoll(false);rzScheduleNFL()},delay)}
+function rzScheduleSleeper(delay=rzSleeperDelay()){if(rzFantasyTimer)clearTimeout(rzFantasyTimer);if(document.hidden||hqActive!=='games')return;rzFantasyTimer=setTimeout(async()=>{rzFantasyTimer=null;await rzSleeper(false);rzScheduleSleeper()},delay)}
+async function rzRefreshNow(){const btn=el('rzRefresh');if(btn){btn.disabled=true;btn.textContent='↻ Updating…'}const projectionRefresh=rzLiveMode()?fetchWeeklyProjections(rzWeek,false):fetchWeeklyProjections(rzWeek,true);try{await Promise.allSettled([rzPoll(true),rzSleeper(true),projectionRefresh]);}finally{if(btn){btn.disabled=false;btn.textContent='↻ Refresh'}rzScheduleNFL();rzScheduleSleeper()}}
+async function rzOpen(){if(!el('rzGrid'))return;rzStop();await Promise.allSettled([rzPoll(true),rzSleeper(true)]);rzScheduleNFL();rzScheduleSleeper()}
 async function rzFetch(url,timeout=8000){const c=new AbortController(),kill=setTimeout(()=>c.abort(),timeout);
  try{const response=await fetch(url,{method:'GET',mode:'cors',cache:'no-store',credentials:'omit',signal:c.signal});if(!response.ok)throw Error('HTTP '+response.status);return await response.json()}
  finally{clearTimeout(kill)}}
 function rzSides(g){const arr=g.competitions?.[0]?.competitors||[];return {
  home:arr.find(x=>x.homeAway==='home')||{},away:arr.find(x=>x.homeAway==='away')||{}}}
 function rzAbbr(c){return c?.team?.abbreviation||'—'}
+function rzNormTeam(abbr){const x=String(abbr||'').toUpperCase(),aliases={JAC:'JAX',WAS:'WSH',LVR:'LV',OAK:'LV',SD:'LAC',STL:'LAR',LA:'LAR'};return aliases[x]||x}
 function rzState(g){return g.status?.type?.name||g.competitions?.[0]?.status?.type?.name||'UNKNOWN'}
 function rzIsLive(g){return /IN_PROGRESS|HALFTIME|END_PERIOD/i.test(rzState(g))}
 function rzPeriod(g){const st=g.status||g.competitions?.[0]?.status||{},n=+st.period||0;const time=st.displayClock||'';if(rzState(g).includes('FINAL'))return 'FINAL';if(!rzIsLive(g))return 'Scheduled';return n===2&&rzState(g).includes('HALFTIME')?'HALF':n>4?'OT '+time:'Q'+n+' '+time}
-function rzSituation(g){return rzDetailCache[g.id]?.header?.competitions?.[0]?.situation || g.competitions?.[0]?.situation || null}
+function rzSituation(g){const summary=rzDetailCache[g.id]?.header?.competitions?.[0]?.situation||null,scoreboard=g.competitions?.[0]?.situation||null;if(!summary&&!scoreboard)return null;return {...(summary||{}),...(scoreboard||{}),lastPlay:scoreboard?.lastPlay||summary?.lastPlay||null}}
 function rzOffense(g,situation){const raw=situation?.possession;if(raw&&typeof raw==='object'){const id=String(raw.id||raw.$ref?.match(/competitors\/(\d+)/)?.[1]||'');if(!id)return '';const c=(g.competitions?.[0]?.competitors||[]).find(c=>String(c.id)===id||String(c.team?.id)===id);return rzAbbr(c)}
  const sides=rzSides(g);const id=String(raw||'');for(const c of [sides.home,sides.away])if(id===String(c.id)||id===String(c.team?.id)||id===rzAbbr(c))return rzAbbr(c);return ''}
 function rzFieldLoc(game,situation){
@@ -2267,7 +2319,7 @@ function rzFieldLoc(game,situation){
  return {percent:Math.max(9,Math.min(91,pct)),raw:txt};
 }
 function rzPlayersInGame(g){const sides=rzSides(g),abbrs=[rzAbbr(sides.home),rzAbbr(sides.away)];
- const rows=[];for(const t of teams){const roster=rosterFor(t)||[];const players=roster.filter(p=>p&&p.id!=='0'&&!p.empty&&!['BN','IR'].includes(p.slot)&&abbrs.includes(p.nfl));if(players.length)rows.push({team:t.name,players:players.map(p=>p.name)});}
+ const nflTeams=abbrs.map(rzNormTeam),rows=[];for(const t of teams){const roster=lineupStartersForWeek(t,rzWeek);const players=roster.filter(p=>p&&p.id!=='0'&&!p.empty&&nflTeams.includes(rzNormTeam(p.nfl)));if(players.length)rows.push({team:t.name,players:players.map(p=>p.name)});}
  return rows.slice(0,10)}
 function rzLogScoreChanges(data){for(const g of data){const sides=rzSides(g),score=rzAbbr(sides.away)+' '+(sides.away.score??'—')+' – '+rzAbbr(sides.home)+' '+(sides.home.score??'—');const old=rzSeen.get(g.id);
  if(old&&old!==score&&rzIsLive(g))rzHighlights.unshift({event:g.shortName||g.name||'',note:score,at:Date.now()});rzSeen.set(g.id,score)}rzHighlights=rzHighlights.slice(0,12)}
@@ -2301,7 +2353,7 @@ function rzRenderFocus(){const root=el('rzFocus'),g=rzGames.find(x=>x.id===rzFoc
  '<p class="rzlegend" style="margin-top:10px">Play text from ESPN, fantasy points from Sleeper. NFL scores and play detail are not proof a fantasy score has been credited.</p>';
 }
 async function rzFocusedFetch(force=false){const id=rzFocused,g=rzGames.find(x=>x.id===id);if(!id||!g||rzDetailFetching||(!rzIsLive(g)&&!force))return;
- const cached=rzDetailCache[id];if(!force&&cached&&Date.now()-(cached._rzFetched||0)<15000)return;rzDetailFetching=true;
+ const cached=rzDetailCache[id];if(!force&&cached&&Date.now()-(cached._rzFetched||0)<(rzIsLive(g)?4500:15000))return;rzDetailFetching=true;
  try{const d=await rzFetch(RZ_ESPN+'/summary?event='+encodeURIComponent(id),9000);if(rzFocused!==id)return;d._rzFetched=Date.now();rzDetailCache[id]=d;rzRenderFocus()}
  catch(e){if(!cached){el('rzFocus').insertAdjacentHTML('beforeend','<p class="rzsmall">Play feed unavailable — game summary blocked or delayed. Scoreboard may still work.</p>')}}finally{rzDetailFetching=false}
 }
@@ -2311,7 +2363,7 @@ async function rzFillMissingPositions(){
  // matchups containing Sunday Funday starters; no need to hit all NFL games each time.
  if(rzFallbackBusy||!rzGames.length||document.hidden||hqActive!=='games')return;
  const now=Date.now();const missing=rzGames.filter(g=>rzIsLive(g)&&g.id!==rzFocused&&(!rzSituation(g)?.downDistanceText||!rzSituation(g)?.lastPlay?.text)&&
-     now-(rzSummaryTries.get(g.id)||0)>28000).sort((a,b)=>rzPlayersInGame(b).length-rzPlayersInGame(a).length).slice(0,2);
+     now-(rzSummaryTries.get(g.id)||0)>12000).sort((a,b)=>rzPlayersInGame(b).length-rzPlayersInGame(a).length).slice(0,2);
  if(!missing.length)return;
  rzFallbackBusy=true;
  try{await Promise.all(missing.map(async g=>{rzSummaryTries.set(g.id,Date.now());try{
@@ -2320,25 +2372,26 @@ async function rzFillMissingPositions(){
  finally{rzFallbackBusy=false}
 }
 async function rzPoll(force=false){if(rzFetching||document.hidden&& !force||hqActive!=='games'&& !force)return;
- if(!force&&Date.now()-rzLastNFL<11000)return;
- rzFetching=true;
- try{const d=await rzFetch(RZ_ESPN+'/scoreboard?season=2026&seasontype=2&week='+rzWeek+'&limit=100',11000);
- if(!Array.isArray(d.events))throw Error('No event list returned');rzLogScoreChanges(d.events);rzGames=d.events;rzLastNFL=Date.now();rzErrors=0;
+ if(!force&&Date.now()-rzLastNFL<(rzHasLiveGames()?4500:15000))return;
+ const requestedWeek=rzWeek;rzFetching=true;
+ try{const d=await rzFetch(RZ_ESPN+'/scoreboard?season=2026&seasontype=2&week='+requestedWeek+'&limit=100',8000);
+ if(requestedWeek!==rzWeek)return;if(!Array.isArray(d.events))throw Error('No event list returned');rzLogScoreChanges(d.events);rzGames=d.events;rzLastNFL=Date.now();rzLastNFLWeek=requestedWeek;rzErrors=0;
  el('rzStatus').textContent='NFL checked '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+' · '+rzGames.filter(rzIsLive).length+' LIVE';
- el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+(rzLastSleeper?' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB'):' · Sleeper refresh pending')+' · Independent feeds';
+ el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+(rzLastSleeperWeek===rzWeek&&rzLastSleeperLeague===el('leagueId').value.trim()?' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB'):' · Sleeper Week '+rzWeek+' refresh pending')+' · Independent feeds';
  if(rzFocused&&!rzGames.some(g=>g.id===rzFocused))rzFocused=null;
  rzRender();if(rzFocused)rzFocusedFetch(false);rzFillMissingPositions();
- }catch(e){rzErrors++;el('rzStatus').textContent='NFL feed unavailable';el('rzFeedNote').textContent='Could not load ESPN live data ('+String(e?.message||'blocked')+'). Browser access/CORS or upstream feed may be restricted. No fake live data is shown.';
+ }catch(e){rzErrors++;el('rzStatus').textContent='NFL feed unavailable';el('rzFeedNote').textContent='Could not load ESPN live data ('+String(e?.message||'blocked')+'). Browser access/CORS or upstream feed may be restricted. No fake live data is shown.';renderHQMatchups();
  if(!rzGames.length)el('rzGrid').innerHTML='<div class="rzdetail"><strong>Could not reach the independent NFL feed</strong><p class="rzsmall">The provider may block browser requests or be temporarily unavailable. Try Refresh now. Sleeper fantasy scores remain available separately.</p></div>';
- }finally{rzFetching=false}
+ }finally{rzFetching=false;if(requestedWeek!==rzWeek&&hqActive==='games'&&!document.hidden)setTimeout(()=>rzPoll(true),0)}
 }
-async function rzSleeper(){if(hqActive!=='games'||document.hidden||source!=='sleeper'||busy)return;
- const id=el('leagueId').value.trim(),w=rzWeek;if(!/^\d+$/.test(id))return;
- try{const data=await rzFetch('https://api.sleeper.app/v1/league/'+id+'/matchups/'+w,9500);if(!Array.isArray(data))return;
- weekly[w]=data;rzLastSleeper=Date.now();if(+el('weekSelect').value!==w)el('weekSelect').value=String(w);
- renderMatchups();rzUpdateFantasyStamp();
- if(rzLastNFL)el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB')+' · Independent feeds';
- }catch(e){rzUpdateFantasyStamp()}
+async function rzSleeper(force=false){if(rzSleeperFetching||hqActive!=='games'||document.hidden||source!=='sleeper'||busy)return;
+ const id=el('leagueId').value.trim(),w=rzWeek;if(!/^\d+$/.test(id))return;if(!force&&Date.now()-rzLastSleeper<(rzLiveMode()?8000:24000))return;
+ rzSleeperFetching=true;
+ try{const data=await rzFetch('https://api.sleeper.app/v1/league/'+id+'/matchups/'+w,8000);if(w!==rzWeek||id!==el('leagueId').value.trim()||!Array.isArray(data))return;
+ weekly[w]=data;rzLastSleeper=Date.now();rzLastSleeperWeek=w;rzLastSleeperLeague=id;rzSleeperErrors=0;if(+el('weekSelect').value!==w)el('weekSelect').value=String(w);
+ renderMatchups();rzRenderImpact();rzUpdateFantasyStamp();
+ if(rzLastNFLWeek===w)el('rzFeedNote').textContent='ESPN NFL '+new Date(rzLastNFL).toLocaleTimeString('en-GB')+' · Sleeper '+new Date(rzLastSleeper).toLocaleTimeString('en-GB')+' · Independent feeds';
+ }catch(e){rzSleeperErrors++;rzUpdateFantasyStamp();renderHQMatchups()}finally{rzSleeperFetching=false;if(w!==rzWeek&&hqActive==='games'&&!document.hidden)setTimeout(()=>rzSleeper(true),0)}
 }
 
 
@@ -2389,7 +2442,7 @@ function rzRenderFocus(){const root=el('rzFocus');if(!root)return;const g=rzGame
 function rzRenderImpact(){const root=el('rzImpact');if(!root)return;const g=rzGames.find(x=>x.id===rzFocused);if(!g){root.innerHTML='<h3>🔥 Fantasy impact</h3><p class="rz-impact-label">Select a game to see which Sunday Funday teams have starters involved.</p>';return}
  const info=rzFantasyGameFor(g),involved=rzPlayersInGame(g);if(!info){root.innerHTML='<h3>🔥 Fantasy impact</h3><div class="rz-impact-label">No Sunday Funday starters identified for this NFL game. Sync the league on Home to load current rosters.</div>';return}
  let headline='<div class="rz-impact-label">'+involved.map(row=>'<strong>'+safe(row.team)+'</strong>: '+safe(row.players.join(', '))).join(' · ')+'</div>';
- if(info.pair){const [a,b]=info.pair;headline='<div class="rz-impact-teams"><div class="team">'+safe(a.t.name)+'<span class="pts">'+fmt(Number(a.pts||0),1)+'</span></div><span class="vs">VS</span><div class="team">'+safe(b.t.name)+'<span class="pts">'+fmt(Number(b.pts||0),1)+'</span></div></div><div class="rz-impact-label">Official Sleeper points · '+safe(info.players.join(', '))+' involved in '+safe(info.owner)+'’s lineup. NFL play data can arrive before Sleeper awards fantasy points.</div>'}
+ if(info.pair){const [a,b]=info.pair,live=liveMatchupForecast(a.t.name,b.t.name,rzWeek),left=live?Math.round(live.p*100):null,right=left==null?null:100-left;headline='<div class="rz-impact-teams"><div class="team">'+safe(a.t.name)+'<span class="pts">'+fmt(Number(a.pts||0),1)+'</span></div><span class="vs">VS</span><div class="team">'+safe(b.t.name)+'<span class="pts">'+fmt(Number(b.pts||0),1)+'</span></div></div>'+(live?'<div class="chance" style="margin-top:9px"><span class="live-odds-badge">Live</span>Win chance: '+safe(a.t.name)+' '+left+'% · '+safe(b.t.name)+' '+right+'%</div>':'')+'<div class="rz-impact-label">Official Sleeper points · '+safe(info.players.join(', '))+' involved in '+safe(info.owner)+'’s lineup. NFL play data can arrive before Sleeper awards fantasy points.</div>'}
  root.innerHTML='<h3>🔥 Sunday Funday · Matchup impact</h3>'+headline;
 }
 function rzRender(){const grid=el('rzGrid');if(!grid)return;
