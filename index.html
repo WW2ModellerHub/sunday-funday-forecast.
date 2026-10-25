@@ -404,6 +404,7 @@ body.rz-immersive-mode #hqnav{background:#051326dd;border-color:#23475e}
 #v9-view-games .rz-cinema-game.hot{border-color:#c44f58}
 #v9-view-games .rz-cinema-game .rz-game-meta{display:flex;align-items:center;justify-content:space-between;gap:5px;font-size:10px;color:#b1d0e2;text-transform:uppercase;font-weight:900;white-space:nowrap}
 #v9-view-games [data-rz-clock-game]{font-variant-numeric:tabular-nums}
+#v9-view-games [data-rz-clock-game].rz-clock-running{color:#63f4d7;text-shadow:0 0 12px #31d7bd66}
 #v9-view-games .rz-cinema-game .rz-teamrows{display:grid;gap:6px;margin-top:9px}
 #v9-view-games .rz-cinema-game .rz-one-team{display:flex;align-items:center;gap:8px}
 #v9-view-games .rz-cinema-game .rz-mini-logo{height:25px;width:25px;display:grid;place-items:center;flex:none}
@@ -2429,7 +2430,8 @@ const RZ_ESPN='https://site.api.espn.com/apis/site/v2/sports/football/nfl';
 let rzWeek=calendarNflWeek(),rzGames=[],rzFocused=null,rzDetailCache={},rzTimer=null,rzFantasyTimer=null,
     rzClockTimer=null,rzClockAnchors=new Map(),rzDriveOpen=new Map(),rzGridRenderKey='',rzFocusRenderKey='',
     rzFetching=false,rzSleeperFetching=false,rzDetailFetching=false,rzFallbackBusy=false,rzSummaryTries=new Map(),rzLastNFL=0,rzLastSleeper=0,rzLastNFLWeek=0,rzLastSleeperWeek=0,rzLastSleeperLeague='',rzErrors=0,rzSleeperErrors=0,rzMode='nfl',rzSeen=new Map(),rzHighlights=[];
-const RZ_NFL_LIVE_MS=5000,RZ_NFL_IDLE_MS=18000,RZ_SLEEPER_LIVE_MS=10000,RZ_SLEEPER_IDLE_MS=30000,RZ_CLOCK_STALE_MS=7000;
+const RZ_NFL_LIVE_MS=4000,RZ_NFL_IDLE_MS=18000,RZ_SLEEPER_LIVE_MS=10000,RZ_SLEEPER_IDLE_MS=30000,
+      RZ_CLOCK_STALE_MS=15000,RZ_CLOCK_MAX_RUN_MS=45000;
 function rzInit(){
  const gameView=el('v9-view-games');
  gameView.insertAdjacentHTML('afterbegin',`<div class="rz-cinema">
@@ -2440,7 +2442,7 @@ function rzInit(){
   <div class="rz-all-head"><h3>▮ ALL GAMES</h3><label><select id="rzFilter" aria-label="Filter NFL games"><option value="live">Live first</option><option value="redzone">Red zone</option><option value="all">All games</option></select></label></div>
   <div id="rzGrid" class="rz-cinema-grid"><div class="rz-empty">Loading NFL games…</div></div><section class="rz-live-impact" id="rzImpact"><h3>🔥 Sunday Funday · Fantasy impact</h3><div class="rz-impact-label">Once league rosters sync, this panel links NFL plays to the managers involved.</div></section>
   <section class="rz-ticker"><h3>⚡ Score changes since opening RedZone</h3><div id="rzAlerts" class="rzplays"><p class="rzsmall">Score changes will appear as they are reported.</p></div></section>
-  <div class="rz-stamp"><span id="rzStatus">Waiting for NFL feed</span> · <span id="rzFeedNote">ESPN NFL play feed · Sleeper fantasy scoring · independent updates</span></div><p class="rzlegend">NFL plays and field positions use an unofficial feed and may be delayed or unavailable. Sleeper remains authoritative for league points. A moving game clock is interpolated only between verified feed updates, freezes when stale and is corrected by every new snapshot; no fictional plays or scores are used.</p></div>
+  <div class="rz-stamp"><span id="rzStatus">Waiting for NFL feed</span> · <span id="rzFeedNote">ESPN NFL play feed · Sleeper fantasy scoring · independent updates</span></div><p class="rzlegend">NFL plays and field positions use an unofficial feed and may be delayed or unavailable. Sleeper remains authoritative for league points. A running clock is estimated locally from the latest verified feed state, freezes on reported stoppages or stale data and is corrected by every new snapshot; no fictional plays or scores are used.</p></div>
   <div class="rzfantasy" id="rzFantasyPanel"><div class="rzdetail"><h3>🏆 Official Sunday Funday fantasy scores</h3><p class="rzsmall" id="rzFantasyStamp">Updating from Sleeper independently of NFL plays.</p></div></div>
   </div><button id="v10TVExit" class="v10-tv-exit secondary" type="button">Exit TV</button>`);
  const oldMatchPanel=el('matchupCards')?.closest('section.panel');
@@ -2480,16 +2482,22 @@ function rzState(g){return g.status?.type?.name||g.competitions?.[0]?.status?.ty
 function rzIsLive(g){return /IN_PROGRESS|HALFTIME|END_PERIOD/i.test(rzState(g))}
 function rzClockSeconds(g){const st=g.status||g.competitions?.[0]?.status||{},numeric=Number(st.clock);if(Number.isFinite(numeric)&&numeric>=0)return Math.round(numeric);const match=String(st.displayClock||'').trim().match(/^(\d{1,2}):(\d{2})$/);return match?Number(match[1])*60+Number(match[2]):null}
 function rzClockFormat(seconds){const value=Math.max(0,Math.round(Number(seconds)||0));return Math.floor(value/60)+':'+String(value%60).padStart(2,'0')}
-function rzClockCanRun(g){const st=g.status||g.competitions?.[0]?.status||{},state=rzState(g),situation=rzSituation(g),text=[st.type?.detail,st.type?.shortDetail,situation?.lastPlay?.type?.text,situation?.lastPlay?.text].filter(Boolean).join(' ');if(!/IN_PROGRESS/i.test(state)||/HALFTIME|END_PERIOD|FINAL|DELAY|SUSPEND|POSTPONE|CANCEL/i.test(state))return false;if(/timeout|two.minute|end of (?:the )?(?:quarter|half|game)|injur|challenge|under review|replay|touchdown|field goal|extra point|two.point|interception|fumble|kickoff|incomplete|out of bounds|penalt|no play|turnover on downs|safety/i.test(text))return false;return (rzClockSeconds(g)||0)>0}
+function rzClockCanRun(g){const st=g.status||g.competitions?.[0]?.status||{},state=rzState(g),situation=rzSituation(g),text=[st.type?.detail,st.type?.shortDetail,situation?.lastPlay?.type?.text,situation?.lastPlay?.text].filter(Boolean).join(' ');if(!/IN_PROGRESS/i.test(state)||/HALFTIME|END_PERIOD|FINAL|DELAY|SUSPEND|POSTPONE|CANCEL/i.test(state))return false;if(/timeout|two.minute|end (?:period|quarter|half|game)|end of .*?(?:quarter|half|game)|injur|challenge|under review|replay|touchdown|field goal|extra point|two.point|interception|fumble|kickoff|fair catch|spike|kneel|incomplete|out of bounds|penalt|no play|turnover on downs|safety/i.test(text))return false;return (rzClockSeconds(g)||0)>0}
 function rzSyncClockAnchors(games,sampledAt=Date.now()){
  const active=new Set();for(const g of games||[]){const id=String(g.id||'');if(!id)continue;active.add(id);const seconds=rzClockSeconds(g),st=g.status||g.competitions?.[0]?.status||{},period=Number(st.period)||0,previous=rzClockAnchors.get(id);if(seconds==null){rzClockAnchors.delete(id);continue}
-  const elapsed=previous?Math.max(0,(sampledAt-previous.sampledAt)/1000):0,drop=previous&&previous.period===period?previous.sourceSeconds-seconds:0;
-  const moving=!!previous&&drop>0&&drop<=Math.ceil(elapsed)+4;rzClockAnchors.set(id,{period,sourceSeconds:seconds,sampledAt,receivedAt:sampledAt,running:moving&&rzClockCanRun(g),validUntil:sampledAt+RZ_CLOCK_STALE_MS});}
+  const canRun=rzClockCanRun(g),samePeriod=!!previous&&previous.period===period,sameSource=samePeriod&&previous.sourceSeconds===seconds;
+  // ESPN commonly repeats a cached clock across several polls. Keep the original
+  // wall-clock anchor for duplicates so a valid local countdown neither stops nor
+  // jumps backwards. A stoppage keyword always wins and reanchors immediately.
+  if(sameSource&&canRun&&previous.running){previous.lastSampleAt=sampledAt;previous.validUntil=Math.min(sampledAt+RZ_CLOCK_STALE_MS,previous.sourceChangedAt+RZ_CLOCK_MAX_RUN_MS);continue}
+  // A normal in-progress state is enough to start the estimated clock immediately;
+  // every changed ESPN value remains authoritative and corrects the estimate.
+  rzClockAnchors.set(id,{period,sourceSeconds:seconds,sourceChangedAt:sampledAt,lastSampleAt:sampledAt,receivedAt:sampledAt,running:canRun,validUntil:canRun?sampledAt+RZ_CLOCK_STALE_MS:sampledAt});}
  for(const id of [...rzClockAnchors.keys()])if(!active.has(id))rzClockAnchors.delete(id);
 }
 function rzClockDisplay(g){const st=g.status||g.competitions?.[0]?.status||{},raw=String(st.displayClock||''),anchor=rzClockAnchors.get(String(g.id||'')),period=Number(st.period)||0;if(!anchor||anchor.period!==period)return raw;let seconds=anchor.sourceSeconds;if(anchor.running){const elapsed=Math.min(Math.max(0,anchor.validUntil-anchor.receivedAt),Math.max(0,Date.now()-anchor.receivedAt));seconds=Math.max(0,seconds-Math.floor(elapsed/1000))}return rzClockFormat(seconds)}
 function rzPeriod(g){const st=g.status||g.competitions?.[0]?.status||{},n=+st.period||0,time=rzClockDisplay(g);if(rzState(g).includes('FINAL'))return 'FINAL';if(!rzIsLive(g))return 'Scheduled';return n===2&&rzState(g).includes('HALFTIME')?'HALF':n>4?'OT '+time:'Q'+n+' '+time}
-function rzTickClocks(scope=document){if(document.hidden||hqActive!=='games'||rzMode!=='nfl')return;const games=new Map(rzGames.map(g=>[String(g.id),g]));scope.querySelectorAll?.('[data-rz-clock-game]').forEach(node=>{const g=games.get(String(node.dataset.rzClockGame||''));if(!g||!rzIsLive(g))return;const next=rzPeriod(g);if(node.textContent!==next)node.textContent=next;const anchor=rzClockAnchors.get(String(g.id));const estimated=!!anchor?.running&&Date.now()<=anchor.validUntil;node.classList.toggle('rz-clock-running',estimated);node.title=estimated?'Clock estimated between verified feed updates':'Last clock reported by the NFL feed'});}
+function rzTickClocks(scope=document){if(document.hidden||hqActive!=='games'||rzMode!=='nfl')return;const games=new Map(rzGames.map(g=>[String(g.id),g]));scope.querySelectorAll?.('[data-rz-clock-game]').forEach(node=>{const g=games.get(String(node.dataset.rzClockGame||''));if(!g||!rzIsLive(g))return;const next=rzPeriod(g);if(node.textContent!==next)node.textContent=next;const anchor=rzClockAnchors.get(String(g.id));const estimated=!!anchor?.running&&Date.now()<anchor.validUntil;node.classList.toggle('rz-clock-running',estimated);node.title=estimated?'Live estimate between verified ESPN clock updates':'Official clock at the last ESPN update'});}
 function rzStartClock(){if(rzClockTimer)clearInterval(rzClockTimer);rzTickClocks();rzClockTimer=setInterval(rzTickClocks,1000)}
 function rzSituation(g){const summary=rzDetailCache[g.id]?.header?.competitions?.[0]?.situation||null,scoreboard=g.competitions?.[0]?.situation||null;if(!summary&&!scoreboard)return null;return {...(summary||{}),...(scoreboard||{}),lastPlay:scoreboard?.lastPlay||summary?.lastPlay||null}}
 function rzOffense(g,situation){const raw=situation?.possession;if(raw&&typeof raw==='object'){const id=String(raw.id||raw.$ref?.match(/competitors\/(\d+)/)?.[1]||'');if(!id)return '';const c=(g.competitions?.[0]?.competitors||[]).find(c=>String(c.id)===id||String(c.team?.id)===id);return rzAbbr(c)}
