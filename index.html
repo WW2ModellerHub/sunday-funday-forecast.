@@ -1473,6 +1473,34 @@ td { padding:7px 6px; }
 #v9-view-games .rz-empty .secondary{margin-left:8px;font-size:11px;padding:5px 10px}
 #v9-view-games .sf-strip .rz-empty{grid-column:1/-1;width:max-content}
 @media(max-width:600px){#v9-view-games .rz-filter button{padding:7px 8px;font-size:11px}}
+/* matchup scoring feed */
+#v9-view-games .fan-feed{margin:0 0 10px}
+#v9-view-games .fan-last{display:grid;grid-template-columns:auto minmax(0,1fr) auto;align-items:center;gap:9px;width:100%;text-align:left;padding:7px 10px;border-radius:12px;background:#0b2a2a;border:1px solid #1f6f63;color:#e7f4fb}
+#v9-view-games .fan-last.empty{display:block;font-size:11px;color:#7f9db3;background:#0b1f31;border-color:#1d3a50;padding:8px 10px}
+#v9-view-games .fan-last.fresh{border-color:#5ff7cf;box-shadow:0 0 14px #24e7c533;animation:rzPlayIn .6s cubic-bezier(.2,1.2,.4,1)}
+#v9-view-games .fan-last.neg{background:#2a1520;border-color:#8c3341}
+#v9-view-games .fan-last .sf-face{width:30px;height:30px}
+#v9-view-games .fan-last-main{min-width:0;display:grid}
+#v9-view-games .fan-last-top{display:flex;align-items:baseline;gap:7px;font-size:13px;font-weight:900;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#v9-view-games .fan-last-top b{color:#5ff7cf;font-size:15px}
+#v9-view-games .fan-last.neg .fan-last-top b{color:#ff9daa}
+#v9-view-games .fan-last-main small{font-size:10px;color:#8fb0c4;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#v9-view-games .fan-last-more{font-size:10px;font-weight:900;color:#9ec5d8;white-space:nowrap}
+#v9-view-games .fan-log{list-style:none;margin:6px 0 0;padding:0;display:grid;gap:4px;max-height:320px;overflow:auto;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent}
+#v9-view-games .fan-log li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 8px;border-radius:10px;background:#0b1f31;border-left:3px solid #24e7c5}
+#v9-view-games .fan-log li.side-b{border-left-color:#7fb4ff}
+#v9-view-games .fan-log li.neg{background:#22121b}
+#v9-view-games .fan-log .sf-face{width:26px;height:26px}
+#v9-view-games .fan-log-main{min-width:0}
+#v9-view-games .fan-log-main b{display:block;font-size:12px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+#v9-view-games .fan-log-main small{display:block;font-size:10px;color:#7f9db3}
+#v9-view-games .fan-log-main em{display:block;font-style:normal;font-size:11px;color:#b9d3e4;margin-top:2px;line-height:1.35}
+#v9-view-games .fan-log-d{text-align:right;font-variant-numeric:tabular-nums}
+#v9-view-games .fan-log-d b{display:block;font-size:14px;color:#5ff7cf}
+#v9-view-games .fan-log li.neg .fan-log-d b{color:#ff9daa}
+#v9-view-games .fan-log-d small{font-size:9px;color:#7f9db3;font-weight:800}
+#v9-view-games .fan-log-note{margin:5px 2px 0;font-size:10px;color:#6f8aa0}
+@media(prefers-reduced-motion:reduce){#v9-view-games .fan-last.fresh{animation:none}}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -2916,7 +2944,7 @@ function renderHQMatchups(){
 }
 const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
-const v9RenderMatchups=renderMatchups;renderMatchups=function(){fxRecordSwings();v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy();if(hqActive==='rosters')fxRenderAlarms();if(hqActive==='records')fxRenderAwards();if(hqActive==='games')sfRenderLeague()};
+const v9RenderMatchups=renderMatchups;renderMatchups=function(){fxRecordSwings();fxRecordScoring();v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy();if(hqActive==='rosters')fxRenderAlarms();if(hqActive==='records')fxRenderAwards();if(hqActive==='games')sfRenderLeague()};
 
 
 const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();weeklyProjectionCache={};weeklyProjectionFetches={};return hqOldHydrate(...args)};
@@ -3320,7 +3348,7 @@ function rzRenderFantasy(){
   const n=Math.max(a.rows.length,b.rows.length),lines=Array.from({length:n},(_,i)=>{const ra=a.rows[i],rb=b.rows[i];return '<div class="fan-line">'+(ra?rzFanCell(ra,false):'<div></div>')+'<span class="fan-slot" title="'+safe((ra||rb)?.slot||'')+'">'+safe(rzSlotLabel((ra||rb)?.slot))+'</span>'+(rb?rzFanCell(rb,true):'<div></div>')+'</div>'}).join('');
   const sumPts=m=>m.rows.reduce((s,r)=>s+(r.pts||0),0);
   const open=rzFanClosed.has(key)?'':' open';
-  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div><div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSwingHtml(w,a.t,b.t)+
+  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div>'+fxScoreFeedHtml(w,a.t,b.t,key)+'<div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSwingHtml(w,a.t,b.t)+
    '<details class="fan-lineups" data-key="'+safe(key)+'"'+open+'><summary><span>Starting lineups</span><small>tap to '+(open?'hide':'show')+'</small></summary><div class="fan-lines">'+lines+'<div class="fan-line total"><div class="fan-cell"><div class="fan-who"><b>Starters total</b></div><div class="fan-pts">'+fmt(sumPts(a),1)+'</div></div><span class="fan-slot"></span><div class="fan-cell right"><div class="fan-pts">'+fmt(sumPts(b),1)+'</div><div class="fan-who"><b>Starters total</b></div></div></div></div></details></article>'});
  const html='<div class="fan-grid">'+cards.join('')+'</div>';
  if(summary)summary.innerHTML='<b>Week '+w+'</b> · '+(done?'final scores':liveGames?liveGames+' matchup'+(liveGames===1?'':'s')+' live':'pregame')+(totalPts?' · '+fmt(totalPts,1)+' league points':'');
@@ -3450,6 +3478,31 @@ function fxSwingHtml(w,ta,tb){
  return '<div class="fx-swing"><div class="fx-swing-head"><span>Win-chance swings</span><span>'+(flips?flips+' lead change'+(flips===1?'':'s')+' · ':'')+'since '+new Date(t0).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span></div><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+safe(ta.name)+' win chance from '+fxPct(pts[0].p)+' to '+fxPct(now.p)+', high '+fxPct(hi.p)+', low '+fxPct(lo.p)+'"><line x1="0" x2="'+W+'" y1="'+Y(.5)+'" y2="'+Y(.5)+'" class="fx-sw-mid"/><polygon class="fx-sw-area" points="'+X(t0)+','+Y(.5)+' '+line+' '+X(t1)+','+Y(.5)+'"/><polyline class="fx-sw-line" points="'+line+'"/>'+marks.join('')+'<circle cx="'+X(now.t)+'" cy="'+Y(now.p)+'" r="4.5" class="fx-sw-now"/></svg><div class="fx-swing-foot"><span>▲ '+safe(ta.name)+'</span><span>'+safe(tb.name)+' ▼</span></div></div>'}
 function fxHighlightAlerts(){for(const h of rzHighlights){if(!h.text||!h.hits?.length)continue;const k='hl|'+h.id+'|'+h.at;if(fxAlerted.has(k))continue;fxAlerted.add(k);
  const td=/touchdown/i.test(h.kind||h.text);fxToast(td?'🔥':'⚡',(td?'TOUCHDOWN — ':'Score — ')+h.hits.map(x=>x.name).join(' & '),h.hits.map(x=>x.team).join(', ')+' · '+(h.event||''),td?'td':'')}}
+
+/* ---------- matchup scoring feed ----------
+ * Sleeper has no public play-by-play of fantasy points, so build one: compare each
+ * starter's points between Sleeper updates and log every change. The last-seen
+ * values are kept on the device, so changes made while the app was closed are
+ * logged on return and marked as such. */
+let fxScoreLog=null,fxScoreBase=null,fxScoreLeague='',fxScoreSavedAt=0,fxLogOpen=new Set();
+function fxScoreLoad(){const lg=fxLeague();if(lg===fxScoreLeague&&fxScoreLog)return;fxScoreLeague=lg;fxScoreLog=read('sf_v11_scorelog_'+lg)||{};fxScoreBase=read('sf_v11_scorebase_'+lg)||{}}
+function fxScoreSave(force){const now=Date.now();if(!force&&now-fxScoreSavedAt<15000)return;fxScoreSavedAt=now;for(const o of [fxScoreLog,fxScoreBase])for(const w of Object.keys(o))if(Number(w)<rzWeek-1)delete o[w];store('sf_v11_scorelog_'+fxScoreLeague,fxScoreLog);store('sf_v11_scorebase_'+fxScoreLeague,fxScoreBase)}
+function fxRecordScoring(){
+ if(source!=='sleeper'||!leagueInfo)return;const w=rzWeek;if(w<=completedWeeks||!rzSleeperWeekFresh())return;fxScoreLoad();
+ const base=(fxScoreBase[w]??={}),log=(fxScoreLog[w]??=[]),now=Date.now(),first=!base._seen,late=!!base._at&&now-base._at>120000;let changed=false;
+ for(const e of weekly[w]||[]){const t=fxTeamById(e.roster_id);if(!t)continue;const pp=e.players_points||{},score=cleanScore(e)||0;
+  for(const id of e.starters||[]){if(!id||id==='0')continue;const v=Number(pp[id]);if(!Number.isFinite(v))continue;const k=t.id+'|'+id,old=base[k];base[k]=v;if(old==null||first)continue;
+   const d=Math.round((v-old)*100)/100;if(Math.abs(d)<.05)continue;const p=players[String(id)]||{},isDef=/^[A-Z]{2,3}$/.test(String(id)),name=nameOfPlayer(id),nfl=isDef?String(id):p.nfl||'',g=nfl?rzNFLGameForTeam(nfl):null,txt=g&&!isDef?rzPlayText(g):'';
+   log.push({t:now,tid:t.id,pid:String(id),name,pos:isDef?'DEF':p.pos||'',nfl,d,pts:v,score,play:txt&&rzNameInText(name,txt)?txt:'',late});changed=true}}
+ base._seen=1;base._at=now;if(log.length>400)log.splice(0,log.length-400);fxScoreSave(changed||first)}
+function fxAgo(t){const s_=Math.max(0,Math.round((Date.now()-t)/1000));return s_<45?'just now':s_<3600?Math.max(1,Math.round(s_/60))+'m ago':Math.floor(s_/3600)+'h ago'}
+function fxScoreFeedHtml(w,ta,tb,key){
+ fxScoreLoad();const ev=(fxScoreLog?.[w]||[]).filter(e=>e.tid===ta.id||e.tid===tb.id),live=w>completedWeeks;
+ if(!ev.length)return live?'<div class="fan-last empty">⚡ Scoring feed — the next points change will appear here</div>':'';
+ const last=ev.at(-1),open=fxLogOpen.has(key),team=id=>id===ta.id?ta:tb,sign=d=>(d>0?'+':'−')+fmt(Math.abs(d),1);
+ const head='<button type="button" class="fan-last'+(last.d<0?' neg':'')+(Date.now()-last.t<60000?' fresh':'')+'" data-log="'+safe(key)+'" aria-expanded="'+open+'" title="Show every scoring change in this matchup">'+sfFace({id:last.pid,name:last.name,pos:last.pos})+'<span class="fan-last-main"><span class="fan-last-top"><b>'+sign(last.d)+'</b>'+safe(last.name)+'</span><small>'+safe(team(last.tid).name)+' · '+(last.late?'while away':fxAgo(last.t))+'</small></span><span class="fan-last-more">'+ev.length+' score'+(ev.length===1?'':'s')+' '+(open?'▴':'▾')+'</span></button>';
+ const list=open?'<ol class="fan-log">'+ev.slice().reverse().map(e=>'<li class="'+(e.tid===ta.id?'side-a':'side-b')+(e.d<0?' neg':'')+'">'+sfFace({id:e.pid,name:e.name,pos:e.pos})+'<div class="fan-log-main"><b>'+safe(e.name)+'</b><small>'+safe(team(e.tid).name)+(e.pos?' · '+safe(e.pos):'')+' · now '+fmt(e.pts,1)+' pts</small>'+(e.play?'<em>'+safe(e.play)+'</em>':'')+'</div><span class="fan-log-d"><b>'+sign(e.d)+'</b><small>'+(e.late?'while away':new Date(e.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}))+'</small></span></li>').join('')+'</ol><p class="fan-log-note">Built from Sleeper point changes seen by this device; quick back-to-back plays can arrive as one update.</p>':'';
+ return '<div class="fan-feed">'+head+list+'</div>'}
 
 /* ---------- canvas share cards ---------- */
 function fxCanvas(W,H){const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0d2a44');g.addColorStop(1,'#040c16');x.fillStyle=g;x.fillRect(0,0,W,H);
@@ -3685,7 +3738,7 @@ function fxInit(){
  for(const [s_,box] of [['fxTradeA','fxTradeListA'],['fxTradeB','fxTradeListB']])el(s_)?.addEventListener('change',()=>{el(box).dataset.team='';fxRenderTradeLists();el('fxTradeResult').innerHTML=''});
  el('fxTradeBtn')?.addEventListener('click',fxCheckTrade);
  el('fxWhatIf')?.addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(!b)return;const k=b.dataset.pick,t=Number(b.dataset.team);if(fxPicks[k]===t)delete fxPicks[k];else fxPicks[k]=t;fxRenderWhatIf()});
- el('rzFantasyBoard')?.addEventListener('click',e=>{const b=e.target.closest('[data-share]');if(b){e.preventDefault();fxShareMatchup(b.dataset.share)}});
+ el('rzFantasyBoard')?.addEventListener('click',e=>{const lg=e.target.closest('[data-log]');if(lg){e.preventDefault();const k=lg.dataset.log;if(fxLogOpen.has(k))fxLogOpen.delete(k);else fxLogOpen.add(k);rzFanKey='';rzRenderFantasy();return}const b=e.target.closest('[data-share]');if(b){e.preventDefault();fxShareMatchup(b.dataset.share)}});
  el('fxSoundBtn')?.addEventListener('click',()=>{fxSound=!fxSound;store(FX_SOUND_KEY,fxSound);fxSoundLabel();if(fxSound){fxChime('')}});fxSoundLabel();
  const oldTab=hqTab;hqTab=function(tab){oldTab(tab);fxOnTab(tab)};
  sfWideSetup();
