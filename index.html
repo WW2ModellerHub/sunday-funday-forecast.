@@ -1405,6 +1405,25 @@ td { padding:7px 6px; }
 #v9-view-games .rz-card-extra{display:flex;flex-wrap:wrap;gap:4px 10px;margin-top:3px}
 #v9-view-games .rz-card-wp{color:#9ec5d8;font-weight:800}
 @media(max-width:600px){#v9-view-games .fan-who .sf-face{width:24px;height:24px}#v9-view-games .fan-who{gap:5px}}
+/* wide screens */
+@media(min-width:1500px){
+ main.wrap,body.rz-immersive-mode main.wrap{max-width:1840px}
+ .hqview.active.sf-wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
+ .hqview.sf-wide>*{grid-column:1/-1;margin:0!important;min-width:0}
+ .hqview.sf-wide>.sf-half{grid-column:auto}
+ #v9-view-games .rz-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(460px,1fr);gap:18px;align-items:start}
+ #v9-view-games .rz-main{min-width:0}
+ #v9-view-games .rz-side{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;min-width:0;padding-right:4px;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent}
+ #v9-view-games .rz-side .fx-matters{margin-top:0}
+ #v9-view-games .rz-side .rz-all-head{margin-top:14px}
+ #v9-view-games .rz-side .fx-matter{grid-template-columns:28px minmax(0,1fr) auto}
+ #v9-view-games .rz-side .fx-m-sw{grid-column:2/-1;text-align:left}
+ #v9-view-games .rz-impact-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+ #v9-view-games .fan-grid{grid-template-columns:repeat(auto-fill,minmax(560px,1fr))}
+ #v9-view-games .rz-impact-heads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;margin-bottom:10px}
+ #v9-view-games .rz-impact-heads .rz-impact-match{margin-bottom:0;padding:10px 0}
+ .fx-odds-grid{grid-template-columns:repeat(5,minmax(0,1fr))}
+}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -3195,7 +3214,7 @@ function rzRenderImpact(){const root=el('rzImpact');if(!root)return;const g=rzGa
    return '<div class="rz-impact-player'+(ahead?' is-est':'')+'"><span class="pos">'+safe(p.pos||'—')+'</span><span class="nm">'+sfFace(p)+'<span class="nm-txt">'+safe(p.name)+' <small>'+sfTeamLogo(p.nfl)+safe(p.nfl||'')+'</small>'+(e?.line?'<em>'+safe(e.line)+'</em>':'')+'</span></span><span class="proj">'+(Number.isFinite(pr)?'proj '+fmt(pr,1):'')+'</span><b'+(ahead?' title="Live estimate from the NFL box score · Sleeper currently shows '+fmt(Number.isFinite(off)?off:0,1)+'"':'')+'>'+(Number.isFinite(show)?(ahead?'≈':'')+fmt(show,1):'—')+(ahead?'<small>Sleeper '+fmt(Number.isFinite(off)?off:0,1)+'</small>':'')+'</b></div>'}).join('');
   return '<div class="rz-impact-manager"><div class="rz-impact-mhead"><strong>'+safe(row.team)+'</strong><span>'+(any?(est?'≈':'')+fmt(total,1)+' pts from this game':row.starters.length+' starter'+(row.starters.length===1?'':'s'))+'</span></div>'+lines+'</div>'}).join('');
  const stamp=rzDetailCache[g.id]?._rzFetched;
- root.innerHTML='<h3>🔥 Fantasy impact · '+label+'</h3>'+heads.join('')+'<div class="rz-impact-grid">'+body+'</div><div class="rz-impact-label">'+(estimating?'<b class="rz-est-key">≈ Live estimate</b> from the NFL box score'+(stamp?' ('+new Date(stamp).toLocaleTimeString('en-GB')+')':'')+', scored with Sunday Funday rules — shown until Sleeper credits it. Kickers and defences use Sleeper only. ':'')+'Official Sleeper points for league starters in this NFL game'+(played?'':' appear after kickoff')+'.</div>';
+ root.innerHTML='<h3>🔥 Fantasy impact · '+label+'</h3><div class="rz-impact-heads">'+heads.join('')+'</div><div class="rz-impact-grid">'+body+'</div><div class="rz-impact-label">'+(estimating?'<b class="rz-est-key">≈ Live estimate</b> from the NFL box score'+(stamp?' ('+new Date(stamp).toLocaleTimeString('en-GB')+')':'')+', scored with Sunday Funday rules — shown until Sleeper credits it. Kickers and defences use Sleeper only. ':'')+'Official Sleeper points for league starters in this NFL game'+(played?'':' appear after kickoff')+'.</div>';
 }
 function rzAutoLabel(){const b=el('rzAutoBtn');if(!b)return;b.textContent=rzAuto?'🔀 Auto-follow':'📌 Pinned';b.classList.toggle('on',rzAuto);b.setAttribute('aria-pressed',String(rzAuto))}
 function rzHeat(g){if(!rzIsLive(g))return rzState(g).includes('FINAL')?0:1;return rzIsRedZone(g)||rzScoreUpdate(g)?3:2}
@@ -3628,6 +3647,28 @@ function fxInit(){
  el('fxMatters')?.addEventListener('click',e=>{const b=e.target.closest('[data-rz-pick]');if(!b)return;rzFocused=b.dataset.rzPick;if(rzAuto){rzAuto=false;rzAutoLabel()}rzRender();rzFocusedFetch(true);el('rzFocus')?.scrollIntoView({behavior:'smooth',block:'start'})});
  el('fxSoundBtn')?.addEventListener('click',()=>{fxSound=!fxSound;store(FX_SOUND_KEY,fxSound);fxSoundLabel();if(fxSound){fxChime('')}});fxSoundLabel();
  const oldTab=hqTab;hqTab=function(tab){oldTab(tab);fxOnTab(tab)};
+ sfWideSetup();
+}
+/* ---------- wide-screen layout (1500px and up) ----------
+ * Phones and laptops keep the single-column flow. On big screens, smaller panels
+ * pair up side by side and RedZone splits into a main column and a sticky side column. */
+const SF_WIDE=window.matchMedia?window.matchMedia('(min-width:1500px)'):null;
+function sfWideSetup(){
+ const half=[el('hqPowerTable')?.closest('section'),el('v9-connection'),el('v10Playoff')?.closest('section'),el('v10Wins')?.closest('section'),el('fxRangeSPanel'),el('fxClinchSPanel'),el('v10Spotlight')?.closest('section'),el('fxTradeSPanel'),el('hqToiletTable')?.closest('section'),el('winnersBracket')?.closest('section'),el('fxAwardsSPanel'),el('fxRivalsSPanel')];
+ half.forEach(n=>n?.classList.add('sf-half'));
+ for(const id of ['v9-view-home','v9-view-forecast','v9-view-rosters','v9-view-toilet','v9-view-records'])el(id)?.classList.add('sf-wide');
+ // Grid order: keep each pair together without changing the phone order.
+ const order=(view,list)=>{const kids=[...(el(view)?.children||[])];kids.forEach((k,i)=>k.style.order=String(100+i));list.forEach((n,i)=>{if(n)n.style.order=String(i+1)})};
+ order('v9-view-forecast',[el('v10Playoff')?.closest('section'),el('v10Wins')?.closest('section'),el('fxRangeSPanel'),el('fxClinchSPanel'),el('fxWhatIfSPanel'),el('fxOddsSPanel')]);
+ order('v9-view-rosters',[el('fxAlarmsSPanel'),el('v10Spotlight')?.closest('section'),el('fxTradeSPanel')]);
+ sfLayoutRZ();SF_WIDE?.addEventListener?.('change',sfLayoutRZ);
+}
+function sfLayoutRZ(){
+ const panel=el('rzNFLPanel');if(!panel)return;const feat=panel.querySelector('.rz-featured'),matters=el('fxMatters'),head=panel.querySelector('.rz-all-head'),grid=el('rzGrid'),impact=el('rzImpact'),ticker=panel.querySelector('.rz-ticker');
+ const nodes=[feat,matters,head,grid,impact,ticker];if(nodes.some(n=>!n))return;let layout=panel.querySelector(':scope > .rz-layout');
+ if(SF_WIDE?.matches){if(layout)return;layout=document.createElement('div');layout.className='rz-layout';const main=document.createElement('div');main.className='rz-main';const side=document.createElement('aside');side.className='rz-side';side.setAttribute('aria-label','All NFL games');
+  main.append(feat,impact);side.append(matters,head,grid,ticker);layout.append(main,side);panel.prepend(layout)}
+ else if(layout){for(const n of nodes)panel.insertBefore(n,layout);layout.remove()}
 }
 
 initV9();fxInit();boot();
