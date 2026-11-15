@@ -1330,6 +1330,21 @@ td { padding:7px 6px; }
 .fx-trade-rows{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:12px}.fx-trade-rows span{color:#7f9db3}.fx-trade-rows em{font-style:normal;text-align:right}
 .fx-trade-rows i,.fx-wi-table .up,.fx-wi-table .down,.fx-odds-head i{font-style:normal;font-weight:900}
 .fx-trade-rows i.up,.fx-wi-table .up,.fx-odds-head i.up{color:#5ff7cf}.fx-trade-rows i.down,.fx-wi-table .down,.fx-odds-head i.down{color:#ff9daa}
+/* best and worst case */
+.fx-range{display:grid}
+.fx-range-row{display:grid;grid-template-columns:minmax(0,1.1fr) minmax(150px,2.6fr) 112px;gap:12px;align-items:center;padding:6px 0;font-size:12px}
+.fx-range-name{min-width:0}.fx-range-name b{display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fx-range-name small{color:#7f9db3;font-size:10px}
+.fx-range-plot{position:relative;height:24px}
+.fx-range-plot>i{position:absolute;top:50%;transform:translateY(-50%)}
+.fx-zone{height:24px;border-radius:5px}.fx-zone.po{left:0;width:40%;background:#24e7c514}.fx-zone.tb{right:0;width:40%;background:#ff5d7012}
+.fx-range-line{height:2px;background:#8fb0c4}
+.fx-range-band{height:12px;border-radius:6px;background:#24e7c540;border:1px solid #24e7c5;box-sizing:border-box}
+.fx-range-end{width:2px;height:14px;margin-left:-1px;background:#c9d9e5}
+.fx-range-dot{width:12px;height:12px;margin-left:-6px;border-radius:50%;background:#eafffb;box-shadow:0 0 0 2px #0b1b2d}
+.fx-range-lab{display:grid;gap:1px;font-size:11px;font-variant-numeric:tabular-nums}.fx-range-lab span{display:flex;justify-content:space-between;gap:6px}
+.fx-range-lab em{font-style:normal;color:#7f9db3}.fx-range-lab .likely{color:#5ff7cf;font-weight:800}.fx-range-lab span{white-space:nowrap}.fx-range-lab i{font-style:normal;font-size:9px;color:#ffd98a;margin-left:3px}
+.fx-range-axis{padding-top:0}.fx-range-axis .fx-range-plot{height:14px}.fx-range-axis span{position:absolute;top:0;transform:translateX(-50%);font-size:9px;color:#7f9db3}
+@media(max-width:600px){.fx-range-row{grid-template-columns:minmax(0,1fr) 112px;gap:2px 8px}.fx-range-row .fx-range-plot{grid-column:1/-1;grid-row:2}.fx-range-row .fx-range-lab{grid-column:2;grid-row:1}.fx-range-row .fx-range-name{grid-column:1;grid-row:1}.fx-range-axis>div:first-child,.fx-range-axis>div:last-child{display:none}.fx-range-axis .fx-range-plot{grid-row:1}}
 /* what-if + clinch */
 .fx-wi-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
 .fx-wi-picks{display:grid;gap:10px;max-height:560px;overflow:auto;padding-right:4px}
@@ -1743,7 +1758,7 @@ function simulate(opts={}){
   sigma=teams.map(()=>20);
  }
  if(opts.strengthDelta)strength=strength.map((x,i)=>Math.max(15,x+(Number(opts.strengthDelta[i])||0)));
- const rng=mulberry32(seed),finish=Array.from({length:n},()=>new Float64Array(10));
+ const rng=mulberry32(seed),finish=Array.from({length:n},()=>new Float64Array(10)),regHist=Array.from({length:n},()=>new Float64Array(n));
  const playoff=new Float64Array(n),toilet=new Float64Array(n),champ=new Float64Array(n),last=new Float64Array(n),expectedWins=new Float64Array(n),expectedPF=new Float64Array(n);
  const winBins=regularWeeks+2,winHist=Array.from({length:n},()=>new Uint32Array(winBins));
  function game(a,b){const x=Math.max(0,strength[a]+gaussian(rng)*sigma[a]),y=Math.max(0,strength[b]+gaussian(rng)*sigma[b]);return x>=y?a:b}
@@ -1757,6 +1772,7 @@ function simulate(opts={}){
    if(fw===a||fw===b)wins[fw]++;else if(sa>=sb)wins[a]++;else wins[b]++;
   }
   const order=Array.from({length:n},(_,i)=>i).sort((a,b)=>wins[b]-wins[a]||PF[b]-PF[a]||a-b);
+  for(let k=0;k<n;k++)regHist[order[k]][k]++;
   for(let i=0;i<n;i++){expectedWins[i]+=wins[i];expectedPF[i]+=PF[i];winHist[i][Math.min(winBins-1,wins[i])]++}
   for(let k=0;k<4;k++)playoff[order[k]]++;
   for(let k=6;k<10;k++)toilet[order[k]]++;
@@ -1776,7 +1792,7 @@ function simulate(opts={}){
  function inverse(order){const arr=[];order.forEach((x,i)=>arr[x]=i+1);return arr;}
  const quantile=(hist,q)=>{let run=0;for(let k=0;k<hist.length;k++){run+=hist[k];if(run>=q*sims)return k}return hist.length-1};
  const winLo=winHist.map(h=>quantile(h,.1)),winHi=winHist.map(h=>quantile(h,.9));
- return {winLo,winHi,sims,finish,playoff,toilet,champ,last,expWins,expPF,expFinish,cur:inverse(currentOrder()),projReg:inverse(regOrder),projFinal:inverse(finalOrder),strength,sigma,regression:cfg.regK,maxSignal:cfg.maxSignal,teamEstimates:adaptive.estimates.map(e=>({baseMu:e.baseMu,mu:e.mu,squadProjection:e.squadProjection,squadAdjustment:e.squadAdjustment,squadWeight:e.squadWeight})),squadSignal:adaptive.stats.squadSignal||seasonSquadSignal};
+ return {winLo,winHi,regHist,sims,finish,playoff,toilet,champ,last,expWins,expPF,expFinish,cur:inverse(currentOrder()),projReg:inverse(regOrder),projFinal:inverse(finalOrder),strength,sigma,regression:cfg.regK,maxSignal:cfg.maxSignal,teamEstimates:adaptive.estimates.map(e=>({baseMu:e.baseMu,mu:e.mu,squadProjection:e.squadProjection,squadAdjustment:e.squadAdjustment,squadWeight:e.squadWeight})),squadSignal:adaptive.stats.squadSignal||seasonSquadSignal};
 }
 
 function startSimulation(){
@@ -3456,6 +3472,21 @@ function fxCheckTrade(){
   const ra_=row(A,ia,before[0],after[0]),rb_=row(B,ib,before[1],after[1]),win=Math.abs(ra_.d-rb_.d)<.01?null:ra_.d>rb_.d?A:B;
   out.innerHTML='<div class="fx-trade-verdict">'+(win?'🏆 <b>'+safe(win.name)+'</b> win this trade':'🤝 Pretty even trade')+'</div><div class="fx-trade-grid">'+ra_.html+rb_.html+'</div><p class="fx-note">Lineups valued with '+safe(before[0].how)+'. Odds use the season model with the same '+Math.round(weight*100)+'% current-squad weighting, so they move conservatively.</p>'}catch(e){out.innerHTML='<p class="v10-muted">Trade check failed: '+safe(e.message)+'</p>'}},30)}
 
+/* ---------- best and worst possible finish ---------- */
+function fxSpread(counts,total){let lo=-1,hi=-1,peak=0,run=0,p10=-1,p90=-1;counts.forEach((c,k)=>{if(c>0){if(lo<0)lo=k;hi=k}if(c>counts[peak])peak=k});
+ for(let k=0;k<counts.length;k++){run+=counts[k];if(p10<0&&run>=.1*total)p10=k;if(p90<0&&run>=.9*total)p90=k}return {lo,hi,peak,p10,p90}}
+function fxRenderRange(){
+ const root=el('fxRange');if(!root)return;if(!model?.finish){root.innerHTML='<p class="v10-muted">Run the forecast to see each team’s range.</p>';return}
+ const n=teams.length,N=model.sims,pos=k=>fmt((k+.5)/n*100,2)+'%',labels=Array.from({length:n},(_,k)=>ord(k+1));
+ const rows=teams.map((t,i)=>{const fin=fxSpread(Array.from(model.finish[i]),N),seed=model.regHist?fxSpread(Array.from(model.regHist[i]),N):null,pBest=model.finish[i][fin.lo]/N,pWorst=model.finish[i][fin.hi]/N;return {t,i,fin,seed,pBest,pWorst,exp:model.expFinish[i]}}).sort((a,b)=>a.exp-b.exp||a.t.name.localeCompare(b.t.name));
+ const tag=(k,p)=>ord(k+1)+(p<.01?' <i title="Happened in '+fxPct(p)+' of simulations">rare</i>':'');
+ root.innerHTML='<div class="fx-range">'+rows.map(x=>{const f=x.fin;
+  return '<div class="fx-range-row" title="'+safe(x.t.name)+': best '+ord(f.lo+1)+' ('+pct(x.pBest)+'), worst '+ord(f.hi+1)+' ('+pct(x.pWorst)+'), most likely '+ord(f.peak+1)+(x.seed?' · regular-season seed '+ord(x.seed.lo+1)+' to '+ord(x.seed.hi+1):'')+'"><div class="fx-range-name"><b>'+safe(x.t.name)+'</b><small>'+(x.seed?'Seed '+ord(x.seed.lo+1)+'–'+ord(x.seed.hi+1):'')+'</small></div>'+
+   '<div class="fx-range-plot"><i class="fx-zone po"></i><i class="fx-zone tb"></i><i class="fx-range-line" style="left:'+pos(f.lo)+';width:calc('+pos(f.hi)+' - '+pos(f.lo)+')"></i><i class="fx-range-band" style="left:calc('+pos(f.p10)+' - 6px);width:calc('+pos(f.p90)+' - '+pos(f.p10)+' + 12px)"></i><i class="fx-range-end" style="left:'+pos(f.lo)+'"></i><i class="fx-range-end" style="left:'+pos(f.hi)+'"></i><i class="fx-range-dot" style="left:'+pos(f.peak)+'"></i></div>'+
+   '<div class="fx-range-lab"><span><em>Best</em>'+tag(f.lo,x.pBest)+'</span><span><em>Worst</em>'+tag(f.hi,x.pWorst)+'</span><span class="likely"><em>Likely</em>'+(f.p10===f.p90?ord(f.p10+1):ord(f.p10+1)+'–'+ord(f.p90+1))+'</span></div></div>'}).join('')+
+  '<div class="fx-range-row fx-range-axis" aria-hidden="true"><div></div><div class="fx-range-plot">'+labels.map((l,k)=>'<span style="left:'+pos(k)+'">'+l+'</span>').join('')+'</div><div></div></div></div>'+
+  '<p class="fx-note">Line: best to worst final place seen in '+N.toLocaleString('en-GB')+' simulated seasons · band: the middle 80% · dot: most likely. Teal zone = playoff places, pink = Toilet Bowl. “Seed” is the regular-season standing range before the playoffs. Outcomes rarer than about 1 in '+N.toLocaleString('en-GB')+' won’t show.</p>'}
+
 /* ---------- 8. what-if picker and clinch lines ---------- */
 function fxRemainingWeeks(){const out=[];const nameIdx=Object.fromEntries(teams.map((t,i)=>[t.name,i]));for(let w=completedWeeks+1;w<=regularWeeks;w++){const s_=scheduleFor(w);if(!validateFixtures(s_.games))continue;out.push({w,games:s_.games.map(([a,b])=>({a,b,ia:nameIdx[a],ib:nameIdx[b],key:w+'|'+Math.min(nameIdx[a],nameIdx[b])+'|'+Math.max(nameIdx[a],nameIdx[b])}))})}return out}
 function fxRenderWhatIf(){
@@ -3504,12 +3535,13 @@ function fxDrawOdds(){
   return '<div class="fx-odds-card"><div class="fx-odds-head"><b>'+safe(t.name)+'</b><span><b>'+fxPct(now.p)+'</b>'+(prev?'<i class="'+(d>.005?'up':d<-.005?'down':'')+'">'+(Math.abs(d)<.005?'±0':(d>0?'▲':'▼')+fmt(Math.abs(d)*100,0))+'</i>':'')+'</span></div><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+safe(t.name)+' playoff chance by week: '+s.map(q=>'Week '+q.w+' '+fxPct(q.p)).join(', ')+'"><line x1="0" x2="'+W+'" y1="'+Y(.5)+'" y2="'+Y(.5)+'" class="fx-sw-mid"/><polygon class="fx-od-area" points="'+X(s[0].w)+','+(H-4)+' '+line+' '+X(now.w)+','+(H-4)+'"/><polyline class="fx-od-line" points="'+line+'"/>'+s.map(q=>'<circle cx="'+X(q.w)+'" cy="'+Y(q.p)+'" r="'+(q.now?3.5:2)+'" class="fx-od-dot'+(q.now?' now':'')+'"><title>Week '+q.w+': '+fxPct(q.p)+'</title></circle>').join('')+'</svg></div>'}).join('')+'</div><p class="fx-note">Each point re-runs the season model using only the results known after that week. The dashed line is 50%.</p>'}
 
 /* ---------- wiring ---------- */
-function fxRenderAll(){fxRenderAlarms();if(hqActive==='records'){fxRenderAwards();fxRenderRivals()}if(hqActive==='toilet')fxRenderShame();if(hqActive==='forecast'){fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}if(hqActive==='rosters')fxRenderTradeLists()}
-function fxOnTab(tab){if(tab==='records'){fxRenderAwards();fxRenderRivals()}else if(tab==='toilet')fxRenderShame();else if(tab==='forecast'){fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}else if(tab==='rosters'){fxRenderAlarms();fxRenderTradeLists()}else if(tab==='games'){fxRenderMatters()}}
+function fxRenderAll(){fxRenderAlarms();if(hqActive==='records'){fxRenderAwards();fxRenderRivals()}if(hqActive==='toilet')fxRenderShame();if(hqActive==='forecast'){fxRenderRange();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}if(hqActive==='rosters')fxRenderTradeLists()}
+function fxOnTab(tab){if(tab==='records'){fxRenderAwards();fxRenderRivals()}else if(tab==='toilet')fxRenderShame();else if(tab==='forecast'){fxRenderRange();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}else if(tab==='rosters'){fxRenderAlarms();fxRenderTradeLists()}else if(tab==='games'){fxRenderMatters()}}
 function fxInit(){
  document.body.insertAdjacentHTML('beforeend','<div id="fxToasts" class="fx-toasts" aria-live="polite"></div>');
  const sec=(id,title,sub,body,extra='')=>'<section class="hqpanel fx-panel" id="'+id+'Panel"><div class="hqrow"><h3>'+title+'</h3>'+extra+'</div>'+(sub?'<p class="v10-muted fx-sub">'+sub+'</p>':'')+body+'</section>';
  el('v10Wins')?.closest('section')?.insertAdjacentHTML('afterend',
+  sec('fxRangeS','↕️ Best and worst case','The highest and lowest each team finished across every simulated season — final place after the playoffs and Toilet Bowl, plus regular-season seed.','<div id="fxRange"></div>')+
   sec('fxWhatIfS','🔮 What-if playoff picker','Pick winners for any remaining games and see how everyone’s playoff chances change.','<div id="fxWhatIf"></div>')+
   sec('fxClinchS','🎟 This week’s playoff stakes','What a win or a loss this week does to each team’s playoff chance.','<div id="fxClinch"></div>')+
   sec('fxOddsS','📈 Playoff odds over the season','How each team’s playoff chance has moved week by week.','<div id="fxOddsSeason"></div>'));
