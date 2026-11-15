@@ -1381,6 +1381,8 @@ td { padding:7px 6px; }
  .fx-riv-score>div b{font-size:40px}
 }
 @media(prefers-reduced-motion:reduce){.fx-toast{animation:none;transition:none}}
+#rzNFLPanel > .sf-strip-wrap,#rzNFLPanel > .sf-league{display:none}
+#v9-view-games .fan-card.sf-flash{animation:rzPlayGlow 1.4s ease-in-out 1}
 /* headshots, logos, NFL win probability */
 .sf-face{position:relative;flex:none;display:inline-grid;place-items:center;width:30px;height:30px;border-radius:50%;overflow:hidden;background:radial-gradient(circle at 35% 25%,#2a5876,#0b1d2e);border:1px solid #31566e;vertical-align:middle}
 .sf-face b{font-size:10px;font-weight:900;color:#cfe6f3;letter-spacing:.02em}
@@ -1411,13 +1413,69 @@ td { padding:7px 6px; }
  .hqview.active.sf-wide{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px;align-items:start}
  .hqview.sf-wide>*{grid-column:1/-1;margin:0!important;min-width:0}
  .hqview.sf-wide>.sf-half{grid-column:auto}
- #v9-view-games .rz-layout{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(460px,1fr);gap:18px;align-items:start}
- #v9-view-games .rz-main{min-width:0}
- #v9-view-games .rz-side{position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;min-width:0;padding-right:4px;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent}
- #v9-view-games .rz-side .fx-matters{margin-top:0}
- #v9-view-games .rz-side .rz-all-head{margin-top:14px}
+ /* slim header */
+ #v9-view-games .rz-stadium{display:grid!important;grid-template-columns:auto minmax(0,1fr);align-items:center;gap:24px;padding:12px 20px!important;margin-top:0}
+ #v9-view-games .rz-stadium:before,#v9-view-games .rz-stadium:after{display:none}
+ #v9-view-games .rz-brand{width:auto!important;text-align:left!important;display:flex;align-items:center;gap:12px;white-space:nowrap}
+ #v9-view-games .rz-brandtop{font-size:26px!important}
+ #v9-view-games .rz-brandsub{font-size:30px!important;transform:none}
+ #v9-view-games .rz-tagline{display:none}
+ #v9-view-games .rz-head-controls{margin-top:0!important;justify-content:flex-end;width:auto!important}
+ /* multi-view */
+ #v9-view-games .rz-layout{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(470px,1fr);grid-template-areas:"top top" "main side";gap:14px 18px;align-items:start;margin-top:12px}
+ #v9-view-games .rz-top{grid-area:top;min-width:0}
+ #v9-view-games .rz-top #rzGrid{display:none}
+ #v9-view-games .rz-main{grid-area:main;min-width:0}
+ #v9-view-games .rz-main .rz-featured{margin-top:0}
+ #v9-view-games .rz-side{grid-area:side;position:sticky;top:12px;max-height:calc(100vh - 24px);overflow:auto;min-width:0;padding-right:4px;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent;display:grid;gap:14px}
+ #v9-view-games .rz-side .fx-matters{margin:0}
+ #v9-view-games .rz-side .rz-ticker{margin:0;padding-top:0;border-top:0}
  #v9-view-games .rz-side .fx-matter{grid-template-columns:28px minmax(0,1fr) auto}
  #v9-view-games .rz-side .fx-m-sw{grid-column:2/-1;text-align:left}
+ #v9-view-games .sf-strip-wrap{border:1px solid #24506a;border-radius:18px;background:linear-gradient(180deg,#0b2236,#081a2b);padding:10px 12px 12px}
+ #v9-view-games .sf-strip-wrap .rz-all-head{margin:0 2px 8px}
+ #v9-view-games .sf-strip{display:grid;grid-auto-flow:column;grid-auto-columns:158px;gap:8px;overflow-x:auto;padding-bottom:6px;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent}
+ #v9-view-games .sf-st{display:grid;gap:3px;text-align:left;padding:8px 10px;border-radius:12px;background:#0c2638;border:1px solid #1d4258;color:#dbe9f3;min-width:0}
+ #v9-view-games .sf-st.live{border-color:#2f6f86}
+ #v9-view-games .sf-st.red{border-color:#ef5166;box-shadow:0 0 14px #fe4d5c40;background:linear-gradient(160deg,#3a1420,#0c2638 60%)}
+ #v9-view-games .sf-st.score{border-color:#d9a529;box-shadow:0 0 14px #e0ad3640;background:linear-gradient(160deg,#3a2a07,#0c2638 60%)}
+ #v9-view-games .sf-st.on{outline:2px solid #44ead1;outline-offset:-2px}
+ #v9-view-games .sf-st.fin{opacity:.78}
+ #v9-view-games .sf-st-top{display:flex;justify-content:space-between;align-items:center;gap:6px;font-size:10px;font-weight:900;color:#9ec5d8;text-transform:uppercase;white-space:nowrap}
+ #v9-view-games .sf-st.live .sf-st-top{color:#ffb3bd}
+ #v9-view-games .sf-st-top em{font-style:normal;font-size:9px;font-weight:1000;border-radius:5px;padding:1px 5px;background:#ef5166;color:#fff}
+ #v9-view-games .sf-st-top em.sc{background:#ffd34d;color:#2b1d00}
+ #v9-view-games .sf-st-live{width:7px;height:7px;border-radius:50%;background:#ff5d70;box-shadow:0 0 8px #ff5d70;animation:rzBlink 1.2s ease-in-out infinite}
+ #v9-view-games .sf-st-team{display:grid;grid-template-columns:18px minmax(0,1fr) auto;align-items:center;gap:6px;font-size:13px;font-weight:900}
+ #v9-view-games .sf-st-team img,#v9-view-games .sf-st-dot{width:18px;height:18px;object-fit:contain;display:block}
+ #v9-view-games .sf-st-dot{border-radius:50%;background:#1d4258}
+ #v9-view-games .sf-st-team b{font-size:16px;font-variant-numeric:tabular-nums}
+ #v9-view-games .sf-st-team.win b,#v9-view-games .sf-st-team.win span{color:#fff}
+ #v9-view-games .sf-st.fin .sf-st-team:not(.win){color:#8fa6bb}
+ #v9-view-games .sf-st-team small{font-size:10px}
+ #v9-view-games .sf-st-foot{display:flex;justify-content:space-between;gap:6px;font-size:10px;font-weight:800;color:#ffe08a;min-height:13px}
+ #v9-view-games .sf-st-foot span+span{color:#9ec5d8}
+ #v9-view-games .sf-league{border:1px solid #2fa994;border-radius:18px;background:linear-gradient(170deg,#07332e,#081a30);padding:12px}
+ #v9-view-games .sf-lg-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+ #v9-view-games .sf-lg-head h3{margin:0;font-size:13px;letter-spacing:.12em;text-transform:uppercase;color:#73ffdb}
+ #v9-view-games .sf-lg-head button{font-size:11px;padding:6px 10px}
+ #v9-view-games .sf-lg-list{display:grid;gap:6px}
+ #v9-view-games .sf-lg-row{display:grid;grid-template-columns:minmax(0,1fr) 108px minmax(0,1fr);gap:10px;align-items:center;padding:8px 10px;border-radius:12px;background:#06202b;border:1px solid #1f5a55;color:#dbe9f3;text-align:left}
+ #v9-view-games .sf-lg-row:hover{border-color:#44ead1}
+ #v9-view-games .sf-lg-side{min-width:0;display:grid}
+ #v9-view-games .sf-lg-side.right{text-align:right}
+ #v9-view-games .sf-lg-side span{font-size:12px;font-weight:900;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:#b9d3e4}
+ #v9-view-games .sf-lg-side b{font-size:24px;font-weight:1000;line-height:1.1;font-variant-numeric:tabular-nums;color:#c9d9e5}
+ #v9-view-games .sf-lg-side.sf-lead span,#v9-view-games .sf-lg-side.sf-lead b{color:#fff}
+ #v9-view-games .sf-lg-side small{font-size:10px;color:#7f9db3;font-weight:800}
+ #v9-view-games .sf-lg-mid{text-align:center;display:grid;gap:3px}
+ #v9-view-games .sf-lg-mid small{font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;color:#7f9db3}
+ #v9-view-games .sf-lg-row.live .sf-lg-mid small{color:#ffb3bd}
+ #v9-view-games .sf-lg-mid .fin{color:#e3eef6}
+ #v9-view-games .sf-lg-pct{display:flex;justify-content:space-between;font-size:12px;font-variant-numeric:tabular-nums}
+ #v9-view-games .sf-lg-track{height:6px;border-radius:3px;background:#5a2a3c;overflow:hidden}
+ #v9-view-games .sf-lg-track i{display:block;height:100%;background:#24e7c5;transition:width .8s ease}
+ #v9-view-games .sf-lg-note{margin:8px 0 0;font-size:10px;color:#7f9db3}
  #v9-view-games .rz-impact-grid{grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
  #v9-view-games .fan-grid{grid-template-columns:repeat(auto-fill,minmax(560px,1fr))}
  #v9-view-games .rz-impact-heads{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));column-gap:28px;margin-bottom:10px}
@@ -2867,7 +2925,7 @@ function renderHQMatchups(){
 }
 const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
-const v9RenderMatchups=renderMatchups;renderMatchups=function(){fxRecordSwings();v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy();if(hqActive==='rosters')fxRenderAlarms();if(hqActive==='records')fxRenderAwards();if(hqActive==='games')fxRenderMatters()};
+const v9RenderMatchups=renderMatchups;renderMatchups=function(){fxRecordSwings();v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy();if(hqActive==='rosters')fxRenderAlarms();if(hqActive==='records')fxRenderAwards();if(hqActive==='games'){fxRenderMatters();sfRenderLeague()}};
 
 
 const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();weeklyProjectionCache={};weeklyProjectionFetches={};return hqOldHydrate(...args)};
@@ -3219,7 +3277,7 @@ function rzRenderImpact(){const root=el('rzImpact');if(!root)return;const g=rzGa
 function rzAutoLabel(){const b=el('rzAutoBtn');if(!b)return;b.textContent=rzAuto?'🔀 Auto-follow':'📌 Pinned';b.classList.toggle('on',rzAuto);b.setAttribute('aria-pressed',String(rzAuto))}
 function rzHeat(g){if(!rzIsLive(g))return rzState(g).includes('FINAL')?0:1;return rzIsRedZone(g)||rzScoreUpdate(g)?3:2}
 /* ---------- Fantasy scoreboard ---------- */
-let rzFanKey='',rzFanPrev=new Map(),rzFanGain=new Map(),rzFanOpen=new Set(),rzFanScores=new Map();
+let rzFanKey='',rzFanPrev=new Map(),rzFanGain=new Map(),rzFanClosed=new Set(),rzFanScores=new Map();
 function rzPlayerGameState(p,w){
  if(!p||p.empty||!p.nfl)return {k:'none',label:''};if((nflByes[w]||[]).includes(p.nfl))return {k:'done',label:'Bye'};
  if(rzLastNFLWeek!==w||!rzGames.length)return {k:'unknown',label:''};const g=rzNFLGameForTeam(p.nfl);if(!g)return {k:'unknown',label:''};
@@ -3264,14 +3322,14 @@ function rzRenderFantasy(){
   const prob=pctA!=null&&!done?'<div class="fan-prob"><div class="fan-prob-head"><b>'+pctA+'%</b><span>'+safe(probLabel)+(odds.delayed?' · delayed':'')+'</span><b>'+(100-pctA)+'%</b></div><div class="fan-track"><i style="width:'+pctA+'%"></i></div></div>':done?'<div class="fan-result">'+(lead?safe((lead>0?a:b).t.name)+' won by '+fmt(margin,1):'Tied')+'</div>':'';
   const n=Math.max(a.rows.length,b.rows.length),lines=Array.from({length:n},(_,i)=>{const ra=a.rows[i],rb=b.rows[i];return '<div class="fan-line">'+(ra?rzFanCell(ra,false):'<div></div>')+'<span class="fan-slot" title="'+safe((ra||rb)?.slot||'')+'">'+safe(rzSlotLabel((ra||rb)?.slot))+'</span>'+(rb?rzFanCell(rb,true):'<div></div>')+'</div>'}).join('');
   const sumPts=m=>m.rows.reduce((s,r)=>s+(r.pts||0),0);
-  const open=rzFanOpen.has(key)?' open':'';
+  const open=rzFanClosed.has(key)?'':' open';
   return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div><div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSwingHtml(w,a.t,b.t)+
-   '<details class="fan-lineups" data-key="'+safe(key)+'"'+open+'><summary><span>Starting lineups</span><small>tap to '+(open?'hide':'compare')+'</small></summary><div class="fan-lines">'+lines+'<div class="fan-line total"><div class="fan-cell"><div class="fan-who"><b>Starters total</b></div><div class="fan-pts">'+fmt(sumPts(a),1)+'</div></div><span class="fan-slot"></span><div class="fan-cell right"><div class="fan-pts">'+fmt(sumPts(b),1)+'</div><div class="fan-who"><b>Starters total</b></div></div></div></div></details></article>'});
+   '<details class="fan-lineups" data-key="'+safe(key)+'"'+open+'><summary><span>Starting lineups</span><small>tap to '+(open?'hide':'show')+'</small></summary><div class="fan-lines">'+lines+'<div class="fan-line total"><div class="fan-cell"><div class="fan-who"><b>Starters total</b></div><div class="fan-pts">'+fmt(sumPts(a),1)+'</div></div><span class="fan-slot"></span><div class="fan-cell right"><div class="fan-pts">'+fmt(sumPts(b),1)+'</div><div class="fan-who"><b>Starters total</b></div></div></div></div></details></article>'});
  const html='<div class="fan-grid">'+cards.join('')+'</div>';
  if(summary)summary.innerHTML='<b>Week '+w+'</b> · '+(done?'final scores':liveGames?liveGames+' matchup'+(liveGames===1?'':'s')+' live':'pregame')+(totalPts?' · '+fmt(totalPts,1)+' league points':'');
  const key=html.replace(/ bump/g,'');if(key===rzFanKey)return;rzFanKey=key;
  root.innerHTML=html;
- root.querySelectorAll('details.fan-lineups').forEach(d=>d.addEventListener('toggle',()=>{const k=d.dataset.key;if(d.open)rzFanOpen.add(k);else rzFanOpen.delete(k);const sm=d.querySelector('summary small');if(sm)sm.textContent='tap to '+(d.open?'hide':'compare')}));
+ root.querySelectorAll('details.fan-lineups').forEach(d=>d.addEventListener('toggle',()=>{const k=d.dataset.key;if(d.open)rzFanClosed.delete(k);else rzFanClosed.add(k);const sm=d.querySelector('summary small');if(sm)sm.textContent='tap to '+(d.open?'hide':'show')}));
 }
 function rzRender(){const grid=el('rzGrid');if(!grid)return;
  if(!rzGames.length){rzGridRenderKey='';rzFocusRenderKey='';grid.innerHTML='<div class="rz-empty">Waiting for the independent NFL feed. No made-up games or scores will be displayed.</div>';if(el('rzFocus')){delete el('rzFocus').dataset.rzFocusGame;el('rzFocus').innerHTML='<div class="rz-empty">Select a week and refresh the scoreboard to load real NFL games.</div>'}rzRenderImpact();return}
@@ -3289,7 +3347,7 @@ function rzRender(){const grid=el('rzGrid');if(!grid)return;
  const clockAttr=live?' data-rz-clock-game="'+safe(g.id)+'"':'';return {key:[String(g.id),rzState(g),Number((g.status||g.competitions?.[0]?.status||{}).period)||0,sides.away?.score,sides.home?.score,red,scored,ended,info,rzKickoff(g),mine,fav],html:'<button type="button" class="rz-cinema-game'+(g.id===rzFocused?' selected':'')+(red?' hot':'')+'" data-rz-game="'+safe(g.id)+'"><div class="rz-game-meta"><span>'+state+'</span><span'+clockAttr+'>'+safe(live?rzPeriod(g):final?'FT':rzKickoff(g))+'</span><span>'+(scored?'<span class="rz-scorebadge">SCORE</span>':red?'<span class="rz-rzbadge">RZ</span>':'')+'</span></div><div class="rz-teamrows">'+row(sides.away)+row(sides.home)+'</div><div class="rz-game-drive">'+safe(scored?'Points scored · awaiting next possession':ended?'Drive complete · awaiting next possession':info)+(fav||star?'<div class="rz-card-extra">'+(fav?'<span class="rz-card-wp" title="ESPN live win probability">📈 '+safe(fav)+'</span>':'')+star+'</div>':'')+'</div></button>'};});
  const gridKey=JSON.stringify([flt,String(rzFocused),cards.map(card=>card.key)]);if(gridKey!==rzGridRenderKey){rzGridRenderKey=gridKey;grid.innerHTML=cards.length?cards.map(card=>card.html).join(''):'<div class="rz-empty">'+(flt==='league'?'No games this week include a Sunday Funday starter in the loaded lineups.':'No games currently in the red zone. Choose Live first to see the rest.')+'</div>';grid.querySelectorAll('[data-rz-game]').forEach(b=>b.addEventListener('click',()=>{rzFocused=b.dataset.rzGame;if(rzAuto){rzAuto=false;rzAutoLabel()}rzRender();rzFocusedFetch(true)}));}
  const alerts=el('rzAlerts');if(alerts)alerts.innerHTML=rzHighlights.length?rzHighlights.slice(0,6).map(x=>'<div class="rzplay'+(x.hits?.length?' rz-league-hit':'')+'"><small>'+new Date(x.at).toLocaleTimeString('en-GB')+' · '+safe(x.event)+'</small><b>'+safe(x.kind||'Score change')+(x.scorer?' · '+safe(x.scorer):'')+'</b> — '+safe(x.note)+(x.text?'<div class="rz-alert-play">'+safe(x.text)+'</div>':'')+(x.hits?.length?'<div class="rz-alert-hit">★ '+x.hits.map(h=>safe(h.name)+' ('+safe(h.team)+')').join(' · ')+' · Sleeper points follow separately</div>':'')+'</div>').join(''):'<p class="rzsmall">No new scoring changes detected since this tab opened.</p>';
-  fxRecordSwings();rzRenderFocus();rzRenderFantasy();fxRenderMatters();fxHighlightAlerts();
+  fxRecordSwings();rzRenderFocus();rzRenderFantasy();fxRenderMatters();fxHighlightAlerts();sfRenderStrip();sfRenderLeague();
   rzTickClocks();v10RenderTicker();v10RenderSpotlight();
 }
 
@@ -3666,10 +3724,36 @@ function sfWideSetup(){
 function sfLayoutRZ(){
  const panel=el('rzNFLPanel');if(!panel)return;const feat=panel.querySelector('.rz-featured'),matters=el('fxMatters'),head=panel.querySelector('.rz-all-head'),grid=el('rzGrid'),impact=el('rzImpact'),ticker=panel.querySelector('.rz-ticker');
  const nodes=[feat,matters,head,grid,impact,ticker];if(nodes.some(n=>!n))return;let layout=panel.querySelector(':scope > .rz-layout');
- if(SF_WIDE?.matches){if(layout)return;layout=document.createElement('div');layout.className='rz-layout';const main=document.createElement('div');main.className='rz-main';const side=document.createElement('aside');side.className='rz-side';side.setAttribute('aria-label','All NFL games');
-  main.append(feat,impact);side.append(matters,head,grid,ticker);layout.append(main,side);panel.prepend(layout)}
- else if(layout){for(const n of nodes)panel.insertBefore(n,layout);layout.remove()}
+ let strip=el('sfStripWrap'),league=el('sfLeague');
+ if(!strip){panel.insertAdjacentHTML('beforeend','<section id="sfStripWrap" class="sf-strip-wrap"><div id="sfStrip" class="sf-strip" role="list"></div></section><section id="sfLeague" class="sf-league"></section>');strip=el('sfStripWrap');league=el('sfLeague');
+  for(const r of [el('sfStrip'),league])r.addEventListener('click',sfStripClick)}
+ if(SF_WIDE?.matches){if(layout)return;layout=document.createElement('div');layout.className='rz-layout';const top=document.createElement('div');top.className='rz-top';const main=document.createElement('div');main.className='rz-main';const side=document.createElement('aside');side.className='rz-side';side.setAttribute('aria-label','Sunday Funday live');
+  strip.prepend(head);top.append(strip,grid);main.append(feat,impact);side.append(league,matters,ticker);layout.append(top,main,side);panel.prepend(layout);sfRenderStrip();sfRenderLeague()}
+ else if(layout){for(const n of nodes)panel.insertBefore(n,layout);panel.append(strip,league);layout.remove()}
 }
+function sfStripClick(e){
+ const g=e.target.closest('[data-rz-pick]');if(g){rzFocused=g.dataset.rzPick;if(rzAuto){rzAuto=false;rzAutoLabel()}rzRender();rzFocusedFetch(true);return}
+ if(e.target.closest('[data-fan-all]')){rzSwitch('fantasy');window.scrollTo({top:0,behavior:'smooth'});return}
+ const m=e.target.closest('[data-fan-open]');if(m){const k=m.dataset.fanOpen;rzFanClosed.delete(k);rzSwitch('fantasy');setTimeout(()=>{const card=[...document.querySelectorAll('.fan-card')].find(c=>c.dataset.key===k);card?.scrollIntoView({behavior:'smooth',block:'start'});card?.classList.add('sf-flash');setTimeout(()=>card?.classList.remove('sf-flash'),1600)},60)}}
+/* All NFL games as a compact strip across the top (wide screens). */
+function sfRenderStrip(){
+ const root=el('sfStrip');if(!root||!SF_WIDE?.matches||!root.closest('.rz-layout'))return;if(!rzGames.length){if(root.dataset.h!=='empty'){root.dataset.h='empty';root.innerHTML='<div class="rz-empty">Waiting for the NFL scoreboard…</div>'}return}
+ const flt=el('rzFilter')?.value||'live',sorted=flt==='all'?rzSortedGames('kickoff'):rzSortedGames(),shown=flt==='redzone'?sorted.filter(g=>rzIsRedZone(g)):flt==='league'?sorted.filter(g=>rzStarterCount(g)>0):sorted;
+ const html=shown.map(g=>{const sd=rzSides(g),live=rzIsLive(g),fin=rzState(g).includes('FINAL'),st=rzSituation(g),red=live&&rzIsRedZone(g,st),sc=live&&rzScoreUpdate(g,st),off=live&&!sc?rzOffense(g,st):'',mine=rzStarterCount(g),hwp=live?rzWinProb(g):null,as=Number(sd.away?.score),hs=Number(sd.home?.score);
+  const team=(c,win)=>{const u=rzLogoURL(c),ab=rzAbbr(c);return '<div class="sf-st-team'+(off&&off===ab?' poss':'')+(fin&&win?' win':'')+'">'+(u?'<img src="'+safe(u)+'" alt="" loading="lazy" onerror="this.remove()">':'<i class="sf-st-dot"></i>')+'<span>'+safe(ab)+(off&&off===ab?' <small>🏈</small>':'')+'</span><b>'+(live||fin?safe(c?.score??'0'):'')+'</b></div>'};
+  return '<button type="button" role="listitem" class="sf-st'+(g.id===rzFocused?' on':'')+(red?' red':'')+(sc?' score':'')+(live?' live':'')+(fin?' fin':'')+'" data-rz-pick="'+safe(g.id)+'"><div class="sf-st-top"><span'+(live?' data-rz-clock-game="'+safe(g.id)+'"':'')+'>'+safe(live?rzPeriod(g):fin?'FINAL':rzKickoff(g))+'</span>'+(sc?'<em class="sc">SCORE</em>':red?'<em>RZ</em>':live?'<i class="sf-st-live"></i>':'')+'</div>'+team(sd.away,as>hs)+team(sd.home,hs>as)+'<div class="sf-st-foot"><span>'+(mine?'★ '+mine:'')+'</span>'+(hwp!=null?'<span>'+safe(hwp>=.5?rzAbbr(sd.home):rzAbbr(sd.away))+' '+Math.round(Math.max(hwp,1-hwp)*100)+'%</span>':'')+'</div></button>'}).join('')||'<div class="rz-empty">No games match this filter.</div>';
+ if(root.dataset.h===html)return;root.dataset.h=html;const x=root.scrollLeft;root.innerHTML=html;root.scrollLeft=x;rzTickClocks(root)}
+/* Compact live view of every Sunday Funday matchup (wide screens). */
+function sfRenderLeague(){
+ const root=el('sfLeague');if(!root||!SF_WIDE?.matches||!root.closest('.rz-layout'))return;const w=rzWeek,done=w<=completedWeeks;let body;
+ const pairs=source==='sleeper'?matchupsAsCards(w):[];
+ if(!pairs.length)body='<p class="v10-muted">'+(source==='sleeper'?'No Sunday Funday matchups for Week '+w+'.':'Sync Sleeper to follow the league live.')+'</p>';
+ else body='<div class="sf-lg-list">'+pairs.map(([x,y])=>{const a={t:x.t,score:Number(x.pts)||0},b={t:y.t,score:Number(y.pts)||0},o=rzFanOdds(a,b,w,done),pa=o.p==null?null:Math.round(o.p*100),key=w+'|'+[a.t.id,b.t.id].sort((m,n)=>m-n).join('-');
+  const side=(m,proj,right,lead)=>'<div class="sf-lg-side'+(right?' right':'')+(lead?' sf-lead':'')+'"><span>'+safe(m.t.name)+'</span><b>'+fmt(m.score,1)+'</b><small>'+(proj!=null&&!done?'proj '+fmt(proj,1):'&nbsp;')+'</small></div>';
+  return '<button type="button" class="sf-lg-row'+(o.kind==='live'?' live':'')+'" data-fan-open="'+safe(key)+'" title="Open this matchup on the Fantasy scores tab">'+side(a,o.projA,false,a.score>b.score)+'<div class="sf-lg-mid">'+(done?'<small class="fin">FINAL</small>':pa!=null?'<div class="sf-lg-pct"><b>'+(o.kind==='live'?clamp(pa,1,99):pa)+'%</b><b>'+(100-(o.kind==='live'?clamp(pa,1,99):pa))+'%</b></div><div class="sf-lg-track"><i style="width:'+pa+'%"></i></div><small>'+(o.kind==='live'?'live':'pregame')+'</small>':'<small>vs</small>')+'</div>'+side(b,o.projB,true,b.score>a.score)+'</button>'}).join('')+'</div>';
+ const stamp=rzCurrentSleeperStamp();
+ const html='<div class="sf-lg-head"><h3>🏆 Sunday Funday live · Week '+w+'</h3><button type="button" class="secondary" data-fan-all>Full scoreboard →</button></div>'+body+(pairs.length?'<p class="sf-lg-note">Official Sleeper scores'+(stamp?' · '+new Date(stamp).toLocaleTimeString('en-GB'):'')+' · tap a matchup for lineups</p>':'');
+ if(root.dataset.h===html)return;root.dataset.h=html;root.innerHTML=html}
 
 initV9();fxInit();boot();
 
