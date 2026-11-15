@@ -1238,6 +1238,129 @@ td { padding:7px 6px; }
  #v9-view-games .fan-bar{flex-wrap:wrap}
 }
 @media(prefers-reduced-motion:reduce){#v9-view-games .rz-dp.fresh,#v9-view-games .fan-score.bump,#v9-view-games .fan-pill.live i{animation:none}#v9-view-games .rz-drive-meter i,#v9-view-games .fan-track i{transition:none}}
+/* v11 features */
+.fx-panel .fx-sub{margin:0 0 10px}
+.fx-note{margin:8px 0 0;font-size:11px;color:#8fa6bb;line-height:1.45}
+.fx-actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.fx-actions select,.fx-riv-pick select,.fx-trade-pick select{background:#102c44;border:1px solid #315a73;color:#e4f5ff;border-radius:10px;padding:8px 10px;font-weight:800;font-size:13px;max-width:100%}
+.fx-toasts{position:fixed;top:12px;left:50%;transform:translateX(-50%);z-index:200;display:grid;gap:8px;width:min(440px,calc(100vw - 24px));pointer-events:none}
+.fx-toast{pointer-events:auto;display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:11px 12px;border-radius:14px;background:#0d2a40f2;border:1px solid #2fa994;box-shadow:0 12px 34px #000a;color:#eafffb;animation:fxIn .45s cubic-bezier(.2,1.3,.4,1);transition:opacity .6s,transform .6s}
+.fx-toast.td{border-color:#e1aa29;background:#33260af2}
+.fx-toast.out{opacity:0;transform:translateY(-8px)}
+.fx-toast-ico{font-size:24px}
+.fx-toast b{display:block;font-size:14px}.fx-toast small{display:block;font-size:12px;color:#b9d3e4;margin-top:2px}
+.fx-toast button{background:none;border:0;color:#9ec5d8;font-size:20px;padding:0 4px;cursor:pointer}
+#fxSoundBtn.on{background:#0c3b38;border-color:#2fa994;color:#73ffdb}
+@keyframes fxIn{0%{opacity:0;transform:translateY(-16px) scale(.96)}100%{opacity:1;transform:none}}
+/* swing chart */
+#v9-view-games .fx-swing{margin-top:10px}
+#v9-view-games .fx-swing-head,#v9-view-games .fx-swing-foot{display:flex;justify-content:space-between;gap:8px;font-size:10px;color:#7f9db3;font-weight:800}
+#v9-view-games .fx-swing-head span:first-child{text-transform:uppercase;letter-spacing:.1em}
+#v9-view-games .fx-swing svg{display:block;width:100%;height:56px;margin:4px 0 2px;background:#0a1f31;border-radius:8px}
+.fx-sw-mid{stroke:#5f7b92;stroke-width:1;stroke-dasharray:4 4;vector-effect:non-scaling-stroke}
+.fx-sw-area{fill:#24e7c51f}
+.fx-sw-line{fill:none;stroke:#24e7c5;stroke-width:2;vector-effect:non-scaling-stroke;stroke-linejoin:round}
+.fx-sw-flip{fill:#ffd34d;stroke:#0a1f31;stroke-width:2;vector-effect:non-scaling-stroke}
+.fx-sw-now{fill:#eafffb;stroke:#0a1f31;stroke-width:2;vector-effect:non-scaling-stroke}
+#v9-view-games .fan-share{margin-left:auto;margin-right:8px;background:#102c44;border:1px solid #315a73;color:#cde9f4;border-radius:9px;padding:4px 9px;font-size:11px;font-weight:900}
+/* games that matter */
+#v9-view-games .fx-matters{margin:18px 0 4px;padding:13px;border-radius:17px;border:1px solid #b98f3a;background:linear-gradient(120deg,#2a2008,#0b1d30 60%)}
+#v9-view-games .fx-matters-head{display:flex;justify-content:space-between;align-items:baseline;gap:10px;flex-wrap:wrap;margin-bottom:10px}
+#v9-view-games .fx-matters-head h3{margin:0;font-size:13px;letter-spacing:.14em;text-transform:uppercase;color:#ffd98a}
+#v9-view-games .fx-matters-head span{font-size:11px;color:#b9a77f}
+#v9-view-games .fx-matters-list{display:grid;gap:8px}
+#v9-view-games .fx-matter{display:grid;grid-template-columns:30px minmax(0,1fr) auto minmax(0,1.2fr);gap:10px;align-items:center;text-align:left;padding:10px 12px;border-radius:12px;background:#0d2236;border:1px solid #3b3a2a;color:#e7f4fb}
+#v9-view-games .fx-matter.top{border-color:#e1aa29;box-shadow:0 0 18px #e1aa2933}
+#v9-view-games .fx-rank{display:grid;place-items:center;width:28px;height:28px;border-radius:50%;background:#ffd34d;color:#2b1d00;font-weight:1000}
+#v9-view-games .fx-m-main b{display:block;font-size:15px}#v9-view-games .fx-m-main small{font-size:11px;color:#9ec5d8}
+#v9-view-games .fx-m-stats{font-size:11px;color:#9ec5d8;line-height:1.5}#v9-view-games .fx-m-stats b{color:#fff;font-size:13px}
+#v9-view-games .fx-m-sw{font-size:11px;color:#ffe08a;font-weight:800;text-align:right}
+/* awards */
+.fx-awards{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px}
+.fx-award{display:grid;grid-template-columns:44px minmax(0,1fr);gap:10px;align-items:start;padding:12px;border-radius:14px;background:#0c2235;border:1px solid #21455f}
+.fx-award-ico{font-size:30px;line-height:1}
+.fx-award span{display:block;font-size:10px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:#7f9db3}
+.fx-award b{display:block;font-size:16px;margin:2px 0;overflow-wrap:anywhere}
+.fx-award small{display:block;font-size:12px;color:#a9c0d2;line-height:1.4}
+.fx-week-lines{display:flex;flex-wrap:wrap;gap:8px 18px;margin-top:10px;font-size:12px;color:#a9c0d2}
+/* rivalries */
+.fx-riv-pick{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-bottom:12px}.fx-riv-pick span{color:#7f9db3;font-weight:900}
+.fx-riv-score{display:grid;grid-template-columns:minmax(0,1fr) auto minmax(0,1fr);gap:12px;align-items:center;text-align:center;padding:14px;border-radius:16px;background:linear-gradient(120deg,#0e2a40,#0a1b2c)}
+.fx-riv-score>div b{display:block;font-size:52px;font-weight:1000;line-height:1;color:#c9d9e5}
+.fx-riv-score>div.fx-lead b{color:#5ff7cf}
+.fx-riv-score>div span{display:block;font-size:13px;font-weight:900;margin-top:4px;overflow-wrap:anywhere}
+.fx-riv-mid{font-size:12px;color:#9ec5d8;font-weight:900;text-transform:uppercase;letter-spacing:.1em}.fx-riv-mid small{display:block;text-transform:none;letter-spacing:0;color:#7f9db3;margin-top:3px}
+.fx-riv-stats{display:flex;flex-wrap:wrap;gap:6px 16px;margin:10px 0;font-size:12px;color:#a9c0d2}
+.fx-riv-list{display:grid;gap:4px}
+.fx-riv-game{display:grid;grid-template-columns:minmax(0,1fr) 60px 14px 60px;gap:6px;align-items:center;padding:6px 10px;border-radius:9px;background:#0b1f31;font-size:12px;color:#8fa6bb}
+.fx-riv-game b{text-align:center;font-variant-numeric:tabular-nums;color:#c9d9e5}.fx-riv-game b.w{color:#5ff7cf}.fx-riv-game i{text-align:center;font-style:normal}
+.fx-riv-empty{padding:14px;border-radius:12px;background:#0b1f31;font-size:13px;color:#b9d3e4}
+/* toilet shame */
+.fx-shame-banner{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px;border-radius:14px;background:linear-gradient(90deg,#3a2508,#2a1220);border:1px solid #8a5a2a;margin-bottom:12px}
+.fx-shame-label{font-size:12px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:#ffd98a}
+.fx-shame-chip{font-size:12px;border-radius:999px;padding:4px 10px;background:#00000044;border:1px solid #8a5a2a;color:#ffe8c4}.fx-shame-chip b{color:#ffd34d}
+.fx-shame-empty{font-size:12px;color:#d6b98f}
+.fx-shame-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(240px,1fr));gap:10px}
+.fx-shame-card{padding:14px;border-radius:14px;background:#0c2235;border:1px solid #21455f;display:flex;flex-direction:column;gap:8px}
+.fx-k{font-size:10px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:#7f9db3}
+.fx-pun{font-size:20px;font-weight:900;line-height:1.3;color:#ffe8c4}.fx-pun.empty{color:#7f9db3;font-size:14px;font-weight:700}
+.fx-shame-card .secondary{align-self:flex-start}
+.fx-count{display:flex;gap:8px}.fx-count span{flex:1;text-align:center;padding:8px 0;border-radius:10px;background:#081a2b}
+.fx-count b{display:block;font-size:28px;font-weight:1000;font-variant-numeric:tabular-nums}.fx-count small{font-size:10px;color:#7f9db3;font-weight:800;text-transform:uppercase}
+.fx-fav{display:grid;grid-template-columns:28px minmax(0,1fr) auto;gap:8px;align-items:center;padding:6px 0;border-top:1px solid #1d3a50;font-size:13px}.fx-fav:first-of-type{border-top:0}
+.fx-fav.top b{color:#ff9daa;font-size:15px}.fx-fav em{font-style:normal;font-weight:1000;color:#ff9daa}
+/* lineup alarms */
+.fx-alarm-sum{padding:12px 14px;border-radius:13px;font-size:14px;margin-bottom:10px}.fx-alarm-sum small{display:block;font-size:11px;color:#a9c0d2;margin-top:3px}
+.fx-alarm-sum.bad{background:#3d1520;border:1px solid #8c3341}.fx-alarm-sum.ok{background:#0f3d37;border:1px solid #1f8f7d}
+.fx-alarm-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+.fx-alarm-team{padding:11px;border-radius:13px;background:#0c2235;border:1px solid #21455f}.fx-alarm-team>b{display:block;margin-bottom:6px}
+.fx-alarm{display:grid;grid-template-columns:40px minmax(0,1fr) auto;gap:8px;align-items:center;padding:5px 0;border-top:1px solid #1d3a50;font-size:12px}
+.fx-alarm .fx-slot{font-size:10px;font-weight:1000;color:#73ffdb}.fx-alarm em{font-style:normal;font-weight:900;font-size:11px}
+.fx-alarm.sev3 em{color:#ff9daa}.fx-alarm.sev2 em{color:#ffbd4a}.fx-alarm.sev1 em{color:#ffe08a}
+.fx-alarm-clean{margin-top:10px;font-size:12px;color:#8fd9c9}
+/* trade checker */
+.fx-trade-pick{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:10px}
+.fx-trade-pick select{width:100%}
+.fx-tlist{margin-top:8px;max-height:280px;overflow:auto;border:1px solid #21455f;border-radius:12px;background:#0a1d2e}
+.fx-tp{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:8px;align-items:center;padding:7px 10px;border-top:1px solid #16334a;font-size:12px;cursor:pointer}.fx-tp:first-child{border-top:0}
+.fx-tp small{color:#7f9db3;font-size:10px}.fx-tp:has(input:checked){background:#0f3d37}
+.fx-trade-verdict{margin:12px 0 8px;font-size:16px}
+.fx-trade-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.fx-trade-team{padding:12px;border-radius:13px;background:#0c2235;border:1px solid #21455f}.fx-trade-team>b{display:block;margin-bottom:6px}
+.fx-trade-rows{display:grid;grid-template-columns:auto minmax(0,1fr);gap:4px 10px;font-size:12px}.fx-trade-rows span{color:#7f9db3}.fx-trade-rows em{font-style:normal;text-align:right}
+.fx-trade-rows i,.fx-wi-table .up,.fx-wi-table .down,.fx-odds-head i{font-style:normal;font-weight:900}
+.fx-trade-rows i.up,.fx-wi-table .up,.fx-odds-head i.up{color:#5ff7cf}.fx-trade-rows i.down,.fx-wi-table .down,.fx-odds-head i.down{color:#ff9daa}
+/* what-if + clinch */
+.fx-wi-layout{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(0,1fr);gap:14px;align-items:start}
+.fx-wi-picks{display:grid;gap:10px;max-height:560px;overflow:auto;padding-right:4px}
+.fx-wi-week{border-bottom:1px solid #1d3a50;padding-bottom:4px}.fx-wi-wk{cursor:pointer;padding:6px 0;font-size:10px;font-weight:1000;letter-spacing:.12em;text-transform:uppercase;color:#7f9db3;margin-bottom:5px}
+.fx-wi-game{display:grid;grid-template-columns:minmax(0,1fr) 18px minmax(0,1fr);gap:6px;align-items:center;margin-bottom:5px}
+.fx-wi-game>span{text-align:center;color:#5f7b92;font-size:11px;font-weight:900}
+.fx-wi-game button{display:flex;justify-content:space-between;align-items:center;gap:6px;min-width:0;padding:8px 10px;border-radius:10px;background:#0c2235;border:1px solid #21455f;color:#c9d9e5;font-size:12px;text-align:left}
+.fx-wi-game button b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fx-wi-game button small{color:#7f9db3;font-size:10px;flex:none}
+.fx-wi-game button.on{background:#0f3d37;border-color:#24e7c5;color:#fff}.fx-wi-game button.on small{color:#5ff7cf}
+.fx-wi-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;font-size:13px}
+.fx-wi-table{width:100%;min-width:0;border-collapse:collapse;font-size:12px}
+.fx-wi-table th{font-size:10px;color:#7f9db3;text-align:right;padding:5px 6px;background:none;position:static;border:0}.fx-wi-table th:first-child,.fx-wi-table td:first-child{text-align:left}
+.fx-wi-table td{padding:6px;border-top:1px solid #1d3a50;text-align:right;font-variant-numeric:tabular-nums}
+.fx-cutrow td{padding:2px 6px;border-top:1px dashed #b98f3a;color:#ffd98a;font-size:9px;font-weight:900;letter-spacing:.1em;text-transform:uppercase;text-align:center!important}
+.fx-tag{display:inline-block;font-size:10px;font-weight:1000;border-radius:999px;padding:2px 8px;white-space:nowrap}
+.fx-tag.good{background:#0f3d37;color:#5ff7cf}.fx-tag.bad{background:#3d1520;color:#ff9daa}.fx-tag.hot{background:#3b2906;color:#ffd34d}
+/* odds over the season */
+.fx-odds-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:10px}
+.fx-odds-card{padding:10px;border-radius:12px;background:#0c2235;border:1px solid #21455f;min-width:0}
+.fx-odds-head{display:flex;justify-content:space-between;align-items:baseline;gap:6px;font-size:12px}.fx-odds-head>b{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.fx-odds-head span b{font-size:15px}.fx-odds-head i{margin-left:5px;font-size:10px}
+.fx-odds-card svg{display:block;width:100%;height:52px;margin-top:6px}
+.fx-od-area{fill:#24e7c51a}.fx-od-line{fill:none;stroke:#24e7c5;stroke-width:2;vector-effect:non-scaling-stroke}.fx-od-dot{fill:#24e7c5}.fx-od-dot.now{fill:#eafffb;stroke:#0c2235;stroke-width:2;vector-effect:non-scaling-stroke}
+.fx-wi-week[open]>.fx-wi-wk{color:#73ffdb}
+@media(max-width:700px){
+ .fx-wi-layout,.fx-trade-pick,.fx-trade-grid{grid-template-columns:1fr}
+ .fx-wi-picks{max-height:none}
+ #v9-view-games .fx-matter{grid-template-columns:28px minmax(0,1fr) auto}#v9-view-games .fx-m-sw{grid-column:2/-1;text-align:left}
+ .fx-riv-score>div b{font-size:40px}
+}
+@media(prefers-reduced-motion:reduce){.fx-toast{animation:none;transition:none}}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -1518,7 +1641,7 @@ function parseRoster(rs,league,users,playerMap){const byId=Object.fromEntries((u
   const st=r.settings||{},num=Number(r.roster_id);const w=Number(st.wins||0),l=Number(st.losses||0),ties=Number(st.ties||0);
   const pf=scoreSetting(st,'fpts'),pa=scoreSetting(st,'fpts_against');
   const maxAvailable=st.ppts!==undefined&&st.ppts!==null;
-  return {id:num,name:getUsersTeamName(r,byId),owner:byId[String(r.owner_id)]?.display_name||'',
+  return {id:num,ownerId:String(r.owner_id||''),name:getUsersTeamName(r,byId),owner:byId[String(r.owner_id)]?.display_name||'',
     w,l,ties,pf,pa,maxpf:maxAvailable?scoreSetting(st,'ppts'):null,maxAvailable,roster:parsed,hasPlayerData:isKnown};
  });
 }
@@ -1541,7 +1664,7 @@ function hydrate(data,updateLabel=true){const {league,rs,users,state,matchups,br
  live={syncedAt:syncedAt||null};players=playerMap||{};const t=parseRoster(rs,league,users,playerMap||{});
  if(t.length!==10||new Set(t.map(x=>x.id)).size!==10)throw Error('Expected 10 unique teams; Sleeper returned '+t.length);
  if(String(league.season)!=='2026')throw Error('League is for season '+league.season+', not 2026');
- teams=t.map(x=>({id:x.id,name:x.name,owner:x.owner,w:x.w,l:x.l,ties:x.ties,pf:x.pf,pa:x.pa,maxpf:x.maxpf,maxAvailable:x.maxAvailable}));
+ teams=t.map(x=>({id:x.id,ownerId:x.ownerId,name:x.name,owner:x.owner,w:x.w,l:x.l,ties:x.ties,pf:x.pf,pa:x.pa,maxpf:x.maxpf,maxAvailable:x.maxAvailable}));
  rosters=Object.fromEntries(t.map(x=>[x.id,x.roster]));players=playerMap||{};
  weekly=matchups||{}; leagueInfo=league;realBrackets=brackets||{winners:[],losers:[]};
  const games=teams.map(x=>x.w+x.l+(x.ties||0));completedWeeks=Math.min(...games);
@@ -1602,8 +1725,8 @@ function byeImpact(team,week){const q=rosterQuality(team);
 }
 function currentOrder(){return teams.map((t,i)=>({i,t})).sort((a,b)=>b.t.w-a.t.w||b.t.ties-a.t.ties||b.t.pf-a.t.pf).map(x=>x.i)}
 function erf(x){const sign=x<0?-1:1;x=Math.abs(x);const t=1/(1+.3275911*x);return sign*(1-(((((1.061405429*t-1.453152027)*t)+1.421413741)*t-.284496736)*t+.254829592)*t*Math.exp(-x*x));}
-function simulate(){
- const sims=+el('simCount').value,seed=+el('seed').value||1;
+function simulate(opts={}){
+ const sims=opts.sims||+el('simCount').value,seed=opts.seed||+el('seed').value||1,forced=opts.forced||null;
  const cfg=activeCfg(),adaptive=currentTeamEstimates(cfg);
  if(!(sims>=1000&&sims<=100000))throw Error('Simulation count must be 1,000–100,000');
  if(!(cfg.regK>=0&&cfg.regK<=40&&cfg.maxSignal>=0&&cfg.maxSignal<=.8&&cfg.fixedSd>=8&&cfg.fixedSd<=60))throw Error('Invalid model options');
@@ -1612,13 +1735,14 @@ function simulate(){
  const nameIndex=Object.fromEntries(teams.map((t,i)=>[t.name,i])),weeks=[];
  for(let w=completedWeeks+1;w<=regularWeeks;w++){
   const schedule=scheduleFor(w);if(!validateFixtures(schedule.games))throw Error('Missing or conflicting Week '+w+' pairings. Forecast paused rather than guessing.');
-  weeks.push({wk:w,games:schedule.games.map(([a,b])=>[nameIndex[a],nameIndex[b]]),bye:teams.map(t=>byeImpact(t,w).pts)});
+  weeks.push({wk:w,games:schedule.games.map(([a,b])=>[nameIndex[a],nameIndex[b]]),bye:fxByeFor(w)});
  }
  let strength=adaptive.estimates.map(t=>t.mu),sigma=adaptive.estimates.map(t=>t.sd);
  if(el('modelMode').value==='legacy'){
   strength=teams.map(t=>{const gp=Math.max(1,t.w+t.l+(t.ties||0));return .7*(t.pf/gp)+.3*((t.maxpf??t.pf)/gp)});
   sigma=teams.map(()=>20);
  }
+ if(opts.strengthDelta)strength=strength.map((x,i)=>Math.max(15,x+(Number(opts.strengthDelta[i])||0)));
  const rng=mulberry32(seed),finish=Array.from({length:n},()=>new Float64Array(10));
  const playoff=new Float64Array(n),toilet=new Float64Array(n),champ=new Float64Array(n),last=new Float64Array(n),expectedWins=new Float64Array(n),expectedPF=new Float64Array(n);
  const winBins=regularWeeks+2,winHist=Array.from({length:n},()=>new Uint32Array(winBins));
@@ -1629,7 +1753,8 @@ function simulate(){
    const sa=Math.max(0,strength[a]-week.bye[a]+gaussian(rng)*sigma[a]);
    const sb=Math.max(0,strength[b]-week.bye[b]+gaussian(rng)*sigma[b]);
    PF[a]+=sa;PF[b]+=sb;
-   if(sa>=sb)wins[a]++;else wins[b]++;
+   const fw=forced?forced[week.wk+'|'+Math.min(a,b)+'|'+Math.max(a,b)]:undefined;
+   if(fw===a||fw===b)wins[fw]++;else if(sa>=sb)wins[a]++;else wins[b]++;
   }
   const order=Array.from({length:n},(_,i)=>i).sort((a,b)=>wins[b]-wins[a]||PF[b]-PF[a]||a-b);
   for(let i=0;i<n;i++){expectedWins[i]+=wins[i];expectedPF[i]+=PF[i];winHist[i][Math.min(winBins-1,wins[i])]++}
@@ -1798,7 +1923,7 @@ async function refreshCurrentSquadSignal(force=false){
  for(const team of [...teams].sort((a,b)=>a.id-b.id)){const x=bestProjectedRosterLineup(team,0,aggregate);if(!x){seasonSquadSignal={ready:false,loading:false,weeks:[],byTeam:{},byWeek:{},leagueCoverage:0,error:'Current roster projection coverage was not comparable across all 10 teams'};renderStrengthTable();return false;}
   byTeam[team.id]={score:x.score,coverage:x.coverage,weeks:common.length,imputed:x.imputed};coverage.push(x.coverage);imputedSlots+=x.imputed;
  }
- seasonSquadSignal={ready:true,loading:false,weeks:common,byTeam,byWeek:{},leagueCoverage:mean(coverage),imputedSlots,error:''};renderStrengthTable();return true;
+ seasonSquadSignal={ready:true,loading:false,weeks:common,byTeam,aggregate,byWeek:{},leagueCoverage:mean(coverage),imputedSlots,error:''};renderStrengthTable();return true;
 }
 function renderMatchups(){const w=Number(el('weekSelect').value||currentWeek),arr=matchupsAsCards(w),actual=w<=completedWeeks,weekInfo=scheduleFor(w);
  el('weekState').textContent=actual?'✓ Completed (Sleeper official)':(w===currentWeek?'● Current NFL week · provisional':'Upcoming fixtures');
@@ -2208,7 +2333,13 @@ async function loadHistory(){
    const until=clamp(Number(league.settings?.playoff_week_start||16)-1,1,17);
    const responses=await Promise.allSettled(Array.from({length:until},(_,j)=>fetchJSON(API+'/league/'+id+'/matchups/'+(j+1))));
    const matches={};responses.forEach((x,j)=>{if(x.status==='fulfilled'&&Array.isArray(x.value))matches[j+1]=x.value});
-   const data=seasonData(league,matches,until);if(data.weeks.length)loaded.push(data);
+   const data=seasonData(league,matches,until);
+   // Owners and team names let rivalries follow managers across seasons; the two post-season weeks decide the Toilet Bowl.
+   const extra=await Promise.allSettled([fetchJSON(API+'/league/'+id+'/rosters'),fetchJSON(API+'/league/'+id+'/users'),fetchJSON(API+'/league/'+id+'/matchups/'+(until+1)),fetchJSON(API+'/league/'+id+'/matchups/'+(until+2))]);
+   const okv=k=>extra[k].status==='fulfilled'&&Array.isArray(extra[k].value)?extra[k].value:null,rs0=okv(0),us0=okv(1)||[],byU=Object.fromEntries(us0.map(u=>[String(u.user_id),u]));
+   if(rs0){data.owners={};data.names={};for(const r of rs0){data.owners[r.roster_id]=String(r.owner_id||'');data.names[r.roster_id]=getUsersTeamName(r,byU)}}
+   data.post={};[okv(2),okv(3)].forEach((rows,j)=>{if(!rows)return;const m={};for(const e of rows){const sc=cleanScore(e);if(sc!=null&&e.roster_id!=null)m[e.roster_id]=sc}if(Object.keys(m).length)data.post[until+1+j]=m});
+   if(data.weeks.length)loaded.push(data);
    parent=league.previous_league_id;
   }
   const combined=Object.fromEntries([...historySeasons,...loaded].map(d=>[d.id,d]));historySeasons=Object.values(combined).sort((a,b)=>+a.year-+b.year);
@@ -2672,7 +2803,7 @@ function renderHQMatchups(){
 }
 const v9RenderForecast=renderForecast;renderForecast=function(){hqWeeklyProjectionCache.clear();v9RenderForecast();renderSchedule();renderHQ();renderMatchups()};
 const v9RenderAll=renderAll;renderAll=function(){v9RenderAll();renderHQ()};
-const v9RenderMatchups=renderMatchups;renderMatchups=function(){v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy()};
+const v9RenderMatchups=renderMatchups;renderMatchups=function(){fxRecordSwings();v9RenderMatchups();renderHQMatchups();rzUpdateFantasyStamp();rzRenderFantasy();if(hqActive==='rosters')fxRenderAlarms();if(hqActive==='records')fxRenderAwards();if(hqActive==='games')fxRenderMatters()};
 
 
 const hqOldHydrate=hydrate;hydrate=function(...args){hqPlayerCache.clear();hqWeeklyProjectionCache.clear();weeklyProjectionCache={};weeklyProjectionFetches={};return hqOldHydrate(...args)};
@@ -2696,9 +2827,9 @@ function rzInit(){
  gameView.insertAdjacentHTML('afterbegin',`<div class="rz-cinema">
   <header class="rz-stadium"><div class="rz-brand"><div class="rz-brandtop"><span class="ball">🏈</span>Sunday Funday</div><div class="rz-brandsub">REDZONE <span class="rz-live-dot" title="Live when data arrives"></span></div><div class="rz-tagline">Fantasy football for the lads</div></div>
    <div class="rz-head-controls"><div class="rz-switcher"><button id="rzNFL" type="button" class="active">🏈 NFL REDZONE</button><button id="rzFantasyButton" type="button">🏆 Fantasy scores</button></div>
-   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button><button id="v10TV" class="v10-tv-button" type="button" title="Full-screen Sunday Funday TV">▣ TV</button></div></div></header>
+   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button><button id="fxSoundBtn" type="button" title="Play a sound for big moments">🔕 Sound</button><button id="v10TV" class="v10-tv-button" type="button" title="Full-screen Sunday Funday TV">▣ TV</button></div></div></header>
   <div id="rzNFLPanel" class="rznfl"><section class="rz-featured"><div class="rz-feature-head"><span><span class="rz-live-dot"></span> NFL · FEATURED GAME</span><span id="rzFeaturedBadge">AWAITING GAME</span></div><div id="rzFocus"><div class="rz-empty">Connecting to NFL scoreboard…</div></div></section>
-  <div class="rz-all-head"><h3>▮ ALL GAMES</h3><div class="rz-all-tools"><button id="rzAutoBtn" type="button" class="rz-auto-btn" aria-pressed="true" title="Auto-follow moves the featured game to the hottest live game. Tap a game to pin it.">🔀 Auto-follow</button><label><select id="rzFilter" aria-label="Filter NFL games"><option value="live">Live first</option><option value="league">My league’s starters</option><option value="redzone">Red zone</option><option value="all">Kickoff order</option></select></label></div></div>
+  <section id="fxMatters" class="fx-matters" hidden></section><div class="rz-all-head"><h3>▮ ALL GAMES</h3><div class="rz-all-tools"><button id="rzAutoBtn" type="button" class="rz-auto-btn" aria-pressed="true" title="Auto-follow moves the featured game to the hottest live game. Tap a game to pin it.">🔀 Auto-follow</button><label><select id="rzFilter" aria-label="Filter NFL games"><option value="live">Live first</option><option value="league">My league’s starters</option><option value="redzone">Red zone</option><option value="all">Kickoff order</option></select></label></div></div>
   <div id="rzGrid" class="rz-cinema-grid"><div class="rz-empty">Loading NFL games…</div></div><section class="rz-live-impact" id="rzImpact"><h3>🔥 Sunday Funday · Fantasy impact</h3><div class="rz-impact-label">Once league rosters sync, this panel links NFL plays to the managers involved.</div></section>
   <section class="rz-ticker"><h3>⚡ Score changes since opening RedZone</h3><div id="rzAlerts" class="rzplays"><p class="rzsmall">Score changes will appear as they are reported.</p></div></section>
   <div class="rz-stamp"><span id="rzStatus">Waiting for NFL feed</span> · <span id="rzFeedNote">ESPN NFL play feed · Sleeper fantasy scoring · independent updates</span></div><p class="rzlegend">NFL plays and field positions use an unofficial feed and may be delayed or unavailable. Sleeper remains authoritative for league points. A running clock is estimated locally from the latest verified feed state, freezes on reported stoppages or stale data and is corrected by every new snapshot; no fictional plays or scores are used.</p></div>
@@ -3031,7 +3162,7 @@ function rzRenderFantasy(){
   const n=Math.max(a.rows.length,b.rows.length),lines=Array.from({length:n},(_,i)=>{const ra=a.rows[i],rb=b.rows[i];return '<div class="fan-line">'+(ra?rzFanCell(ra,false):'<div></div>')+'<span class="fan-slot" title="'+safe((ra||rb)?.slot||'')+'">'+safe(rzSlotLabel((ra||rb)?.slot))+'</span>'+(rb?rzFanCell(rb,true):'<div></div>')+'</div>'}).join('');
   const sumPts=m=>m.rows.reduce((s,r)=>s+(r.pts||0),0);
   const open=rzFanOpen.has(key)?' open':'';
-  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div><div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+
+  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div><div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSwingHtml(w,a.t,b.t)+
    '<details class="fan-lineups" data-key="'+safe(key)+'"'+open+'><summary><span>Starting lineups</span><small>tap to '+(open?'hide':'compare')+'</small></summary><div class="fan-lines">'+lines+'<div class="fan-line total"><div class="fan-cell"><div class="fan-who"><b>Starters total</b></div><div class="fan-pts">'+fmt(sumPts(a),1)+'</div></div><span class="fan-slot"></span><div class="fan-cell right"><div class="fan-pts">'+fmt(sumPts(b),1)+'</div><div class="fan-who"><b>Starters total</b></div></div></div></div></details></article>'});
  const html='<div class="fan-grid">'+cards.join('')+'</div>';
  if(summary)summary.innerHTML='<b>Week '+w+'</b> · '+(done?'final scores':liveGames?liveGames+' matchup'+(liveGames===1?'':'s')+' live':'pregame')+(totalPts?' · '+fmt(totalPts,1)+' league points':'');
@@ -3055,7 +3186,7 @@ function rzRender(){const grid=el('rzGrid');if(!grid)return;
  const clockAttr=live?' data-rz-clock-game="'+safe(g.id)+'"':'';return {key:[String(g.id),rzState(g),Number((g.status||g.competitions?.[0]?.status||{}).period)||0,sides.away?.score,sides.home?.score,red,scored,ended,info,rzKickoff(g),mine],html:'<button type="button" class="rz-cinema-game'+(g.id===rzFocused?' selected':'')+(red?' hot':'')+'" data-rz-game="'+safe(g.id)+'"><div class="rz-game-meta"><span>'+state+'</span><span'+clockAttr+'>'+safe(live?rzPeriod(g):final?'FT':rzKickoff(g))+'</span><span>'+(scored?'<span class="rz-scorebadge">SCORE</span>':red?'<span class="rz-rzbadge">RZ</span>':'')+'</span></div><div class="rz-teamrows">'+row(sides.away)+row(sides.home)+'</div><div class="rz-game-drive">'+safe(scored?'Points scored · awaiting next possession':ended?'Drive complete · awaiting next possession':info)+(star?'<div>'+star+'</div>':'')+'</div></button>'};});
  const gridKey=JSON.stringify([flt,String(rzFocused),cards.map(card=>card.key)]);if(gridKey!==rzGridRenderKey){rzGridRenderKey=gridKey;grid.innerHTML=cards.length?cards.map(card=>card.html).join(''):'<div class="rz-empty">'+(flt==='league'?'No games this week include a Sunday Funday starter in the loaded lineups.':'No games currently in the red zone. Choose Live first to see the rest.')+'</div>';grid.querySelectorAll('[data-rz-game]').forEach(b=>b.addEventListener('click',()=>{rzFocused=b.dataset.rzGame;if(rzAuto){rzAuto=false;rzAutoLabel()}rzRender();rzFocusedFetch(true)}));}
  const alerts=el('rzAlerts');if(alerts)alerts.innerHTML=rzHighlights.length?rzHighlights.slice(0,6).map(x=>'<div class="rzplay'+(x.hits?.length?' rz-league-hit':'')+'"><small>'+new Date(x.at).toLocaleTimeString('en-GB')+' · '+safe(x.event)+'</small><b>'+safe(x.kind||'Score change')+(x.scorer?' · '+safe(x.scorer):'')+'</b> — '+safe(x.note)+(x.text?'<div class="rz-alert-play">'+safe(x.text)+'</div>':'')+(x.hits?.length?'<div class="rz-alert-hit">★ '+x.hits.map(h=>safe(h.name)+' ('+safe(h.team)+')').join(' · ')+' · Sleeper points follow separately</div>':'')+'</div>').join(''):'<p class="rzsmall">No new scoring changes detected since this tab opened.</p>';
-  rzRenderFocus();rzRenderFantasy();
+  fxRecordSwings();rzRenderFocus();rzRenderFantasy();fxRenderMatters();fxHighlightAlerts();
   rzTickClocks();v10RenderTicker();v10RenderSpotlight();
 }
 
@@ -3108,9 +3239,298 @@ function v10RenderRecords(){
  shame.innerHTML=v10RecordLine('🧊','Lowest score — '+low.team,fmt(low.score,2)+' points · Week '+low.w)+(blowout?v10RecordLine('💥','Biggest defeat — '+blowout.team,fmt(blowout.against-blowout.score,2)+'-point loss to '+blowout.opp+' · Week '+blowout.w):'')+(hardLuck?v10RecordLine('😭','Best losing score — '+hardLuck.team,fmt(hardLuck.score,2)+' points vs '+hardLuck.opp+' · Week '+hardLuck.w):'');
 }
 function v10RenderTicker(){const n=el('v10Ticker');if(!n)return;const bits=[];if(source==='sleeper')bits.push('Sleeper synced: '+teams.length+' teams · results through Week '+completedWeeks);if(model){const top=teams.map((t,i)=>({t,p:model.champ[i]/model.sims})).sort((a,b)=>b.p-a.p)[0];bits.push('Title favourite: '+top.t.name+' '+hqPct(top.p))}const liveGames=rzGames.filter(rzIsLive);if(liveGames.length)bits.push(liveGames.length+' NFL game'+(liveGames.length===1?'':'s')+' live');const rz=liveGames.filter(g=>rzIsRedZone(g));if(rz.length)bits.push(rz.map(g=>g.shortName||g.name).join(', ')+' in the red zone');if(rzHighlights[0])bits.push('Latest NFL score change: '+rzHighlights[0].note);n.textContent=bits.join('  •  ')||'Sync Sleeper for verified league headlines. No fictional news is shown.'}
-function renderV10(){v10RenderTicker();v10RenderPlayoff();v10RenderWins();v10RenderSpotlight();v10RenderRecords()}
+function renderV10(){v10RenderTicker();v10RenderPlayoff();v10RenderWins();v10RenderSpotlight();v10RenderRecords();fxRenderAll()}
 
-initV9();boot();
+/* ============================================================================
+ * Sunday Funday v11 features: live swings and alerts, the game that matters,
+ * weekly awards and share cards, rivalries, Toilet Bowl shame tracker,
+ * lineup alarms, trade checker, what-if picker, clinch lines and season odds.
+ * Every number comes from loaded Sleeper / NFL data or the season simulation.
+ * ==========================================================================*/
+const fxByeCache=new WeakMap();
+function fxByeFor(w){let m=fxByeCache.get(rosters);if(!m){m=new Map();fxByeCache.set(rosters,m)}const k=w+'|'+source+'|'+(leagueInfo?.league_id||'');if(!m.has(k))m.set(k,teams.map(t=>byeImpact(t,w).pts));return m.get(k)}
+const FX_SOUND_KEY='sf_v11_sound';
+let fxWiOpen=new Set(),fxWiTouched=new Set(),fxSound=read(FX_SOUND_KEY)===true,fxAudio=null,fxAlerted=new Set(),fxSwing={},fxSwingLeague='',fxSwingSavedAt=0,fxPicks={},fxWhatIfTimer=null,fxWhatIfToken=0,fxClinchKey='',fxOddsKey='',fxOddsSeries=null,fxCountdownTimer=null,fxMattersKey='',fxAwardsWeek=null;
+function fxLeague(){return String(leagueInfo?.league_id||el('leagueId')?.value||'')}
+function fxPct(p){return Number.isFinite(p)?(p>.995&&p<1?'>99':p<.005&&p>0?'<1':Math.round(p*100))+'%':'—'}
+function fxTeamById(id){return teams.find(t=>Number(t.id)===Number(id))||null}
+
+/* ---------- toasts and sound ---------- */
+function fxChime(kind){if(!fxSound)return;try{fxAudio=fxAudio||new (window.AudioContext||window.webkitAudioContext)();const ctx=fxAudio,now=ctx.currentTime,notes=kind==='td'?[523,659,784,1047]:kind==='bad'?[392,330]:[587,880];
+ notes.forEach((hz,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=hz;g.gain.setValueAtTime(0,now+i*.12);g.gain.linearRampToValueAtTime(.18,now+i*.12+.02);g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.35);o.connect(g).connect(ctx.destination);o.start(now+i*.12);o.stop(now+i*.12+.4)})}catch(_){}}
+function fxToast(icon,title,detail,kind=''){
+ const box=el('fxToasts');if(!box||document.hidden)return;const t=document.createElement('div');t.className='fx-toast '+kind;t.setAttribute('role','status');
+ t.innerHTML='<div class="fx-toast-ico">'+safe(icon)+'</div><div><b>'+safe(title)+'</b>'+(detail?'<small>'+safe(detail)+'</small>':'')+'</div><button type="button" aria-label="Dismiss">×</button>';
+ t.querySelector('button').addEventListener('click',()=>t.remove());box.prepend(t);while(box.children.length>4)box.lastChild.remove();setTimeout(()=>t.classList.add('out'),8500);setTimeout(()=>t.remove(),9200);fxChime(kind)}
+function fxSoundLabel(){const b=el('fxSoundBtn');if(!b)return;b.textContent=fxSound?'🔔 Sound':'🔕 Sound';b.classList.toggle('on',fxSound);b.setAttribute('aria-pressed',String(fxSound))}
+
+/* ---------- 1 + 2. live win-chance swings, lead changes, comebacks ---------- */
+function fxSwingLoad(){const lg=fxLeague();if(lg===fxSwingLeague)return;fxSwingLeague=lg;fxSwing=read('sf_v11_swing_'+lg)||{}}
+function fxSwingSave(force){const now=Date.now();if(!force&&now-fxSwingSavedAt<20000)return;fxSwingSavedAt=now;const keep={};for(const w of Object.keys(fxSwing))if(Number(w)>=rzWeek-1)keep[w]=fxSwing[w];fxSwing=keep;store('sf_v11_swing_'+fxSwingLeague,keep)}
+function fxPregameP(lo,hi,w){const a=weeklyLineupProjection(lo.name,w),b=weeklyLineupProjection(hi.name,w);if(!(a?.coverage>=.999&&b?.coverage>=.999))return null;const ia=teams.indexOf(lo),ib=teams.indexOf(hi);return clamp(normalCDF((a.mu-b.mu)/Math.max(1,Math.hypot(model?.sigma?.[ia]||22,model?.sigma?.[ib]||22))),.001,.999)}
+function fxRecordSwings(){
+ if(source!=='sleeper'||!leagueInfo)return;const w=rzWeek;if(w<=completedWeeks||w!==currentWeek)return;fxSwingLoad();const now=Date.now();let changed=false;
+ for(const [x,y] of matchupsAsCards(w)){const live=liveMatchupForecast(x.t.name,y.t.name,w);if(!live)continue;
+  const flip=x.t.id>y.t.id,lo=flip?y:x,hi=flip?x:y,p=flip?1-live.p:live.p,sa=Number(lo.pts)||0,sb=Number(hi.pts)||0,key=lo.t.id+'-'+hi.t.id;
+  const arr=((fxSwing[w]??={})[key]??=[]),last=arr.at(-1);
+  if(last&&now-last.t<15000&&Math.abs(last.p-p)<.03&&last.a===sa&&last.b===sb)continue;
+  if(!arr.length){const pre=fxPregameP(lo.t,hi.t,w);if(pre!=null)arr.push({t:now-1000,p:+pre.toFixed(4),a:0,b:0,pre:1})}
+  const prev=arr.filter(q=>!q.pre).at(-1);arr.push({t:now,p:+p.toFixed(4),a:+sa.toFixed(2),b:+sb.toFixed(2)});if(arr.length>480)arr.splice(1,arr.length-480);changed=true;
+  // Lead change: both teams on the board and the leader flips.
+  if(prev&&(prev.a>0||prev.b>0)&&Math.sign(prev.a-prev.b)!==0&&Math.sign(sa-sb)!==0&&Math.sign(prev.a-prev.b)!==Math.sign(sa-sb)){const lead=sa>sb?lo:hi,trail=sa>sb?hi:lo,k='lead|'+w+'|'+key+'|'+now;
+   if(!fxAlerted.has(k)){fxAlerted.add(k);fxToast('🔁','Lead change: '+lead.t.name+' go ahead','Now '+fmt(Math.max(sa,sb),1)+'–'+fmt(Math.min(sa,sb),1)+' against '+trail.t.name)}}
+  // Comeback: a pregame underdog (under 30%) is now favourite.
+  const pre=arr.find(q=>q.pre);if(pre){for(const [side,p0,pn] of [[lo,pre.p,p],[hi,1-pre.p,1-p]]){const k='comeback|'+w+'|'+side.t.id;if(p0<.3&&pn>.5&&!fxAlerted.has(k)){fxAlerted.add(k);fxToast('🚀','Comeback alert: '+side.t.name,'Started the day at '+fxPct(p0)+' — now '+fxPct(pn)+' to win','td')}}}
+ }
+ if(changed)fxSwingSave()}
+function fxSwingHtml(w,ta,tb){
+ fxSwingLoad();const flip=ta.id>tb.id,key=(flip?tb.id:ta.id)+'-'+(flip?ta.id:tb.id),arr=fxSwing[w]?.[key];if(!arr||arr.length<2)return '';
+ const pts=arr.map(q=>({t:q.t,p:flip?1-q.p:q.p,a:flip?q.b:q.a,b:flip?q.a:q.b,pre:q.pre})),t0=pts[0].t,t1=pts.at(-1).t,span=Math.max(1,t1-t0),W=300,H=64;
+ const X=t=>((t-t0)/span*(W-8)+4).toFixed(1),Y=p=>(4+(1-p)*(H-8)).toFixed(1),line=pts.map(q=>X(q.t)+','+Y(q.p)).join(' ');
+ let flips=0;const marks=[];for(let i=1;i<pts.length;i++){const a=pts[i-1],b=pts[i];if(!a.pre&&(a.a||a.b)&&Math.sign(a.a-a.b)&&Math.sign(b.a-b.b)&&Math.sign(a.a-a.b)!==Math.sign(b.a-b.b)){flips++;marks.push('<circle cx="'+X(b.t)+'" cy="'+Y(b.p)+'" r="4" class="fx-sw-flip"><title>Lead change at '+new Date(b.t).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</title></circle>')}}
+ const now=pts.at(-1),hi=pts.reduce((m,q)=>q.p>m.p?q:m,pts[0]),lo=pts.reduce((m,q)=>q.p<m.p?q:m,pts[0]);
+ return '<div class="fx-swing"><div class="fx-swing-head"><span>Win-chance swings</span><span>'+(flips?flips+' lead change'+(flips===1?'':'s')+' · ':'')+'since '+new Date(t0).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span></div><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+safe(ta.name)+' win chance from '+fxPct(pts[0].p)+' to '+fxPct(now.p)+', high '+fxPct(hi.p)+', low '+fxPct(lo.p)+'"><line x1="0" x2="'+W+'" y1="'+Y(.5)+'" y2="'+Y(.5)+'" class="fx-sw-mid"/><polygon class="fx-sw-area" points="'+X(t0)+','+Y(.5)+' '+line+' '+X(t1)+','+Y(.5)+'"/><polyline class="fx-sw-line" points="'+line+'"/>'+marks.join('')+'<circle cx="'+X(now.t)+'" cy="'+Y(now.p)+'" r="4.5" class="fx-sw-now"/></svg><div class="fx-swing-foot"><span>▲ '+safe(ta.name)+'</span><span>'+safe(tb.name)+' ▼</span></div></div>'}
+function fxHighlightAlerts(){for(const h of rzHighlights){if(!h.text||!h.hits?.length)continue;const k='hl|'+h.id+'|'+h.at;if(fxAlerted.has(k))continue;fxAlerted.add(k);
+ const td=/touchdown/i.test(h.kind||h.text);fxToast(td?'🔥':'⚡',(td?'TOUCHDOWN — ':'Score — ')+h.hits.map(x=>x.name).join(' & '),h.hits.map(x=>x.team).join(', ')+' · '+(h.event||''),td?'td':'')}}
+
+/* ---------- 3. the NFL game that matters most ---------- */
+function fxRenderMatters(){
+ const root=el('fxMatters');if(!root)return;const w=rzWeek;if(source!=='sleeper'||!rzGames.length||w<=completedWeeks){root.hidden=true;fxMattersKey='';return}
+ const proj=weeklyProjectionCache[w]?.map||{},close=new Map(),pairOf=new Map();
+ for(const [x,y] of matchupsAsCards(w)){const o=rzFanOdds({t:x.t,score:Number(x.pts)||0},{t:y.t,score:Number(y.pts)||0},w,false),c=o.p==null?.5:1-Math.abs(2*o.p-1);close.set(x.t.id,c);close.set(y.t.id,c);pairOf.set(x.t.id,x.t.name+' v '+y.t.name);pairOf.set(y.t.id,x.t.name+' v '+y.t.name)}
+ const ranked=rzGames.filter(g=>!rzState(g).includes('FINAL')).map(g=>{const frac=rzIsLive(g)?1-(rzGameProgress(g)||0):1;let rem=0,lev=0,n=0;const swings=new Set();
+  for(const row of rzStartersInGame(g))for(const p of row.starters){const pr=Number(proj[String(p.id)]?.points)||0,r=pr*frac;rem+=r;lev+=r*(.4+(close.get(row.t.id)??.5));n++;if(pairOf.has(row.t.id))swings.add(pairOf.get(row.t.id))}
+  return {g,rem,lev,n,swings:[...swings]}}).filter(x=>x.n&&x.rem>.5).sort((a,b)=>b.lev-a.lev).slice(0,3);
+ if(!ranked.length){root.hidden=true;fxMattersKey='';return}
+ const html='<div class="fx-matters-head"><h3>🎯 Games that matter most</h3><span>Ranked by league points still to come × how close the matchups are</span></div><div class="fx-matters-list">'+ranked.map((x,i)=>{const live=rzIsLive(x.g);
+  return '<button type="button" class="fx-matter'+(i===0?' top':'')+'" data-rz-pick="'+safe(x.g.id)+'"><span class="fx-rank">'+(i+1)+'</span><span class="fx-m-main"><b>'+safe(x.g.shortName||x.g.name||'')+'</b><small>'+safe(live?rzPeriod(x.g):'Kickoff '+rzKickoff(x.g))+'</small></span><span class="fx-m-stats"><b>'+x.n+'</b> starters<br><b>'+fmt(x.rem,0)+'</b> pts to come</span><span class="fx-m-sw">'+safe(x.swings.slice(0,2).join(' · '))+(x.swings.length>2?' +'+(x.swings.length-2):'')+'</span></button>'}).join('')+'</div>';
+ root.hidden=false;if(html===fxMattersKey)return;fxMattersKey=html;root.innerHTML=html}
+
+/* ---------- canvas share cards ---------- */
+function fxCanvas(W,H){const c=document.createElement('canvas');c.width=W;c.height=H;const x=c.getContext('2d'),g=x.createLinearGradient(0,0,W,H);g.addColorStop(0,'#0d2a44');g.addColorStop(1,'#040c16');x.fillStyle=g;x.fillRect(0,0,W,H);
+ x.fillStyle='#24e7c5';x.fillRect(0,0,W,10);return {c,x}}
+function fxText(x,t,X,Y,o={}){const {size=40,weight=800,color='#ffffff',align='left',max=0,spacing=0}=o;x.font=weight+' '+size+'px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';x.fillStyle=color;x.textAlign=align;x.textBaseline='alphabetic';if('letterSpacing' in x)x.letterSpacing=spacing+'px';
+ let s=String(t??'');if(max&&x.measureText(s).width>max){while(s.length>1&&x.measureText(s+'…').width>max)s=s.slice(0,-1);s+='…'}x.fillText(s,X,Y);if('letterSpacing' in x)x.letterSpacing='0px'}
+function fxBox(x,X,Y,W,H,r,fill,stroke){x.beginPath();if(x.roundRect)x.roundRect(X,Y,W,H,r);else x.rect(X,Y,W,H);if(fill){x.fillStyle=fill;x.fill()}if(stroke){x.strokeStyle=stroke;x.lineWidth=2;x.stroke()}}
+function fxFooter(x,W,H){fxText(x,'🏈 SUNDAY FUNDAY',60,H-44,{size:26,weight:900,color:'#24e7c5',spacing:3});fxText(x,new Date().toLocaleDateString('en-GB',{day:'numeric',month:'short',year:'numeric'}),W-60,H-44,{size:24,weight:700,color:'#8fb0c4',align:'right'})}
+async function fxShareCanvas(canvas,title){
+ try{const blob=await canvasBlob(canvas),name=(tidyCell(title)||'Sunday Funday').replace(/[^\w -]+/g,'').replace(/\s+/g,'_')+'.png',file=new File([blob],name,{type:'image/png'});
+  try{if(navigator.canShare?.({files:[file]})){await navigator.share({files:[file],title});showCopyToast('Shared ✓');return}}catch(e){if(e?.name==='AbortError')return}
+  try{if(navigator.clipboard?.write&&typeof ClipboardItem!=='undefined'){await navigator.clipboard.write([new ClipboardItem({'image/png':blob})]);showCopyToast('Image copied ✓ — paste it into the group chat');return}}catch(_){}
+  downloadGraphic(blob,title);showCopyToast('Image downloaded ✓')}catch(e){showCopyToast('Could not create the image')}}
+function fxTopScorers(entry,n=3){const pp=entry?.players_points||{};return (entry?.starters||[]).filter(id=>id&&id!=='0').map(id=>({name:nameOfPlayer(id),pts:Number(pp[id])})).filter(x=>Number.isFinite(x.pts)).sort((a,b)=>b.pts-a.pts).slice(0,n)}
+function fxShareMatchup(key){
+ const [w,ids]=String(key).split('|'),[i1,i2]=ids.split('-').map(Number),pair=matchupsAsCards(Number(w)).find(p=>p.some(x=>x.t.id===i1)&&p.some(x=>x.t.id===i2));if(!pair)return;
+ const [a,b]=pair,sa=Number(a.pts)||0,sb=Number(b.pts)||0,done=Number(w)<=completedWeeks,odds=done?null:rzFanOdds({t:a.t,score:sa},{t:b.t,score:sb},Number(w),false),{c,x}=fxCanvas(1080,1080),W=1080;
+ fxText(x,'WEEK '+w+' · '+(done?'FINAL':odds?.kind==='live'?'LIVE':'MATCHUP'),W/2,96,{size:30,weight:900,color:'#8fb0c4',align:'center',spacing:6});
+ const side=(m,score,X,align,lead)=>{fxText(x,m.t.name,X,230,{size:54,weight:900,align,max:440,color:lead?'#ffffff':'#c9d9e5'});fxText(x,m.t.owner||'',X,272,{size:26,weight:700,align,color:'#8fb0c4',max:440});fxText(x,fmt(score,1),X,430,{size:150,weight:1000,align,color:lead?'#5ff7cf':'#ffffff'});
+  fxTopScorers(matchupEntryForTeam(m.t,Number(w))).forEach((p,i)=>{fxText(x,p.name,X,560+i*56,{size:30,weight:800,align,max:290,color:'#dbe9f3'});fxText(x,fmt(p.pts,1),align==='left'?X+390:X-390,560+i*56,{size:30,weight:900,align:align==='left'?'right':'left',color:'#5ff7cf'})})};
+ side(a,sa,70,'left',sa>sb);side(b,sb,W-70,'right',sb>sa);fxText(x,'VS',W/2,370,{size:36,weight:900,align:'center',color:'#5f7b92'});
+ fxText(x,'TOP SCORERS',W/2,520,{size:22,weight:900,align:'center',color:'#5f7b92',spacing:4});
+ if(odds?.p!=null){const p=odds.p;fxBox(x,70,800,W-140,26,13,'#5a2a3c');fxBox(x,70,800,(W-140)*p,26,13,'#24e7c5');fxText(x,Math.round(p*100)+'%',70,870,{size:40,weight:900});fxText(x,(odds.kind==='live'?'LIVE WIN CHANCE':'WIN CHANCE'),W/2,870,{size:24,weight:900,align:'center',color:'#8fb0c4',spacing:3});fxText(x,(100-Math.round(p*100))+'%',W-70,870,{size:40,weight:900,align:'right'})}
+ else if(done){const win=sa===sb?null:sa>sb?a:b;fxText(x,win?win.t.name+' win by '+fmt(Math.abs(sa-sb),1):'A tie!',W/2,860,{size:44,weight:900,align:'center',color:'#ffd34d',max:W-140})}
+ fxFooter(x,W,1080);fxShareCanvas(c,'Sunday Funday Week '+w+' '+a.t.name+' v '+b.t.name)}
+
+/* ---------- 4 + 5. weekly awards and the recap card ---------- */
+function fxWeekAwards(w){
+ const data=weekly[w]||[],slots=activeSlots(leagueInfo),rows=data.map(e=>({e,t:fxTeamById(e.roster_id),score:cleanScore(e)})).filter(r=>r.t&&r.score!=null&&r.score>0);if(rows.length<4)return null;
+ const groups={};for(const r of rows)if(r.e.matchup_id!=null)(groups[r.e.matchup_id]??=[]).push(r);const pairs=Object.values(groups).filter(p=>p.length===2),winners=[],losers=[];
+ for(const [a,b] of pairs){if(a.score===b.score)continue;const wn=a.score>b.score?a:b,ls=wn===a?b:a;winners.push({...wn,opp:ls});losers.push({...ls,opp:wn})}
+ const ranked=[...rows].sort((a,b)=>b.score-a.score),rank=r=>ranked.indexOf(r),out=[];
+ const motw=ranked[0];out.push({icon:'👑',label:'Manager of the Week',team:motw.t.name,detail:fmt(motw.score,1)+' points — the week’s top score'});
+ const bench=rows.map(r=>({r,max:rosterMaxEstimate(r.e,slots)})).filter(x=>x.max!=null).map(x=>({...x,gap:x.max-x.r.score})).sort((a,b)=>b.gap-a.gap)[0];
+ if(bench&&bench.gap>.5)out.push({icon:'🪑',label:'Bench Blunder',team:bench.r.t.name,detail:fmt(bench.gap,1)+' points left on the bench (best lineup '+fmt(bench.max,1)+')'});
+ const robbed=[...losers].sort((a,b)=>b.score-a.score).find(r=>rank(rows.find(x=>x.t.id===r.t.id))<3);
+ if(robbed)out.push({icon:'🚨',label:'Robbed',team:robbed.t.name,detail:'Lost with '+fmt(robbed.score,1)+' (#'+(rank(rows.find(x=>x.t.id===robbed.t.id))+1)+' score) to '+robbed.opp.t.name});
+ const heist=[...winners].sort((a,b)=>a.score-b.score).find(r=>rank(rows.find(x=>x.t.id===r.t.id))>=rows.length-3);
+ if(heist)out.push({icon:'🦹',label:'Daylight Robbery',team:heist.t.name,detail:'Won with just '+fmt(heist.score,1)+' against '+heist.opp.t.name});
+ const proj=weeklyProjectionCache[w]?.map,players_=[];for(const r of rows){const pp=r.e.players_points||{};for(const id of r.e.starters||[]){if(!id||id==='0')continue;const pts=Number(pp[id]);if(!Number.isFinite(pts))continue;players_.push({id,name:nameOfPlayer(id),pos:players[id]?.pos||'',team:r.t.name,pts,proj:Number(proj?.[id]?.points)})}}
+ const boom=[...players_].sort((a,b)=>b.pts-a.pts)[0];if(boom)out.push({icon:'💣',label:'Boom',team:boom.name,detail:fmt(boom.pts,1)+' points for '+boom.team});
+ const others=players_.filter(p=>p!==boom),withProj=others.filter(p=>Number.isFinite(p.proj)&&p.proj>=8&&p.proj-p.pts>=3),bust=withProj.length?[...withProj].sort((a,b)=>(b.proj-b.pts)-(a.proj-a.pts))[0]:(players_.some(p=>Number.isFinite(p.proj))?null:[...others].filter(p=>!['K','DEF'].includes(p.pos)).sort((a,b)=>a.pts-b.pts)[0]);
+ if(bust)out.push({icon:'🧊',label:'Bust',team:bust.name,detail:fmt(bust.pts,1)+' points'+(Number.isFinite(bust.proj)&&withProj.length?' (projected '+fmt(bust.proj,1)+')':'')+' for '+bust.team});
+ const margins=pairs.map(([a,b])=>({a,b,m:Math.abs(a.score-b.score)})).sort((x,y)=>x.m-y.m);
+ return {awards:out,pairs:pairs.map(([a,b])=>a.score>=b.score?[a,b]:[b,a]),closest:margins[0],blowout:margins.at(-1),done:w<=completedWeeks}}
+function fxRenderAwards(){
+ const root=el('fxAwards');if(!root)return;const sel=el('fxAwardsWeek');const maxW=Math.max(completedWeeks,(weekly[currentWeek]||[]).some(e=>(cleanScore(e)||0)>0)?currentWeek:0);
+ if(source!=='sleeper'||!maxW){root.innerHTML='<p class="v10-muted">Sync Sleeper to hand out this week’s awards.</p>';if(sel)sel.innerHTML='';return}
+ const opts=Array.from({length:maxW},(_,i)=>maxW-i);if(fxAwardsWeek==null||fxAwardsWeek>maxW)fxAwardsWeek=completedWeeks||maxW;
+ if(sel){const html=opts.map(w=>'<option value="'+w+'">Week '+w+(w>completedWeeks?' (live)':'')+'</option>').join('');if(sel.dataset.h!==html){sel.innerHTML=html;sel.dataset.h=html}sel.value=String(fxAwardsWeek)}
+ const w=fxAwardsWeek;if(!weeklyProjectionCache[w]&&!weeklyProjectionFetches[w])fetchWeeklyProjections(w);
+ const x=fxWeekAwards(w);if(!x){root.innerHTML='<p class="v10-muted">Week '+w+' scores aren’t complete yet.</p>';return}
+ root.innerHTML=(x.done?'':'<p class="fx-note">Week '+w+' is still being played — these awards can change.</p>')+'<div class="fx-awards">'+x.awards.map(a=>'<div class="fx-award"><div class="fx-award-ico">'+a.icon+'</div><div><span>'+safe(a.label)+'</span><b>'+safe(a.team)+'</b><small>'+safe(a.detail)+'</small></div></div>').join('')+'</div>'+
+  '<div class="fx-week-lines">'+(x.closest?'<span>🤏 Closest: <b>'+safe(x.closest.a.t.name)+' v '+safe(x.closest.b.t.name)+'</b> by '+fmt(x.closest.m,1)+'</span>':'')+(x.blowout?'<span>💥 Blowout: <b>'+safe((x.blowout.a.score>x.blowout.b.score?x.blowout.a:x.blowout.b).t.name)+'</b> by '+fmt(x.blowout.m,1)+'</span>':'')+'</div>'}
+function fxShareRecap(){
+ const w=fxAwardsWeek,x=fxWeekAwards(w);if(!x){showCopyToast('No complete scores for that week yet');return}
+ const W=1080,H=878+Math.ceil(Math.min(6,x.awards.length)/2)*160+90,{c,x:ctx}=fxCanvas(W,H);fxText(ctx,'SUNDAY FUNDAY',60,92,{size:30,weight:900,color:'#24e7c5',spacing:6});fxText(ctx,'Week '+w+' recap',60,172,{size:76,weight:1000});fxText(ctx,x.done?'Final scores':'Live — as of '+new Date().toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'}),60,218,{size:28,weight:700,color:'#8fb0c4'});
+ x.pairs.slice(0,5).forEach(([wn,ls],i)=>{const Y=258+i*118;fxBox(ctx,60,Y,W-120,104,20,'#0f2a42','#21455f');fxText(ctx,wn.t.name,92,Y+64,{size:36,weight:900,max:330});fxText(ctx,fmt(wn.score,1),W/2-30,Y+66,{size:44,weight:1000,align:'right',color:'#5ff7cf'});
+  fxText(ctx,'–',W/2,Y+64,{size:36,weight:900,align:'center',color:'#5f7b92'});fxText(ctx,fmt(ls.score,1),W/2+30,Y+66,{size:44,weight:1000,color:'#c9d9e5'});fxText(ctx,ls.t.name,W-92,Y+64,{size:36,weight:800,align:'right',max:330,color:'#9fb6c8'})});
+ x.awards.slice(0,6).forEach((a,i)=>{const col=i%2,row=Math.floor(i/2),X=60+col*490,Y=878+row*160;fxBox(ctx,X,Y,470,144,20,'#0b2236','#1d4258');fxText(ctx,a.icon+'  '+a.label.toUpperCase(),X+26,Y+44,{size:22,weight:900,color:'#8fb0c4',spacing:2});fxText(ctx,a.team,X+26,Y+90,{size:36,weight:900,max:420});fxText(ctx,a.detail,X+26,Y+124,{size:20,weight:700,color:'#9fb6c8',max:420})});
+ fxFooter(ctx,W,H);fxShareCanvas(c,'Sunday Funday Week '+w+' recap')}
+
+/* ---------- 6. rivalries ---------- */
+function fxMeetings(){
+ const out=[],cur=new Map(teams.map(t=>[Number(t.id),t.ownerId||'r'+t.id]));
+ const push=(d,own,assumed)=>{for(const wk of d.weeks||[]){const g={};for(const r of wk.rows)(g[r.pair]??=[]).push(r);for(const p of Object.values(g))if(p.length===2){const a=own(p[0].id),b=own(p[1].id);if(a&&b)out.push({year:String(d.year),week:wk.week,a,b,sa:p[0].score,sb:p[1].score,assumed})}}};
+ if(source==='sleeper'&&leagueInfo)push(seasonData(leagueInfo,weekly,completedWeeks),id=>cur.get(Number(id)),false);
+ for(const h of historySeasons){if(String(h.id)===String(leagueInfo?.league_id))continue;push(h,h.owners?id=>h.owners[id]||null:id=>cur.get(Number(id)),!h.owners)}
+ return out.sort((a,b)=>Number(b.year)-Number(a.year)||b.week-a.week)}
+function fxRenderRivals(){
+ const root=el('fxRivals'),sa=el('fxRivalA'),sb=el('fxRivalB');if(!root||!sa||!sb)return;
+ if(source!=='sleeper'||!teams.length){root.innerHTML='<p class="v10-muted">Sync Sleeper to compare managers.</p>';return}
+ const optHtml=[...teams].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>'<option value="'+safe(t.ownerId||'r'+t.id)+'">'+safe(t.name)+'</option>').join('');
+ for(const s_ of [sa,sb])if(s_.dataset.h!==optHtml){const v=s_.value;s_.innerHTML=optHtml;s_.dataset.h=optHtml;if(v)s_.value=v}
+ if(!sa.value||!sb.value||sa.value===sb.value){const pair=matchupsAsCards(Math.min(currentWeek,regularWeeks))[0]||matchupsAsCards(completedWeeks)[0];if(pair){sa.value=pair[0].t.ownerId||'r'+pair[0].t.id;sb.value=pair[1].t.ownerId||'r'+pair[1].t.id}else{sa.selectedIndex=0;sb.selectedIndex=1}}
+ const A=sa.value,B=sb.value,name=o=>teams.find(t=>(t.ownerId||'r'+t.id)===o)?.name||'?';if(A===B){root.innerHTML='<p class="v10-muted">Pick two different managers.</p>';return}
+ const games=fxMeetings().filter(g=>(g.a===A&&g.b===B)||(g.a===B&&g.b===A)).map(g=>g.a===A?{...g,x:g.sa,y:g.sb}:{...g,x:g.sb,y:g.sa});
+ if(!games.length){root.innerHTML='<div class="fx-riv-empty"><b>'+safe(name(A))+'</b> and <b>'+safe(name(B))+'</b> haven’t met in the loaded results yet.'+(historySeasons.length?'':' Load prior seasons in the Accuracy Lab (Forecast tab) to add past years.')+'</div>';return}
+ let wa=0,wb=0,tie=0,pa=0,pb=0;for(const g of games){pa+=g.x;pb+=g.y;if(g.x>g.y)wa++;else if(g.y>g.x)wb++;else tie++}
+ let streak=0,sw=null;for(const g of games){const r=g.x>g.y?'A':g.y>g.x?'B':'T';if(sw===null)sw=r;if(r!==sw||r==='T')break;streak++}
+ const bigA=[...games].filter(g=>g.x>g.y).sort((m,n)=>(n.x-n.y)-(m.x-m.y))[0],bigB=[...games].filter(g=>g.y>g.x).sort((m,n)=>(n.y-n.x)-(m.y-m.x))[0];
+ root.innerHTML='<div class="fx-riv-score"><div class="'+(wa>wb?'fx-lead':'')+'"><b>'+wa+'</b><span>'+safe(name(A))+'</span></div><div class="fx-riv-mid">'+(tie?tie+' tie'+(tie===1?'':'s'):'all-time')+'<small>'+games.length+' meeting'+(games.length===1?'':'s')+'</small></div><div class="'+(wb>wa?'fx-lead':'')+'"><b>'+wb+'</b><span>'+safe(name(B))+'</span></div></div>'+
+  '<div class="fx-riv-stats"><span>Avg score <b>'+fmt(pa/games.length,1)+'</b> – <b>'+fmt(pb/games.length,1)+'</b></span>'+(streak>1&&sw!=='T'?'<span>🔥 '+safe(name(sw==='A'?A:B))+' have won the last '+streak+'</span>':'')+(bigA?'<span>Biggest '+safe(name(A))+' win: <b>'+fmt(bigA.x-bigA.y,1)+'</b> ('+bigA.year+' Wk '+bigA.week+')</span>':'')+(bigB?'<span>Biggest '+safe(name(B))+' win: <b>'+fmt(bigB.y-bigB.x,1)+'</b> ('+bigB.year+' Wk '+bigB.week+')</span>':'')+'</div>'+
+  '<div class="fx-riv-list">'+games.slice(0,8).map(g=>'<div class="fx-riv-game"><span>'+safe(g.year)+' · Wk '+g.week+'</span><b class="'+(g.x>g.y?'w':'')+'">'+fmt(g.x,1)+'</b><i>–</i><b class="'+(g.y>g.x?'w':'')+'">'+fmt(g.y,1)+'</b></div>').join('')+'</div>'+
+  (games.some(g=>g.assumed)?'<p class="fx-note">Some older seasons were saved before owners were recorded, so they assume each manager kept the same Sleeper roster slot. Reload prior seasons to confirm.</p>':'')}
+
+/* ---------- 7. Toilet Bowl shame tracker ---------- */
+function fxSeasonLast(d){
+ const rec={};for(const wk of d.weeks||[]){const g={};for(const r of wk.rows)(g[r.pair]??=[]).push(r);for(const p of Object.values(g)){if(p.length!==2)continue;for(const r of p){(rec[r.id]??={id:r.id,w:0,pf:0}).pf+=r.score}if(p[0].score>p[1].score)rec[p[0].id].w++;else if(p[1].score>p[0].score)rec[p[1].id].w++;else{rec[p[0].id].w+=.5;rec[p[1].id].w+=.5}}}
+ const order=Object.values(rec).sort((a,b)=>b.w-a.w||b.pf-a.pf),n=order.length,R=d.regular,p1=d.post?.[R+1],p2=d.post?.[R+2];if(n<4||!p1||!p2)return null;
+ const [e,f,g,h]=order.slice(n-4).map(x=>x.id),sc=(m,id)=>Number(m[id]),lose=(m,x,y)=>!Number.isFinite(sc(m,x))||!Number.isFinite(sc(m,y))?null:sc(m,x)>=sc(m,y)?y:x;
+ const l1=lose(p1,e,h),l2=lose(p1,f,g);if(l1==null||l2==null)return null;return lose(p2,l1,l2)}
+function fxShameList(){const out=[];
+ for(const h of historySeasons){const id=fxSeasonLast(h);if(id!=null)out.push({year:h.year,name:h.names?.[id]||fxTeamById(id)?.name||'Roster '+id})}
+ if(source==='sleeper'&&leagueInfo&&calendarNflWeek()>regularWeeks+2){const d=seasonData(leagueInfo,weekly,regularWeeks);d.post={};for(const w of [regularWeeks+1,regularWeeks+2]){const m={};for(const e of weekly[w]||[]){const s_=cleanScore(e);if(s_)m[e.roster_id]=s_}d.post[w]=m}const id=fxSeasonLast(d);if(id!=null)out.push({year:String(leagueInfo.season),name:fxTeamById(id)?.name||'?'})}
+ return out.sort((a,b)=>Number(b.year)-Number(a.year))}
+function fxToiletDeadline(){return Date.UTC(2026,8,8,12)+(regularWeeks+2)*7*86400000}
+function fxTickCountdown(){const n=el('fxCountdown');if(!n)return;const ms=fxToiletDeadline()-Date.now();if(ms<=0){n.innerHTML='<b>Decided</b><small>The Toilet Bowl is over</small>';return}
+ const d=Math.floor(ms/86400000),h=Math.floor(ms%86400000/3600000),m=Math.floor(ms%3600000/60000),s_=Math.floor(ms%60000/1000);n.innerHTML=[[d,'days'],[h,'hrs'],[m,'min'],[s_,'sec']].map(([v,l])=>'<span><b>'+String(v).padStart(2,'0')+'</b><small>'+l+'</small></span>').join('')}
+function fxRenderShame(){
+ const root=el('fxShame');if(!root)return;const key='sf_v11_punishment_'+fxLeague(),pun=String(read(key)||'');
+ const hall=fxShameList(),fav=model?teams.map((t,i)=>({t,p:model.last[i]/model.sims,tb:model.toilet[i]/model.sims})).sort((a,b)=>b.p-a.p).slice(0,3):[];
+ root.innerHTML='<div class="fx-shame-banner">'+(hall.length?'<span class="fx-shame-label">💩 Hall of Shame</span>'+hall.map(x=>'<span class="fx-shame-chip"><b>'+safe(x.year)+'</b> '+safe(x.name)+'</span>').join(''):'<span class="fx-shame-label">💩 Hall of Shame</span><span class="fx-shame-empty">No past losers loaded yet — load prior seasons in the Accuracy Lab to fill this in.</span>')+'</div>'+
+  '<div class="fx-shame-grid"><div class="fx-shame-card"><span class="fx-k">The loser must…</span><div class="fx-pun'+(pun?'':' empty')+'" id="fxPunText">'+safe(pun||'No punishment set yet. Make it a good one.')+'</div><button type="button" class="secondary" id="fxPunEdit">✏️ '+(pun?'Change':'Set')+' punishment</button><small class="fx-note">Saved on this device only.</small></div>'+
+  '<div class="fx-shame-card"><span class="fx-k">Toilet Bowl final decided in</span><div class="fx-count" id="fxCountdown"></div><small class="fx-note">End of NFL Week '+(regularWeeks+2)+' · '+new Date(fxToiletDeadline()).toLocaleDateString('en-GB',{weekday:'short',day:'numeric',month:'short'})+'</small></div>'+
+  '<div class="fx-shame-card"><span class="fx-k">Most likely to lose it all</span>'+(fav.length?fav.map((x,i)=>'<div class="fx-fav'+(i===0?' top':'')+'"><span>'+(i===0?'🚽':i+1)+'</span><b>'+safe(x.t.name)+'</b><em>'+fxPct(x.p)+'</em></div>').join('')+'<small class="fx-note">Chance of finishing last after the two-round Toilet Bowl.</small>':'<p class="v10-muted">Run the forecast to see who’s in danger.</p>')+'</div></div>';
+ el('fxPunEdit')?.addEventListener('click',()=>{const v=prompt('What must the Toilet Bowl loser do?',pun);if(v==null)return;store(key,v.trim().slice(0,240));fxRenderShame()});
+ fxTickCountdown();if(!fxCountdownTimer)fxCountdownTimer=setInterval(()=>{if(hqActive==='toilet')fxTickCountdown()},1000)}
+
+/* ---------- 9. lineup alarms ---------- */
+function fxAlarmWeek(){return clamp(Math.max(currentWeek,completedWeeks+1),1,18)}
+function fxAlarms(){
+ const w=fxAlarmWeek(),proj=weeklyProjectionCache[w]?.map||{},slots=activeSlots(leagueInfo);
+ return teams.map(t=>{const items=[];lineupStartersForWeek(t,w).forEach((p,i)=>{const slot=slots[i]||p.slot||'';
+   if(rzLastNFLWeek===w&&p.nfl){const g=rzNFLGameForTeam(p.nfl);if(g&&(rzIsLive(g)||rzState(g).includes('FINAL')))return}
+   if(p.empty||p.id==='0'){items.push({sev:3,slot,name:'Empty slot',why:'Nobody is starting here'});return}
+   if((nflByes[w]||[]).includes(p.nfl)){items.push({sev:3,slot,name:p.name,why:p.nfl+' are on bye'});return}
+   const st=String(players[String(p.id)]?.injury||proj[String(p.id)]?.status||p.injury||'');
+   if(/^(out|ir|pup|sus|suspended|inactive|na)/i.test(st))items.push({sev:3,slot,name:p.name,why:'Listed '+st});else if(/^doubt/i.test(st))items.push({sev:2,slot,name:p.name,why:'Doubtful'});else if(/^quest/i.test(st))items.push({sev:1,slot,name:p.name,why:'Questionable'})});
+  return {t,items:items.sort((a,b)=>b.sev-a.sev)}})}
+function fxRenderAlarms(){
+ const root=el('fxAlarms');if(!root)return;if(source!=='sleeper'){root.innerHTML='<p class="v10-muted">Sync Sleeper to check every lineup.</p>';return}
+ const w=fxAlarmWeek();if(!weeklyProjectionCache[w]&&!weeklyProjectionFetches[w])fetchWeeklyProjections(w);
+ const list=fxAlarms(),bad=list.filter(x=>x.items.some(i=>i.sev>=2)),warn=list.filter(x=>x.items.length&&!x.items.some(i=>i.sev>=2)),clean=list.filter(x=>!x.items.length),total=list.reduce((n,x)=>n+x.items.filter(i=>i.sev>=2).length,0);
+ root.innerHTML='<div class="fx-alarm-sum '+(total?'bad':'ok')+'">'+(total?'🚨 <b>'+total+'</b> problem'+(total===1?'':'s')+' in Week '+w+' lineups':'✅ Every Week '+w+' lineup looks set')+'<small>Only players whose games haven’t kicked off · injury tags from Sleeper</small></div>'+
+  '<div class="fx-alarm-grid">'+[...bad,...warn].map(x=>'<div class="fx-alarm-team"><b>'+safe(x.t.name)+'</b>'+x.items.map(i=>'<div class="fx-alarm sev'+i.sev+'"><span class="fx-slot">'+safe(rzSlotLabel(i.slot))+'</span><span>'+safe(i.name)+'</span><em>'+safe(i.why)+'</em></div>').join('')+'</div>').join('')+'</div>'+
+  (clean.length?'<div class="fx-alarm-clean">✓ All set: '+clean.map(x=>safe(x.t.name)).join(' · ')+'</div>':'');
+ const head=el('hqHeadlines');if(head&&total&&!head.querySelector('.fx-home-alarm'))head.insertAdjacentHTML('afterbegin','<div class="hqheadline fx-home-alarm"><div class="emoji">🚨</div><div><b>'+total+' lineup problem'+(total===1?'':'s')+' for Week '+w+'</b><div class="detail">'+safe(bad.map(x=>x.t.name).slice(0,4).join(', '))+' · see Teams</div></div></div>')}
+
+/* ---------- 10. trade checker ---------- */
+function fxRenderTradeLists(){
+ const sa=el('fxTradeA'),sb=el('fxTradeB');if(!sa||!sb)return;const opt=[...teams].sort((a,b)=>a.name.localeCompare(b.name)).map(t=>'<option value="'+t.id+'">'+safe(t.name)+'</option>').join('');
+ for(const s_ of [sa,sb])if(s_.dataset.h!==opt){const v=s_.value;s_.innerHTML=opt;s_.dataset.h=opt;if(v)s_.value=v}if(sa.value===sb.value&&sb.options.length>1)sb.selectedIndex=(sa.selectedIndex+1)%sb.options.length;
+ for(const [s_,box] of [[sa,'fxTradeListA'],[sb,'fxTradeListB']]){const t=fxTeamById(s_.value),root=el(box);if(!root||!t)continue;if(root.dataset.team===String(t.id)&&root.children.length)continue;root.dataset.team=String(t.id);
+  root.innerHTML=rosterFor(t).filter(p=>!p.empty&&p.id!=='0').sort((a,b)=>String(a.pos).localeCompare(String(b.pos))||String(a.name).localeCompare(String(b.name))).map(p=>'<label class="fx-tp"><input type="checkbox" value="'+safe(p.id)+'"><span>'+safe(p.name)+'</span><small>'+safe([p.pos,p.nfl].filter(Boolean).join(' · '))+'</small></label>').join('')}}
+function fxLineupValue(t){if(seasonSquadSignal.ready&&seasonSquadSignal.aggregate){const x=bestProjectedRosterLineup(t,0,seasonSquadSignal.aggregate);if(x)return {v:x.score,how:'Sleeper projections'}}const v=hqBestLineup(t,0,false);return v==null?null:{v,how:'points scored so far'}}
+function fxCheckTrade(){
+ const out=el('fxTradeResult'),A=fxTeamById(el('fxTradeA')?.value),B=fxTeamById(el('fxTradeB')?.value);if(!out)return;if(!model){out.innerHTML='<p class="v10-muted">Run the forecast first.</p>';return}
+ if(!A||!B||A===B){out.innerHTML='<p class="v10-muted">Pick two different teams.</p>';return}
+ const ga=[...document.querySelectorAll('#fxTradeListA input:checked')].map(i=>i.value),gb=[...document.querySelectorAll('#fxTradeListB input:checked')].map(i=>i.value);if(!ga.length&&!gb.length){out.innerHTML='<p class="v10-muted">Tick the players each side gives away.</p>';return}
+ out.innerHTML='<p class="v10-muted">Simulating the rest of the season with and without the trade…</p>';
+ setTimeout(()=>{try{const ra=rosters[A.id],rb=rosters[B.id],moved=p=>({...p,slot:'BN'});const before=[fxLineupValue(A),fxLineupValue(B)];
+  rosters[A.id]=ra.filter(p=>!ga.includes(String(p.id))).concat(rb.filter(p=>gb.includes(String(p.id))).map(moved));rosters[B.id]=rb.filter(p=>!gb.includes(String(p.id))).concat(ra.filter(p=>ga.includes(String(p.id))).map(moved));
+  let after;try{after=[fxLineupValue(A),fxLineupValue(B)]}finally{rosters[A.id]=ra;rosters[B.id]=rb}
+  if(before.some(x=>!x)||after.some(x=>!x)){out.innerHTML='<p class="v10-muted">Not enough player data to value these rosters yet.</p>';return}
+  const weight=model.squadSignal?.weight||.35,ia=teams.indexOf(A),ib=teams.indexOf(B),delta=teams.map(()=>0);delta[ia]=weight*(after[0].v-before[0].v);delta[ib]=weight*(after[1].v-before[1].v);
+  const base=simulate({sims:10000,seed:4242}),next=simulate({sims:10000,seed:4242,strengthDelta:delta}),n=base.sims;
+  const row=(t,i,b,a)=>{const po0=base.playoff[i]/n,po1=next.playoff[i]/n,ch0=base.champ[i]/n,ch1=next.champ[i]/n,d=po1-po0;return {t,d,html:'<div class="fx-trade-team"><b>'+safe(t.name)+'</b><div class="fx-trade-rows"><span>Best lineup</span><em>'+fmt(b.v,1)+' → <b>'+fmt(a.v,1)+'</b> pts/wk <i class="'+(a.v>=b.v?'up':'down')+'">'+(a.v>=b.v?'+':'')+fmt(a.v-b.v,1)+'</i></em><span>Playoffs</span><em>'+fxPct(po0)+' → <b>'+fxPct(po1)+'</b> <i class="'+(d>=0?'up':'down')+'">'+(d>=0?'+':'')+fmt(d*100,1)+'pp</i></em><span>Title</span><em>'+fxPct(ch0)+' → <b>'+fxPct(ch1)+'</b></em></div></div>'}};
+  const ra_=row(A,ia,before[0],after[0]),rb_=row(B,ib,before[1],after[1]),win=Math.abs(ra_.d-rb_.d)<.01?null:ra_.d>rb_.d?A:B;
+  out.innerHTML='<div class="fx-trade-verdict">'+(win?'🏆 <b>'+safe(win.name)+'</b> win this trade':'🤝 Pretty even trade')+'</div><div class="fx-trade-grid">'+ra_.html+rb_.html+'</div><p class="fx-note">Lineups valued with '+safe(before[0].how)+'. Odds use the season model with the same '+Math.round(weight*100)+'% current-squad weighting, so they move conservatively.</p>'}catch(e){out.innerHTML='<p class="v10-muted">Trade check failed: '+safe(e.message)+'</p>'}},30)}
+
+/* ---------- 8. what-if picker and clinch lines ---------- */
+function fxRemainingWeeks(){const out=[];const nameIdx=Object.fromEntries(teams.map((t,i)=>[t.name,i]));for(let w=completedWeeks+1;w<=regularWeeks;w++){const s_=scheduleFor(w);if(!validateFixtures(s_.games))continue;out.push({w,games:s_.games.map(([a,b])=>({a,b,ia:nameIdx[a],ib:nameIdx[b],key:w+'|'+Math.min(nameIdx[a],nameIdx[b])+'|'+Math.max(nameIdx[a],nameIdx[b])}))})}return out}
+function fxRenderWhatIf(){
+ const root=el('fxWhatIf');if(!root)return;if(source!=='sleeper'||!model){root.innerHTML='<p class="v10-muted">Run the forecast to start picking results.</p>';return}
+ const weeks=fxRemainingWeeks();if(!weeks.length){root.innerHTML='<p class="v10-muted">No regular-season games left to pick.</p>';return}
+ for(const k of Object.keys(fxPicks))if(!weeks.some(w=>w.games.some(g=>g.key===k)))delete fxPicks[k];
+ root.innerHTML='<div class="fx-wi-layout"><div class="fx-wi-picks">'+weeks.map((wk,wi)=>{const n=wk.games.filter(g=>fxPicks[g.key]!=null).length,open=fxWiOpen.has(wk.w)||(!fxWiTouched.has(wk.w)&&(wi===0||n>0));return '<details class="fx-wi-week" data-wk="'+wk.w+'"'+(open?' open':'')+'><summary class="fx-wi-wk">Week '+wk.w+(n?' · '+n+' picked':'')+'</summary>'+wk.games.map(g=>{const pick=fxPicks[g.key],p=hqProbability(g.a,g.b,wk.w);
+   return '<div class="fx-wi-game"><button type="button" data-pick="'+g.key+'" data-team="'+g.ia+'" class="'+(pick===g.ia?'on':'')+'"><b>'+safe(g.a)+'</b><small>'+fxPct(p)+'</small></button><span>v</span><button type="button" data-pick="'+g.key+'" data-team="'+g.ib+'" class="'+(pick===g.ib?'on':'')+'"><b>'+safe(g.b)+'</b><small>'+fxPct(p==null?null:1-p)+'</small></button></div>'}).join('')+'</details>'}).join('')+'</div><div class="fx-wi-out"><div class="fx-wi-head"><b>'+Object.keys(fxPicks).length+' result'+(Object.keys(fxPicks).length===1?'':'s')+' picked</b><button type="button" class="secondary" id="fxWiReset">Reset</button></div><div id="fxWhatIfTable"><p class="v10-muted">Tap a team to make them win that game.</p></div></div></div>';
+ el('fxWiReset')?.addEventListener('click',()=>{fxPicks={};fxRenderWhatIf()});root.querySelectorAll('details.fx-wi-week').forEach(d=>d.addEventListener('toggle',()=>{const w=Number(d.dataset.wk);fxWiTouched.add(w);if(d.open)fxWiOpen.add(w);else fxWiOpen.delete(w)}));fxScheduleWhatIf()}
+function fxScheduleWhatIf(){clearTimeout(fxWhatIfTimer);const token=++fxWhatIfToken;fxWhatIfTimer=setTimeout(()=>{if(token!==fxWhatIfToken)return;const t=el('fxWhatIfTable');if(!t||!model)return;
+ try{const n0=model.sims,picked=Object.keys(fxPicks).length,next=picked?simulate({sims:10000,seed:777,forced:fxPicks}):null,n1=next?.sims;
+  const rows=teams.map((t,i)=>({t,now:model.playoff[i]/n0,wi:next?next.playoff[i]/n1:model.playoff[i]/n0,ch:next?next.champ[i]/n1:model.champ[i]/n0})).sort((a,b)=>b.wi-a.wi||a.t.name.localeCompare(b.t.name));
+  t.innerHTML='<table class="fx-wi-table"><thead><tr><th>Team</th><th>Now</th><th>What-if</th><th>Change</th><th>Title</th></tr></thead><tbody>'+rows.map((x,i)=>{const d=x.wi-x.now;return (i===4?'<tr class="fx-cutrow"><td colspan="5">Playoff line</td></tr>':'')+'<tr><td>'+safe(x.t.name)+'</td><td>'+fxPct(x.now)+'</td><td><b>'+fxPct(x.wi)+'</b></td><td class="'+(d>.005?'up':d<-.005?'down':'')+'">'+(Math.abs(d)<.005?'—':(d>0?'+':'')+fmt(d*100,0)+'pp')+'</td><td>'+fxPct(x.ch)+'</td></tr>'}).join('')+'</tbody></table>'}catch(e){t.innerHTML='<p class="v10-muted">'+safe(e.message)+'</p>'}},220)}
+function fxRenderClinch(){
+ const root=el('fxClinch');if(!root)return;if(source!=='sleeper'||!model){root.innerHTML='<p class="v10-muted">Run the forecast first.</p>';return}
+ const wk=fxRemainingWeeks()[0];if(!wk){root.innerHTML='<p class="v10-muted">The regular season is over.</p>';return}
+ const key=model.sims+'|'+model.expWins.join(',')+'|'+wk.w;if(key===fxClinchKey)return;fxClinchKey=key;root.innerHTML='<p class="v10-muted">Working out Week '+wk.w+' scenarios…</p>';
+ const res=new Map();let i=0;const step=()=>{if(fxClinchKey!==key)return;const g=wk.games[i++];if(!g){draw();return}
+  for(const winner of [g.ia,g.ib]){const r=simulate({sims:5000,seed:31+i,forced:{[g.key]:winner}}),loser=winner===g.ia?g.ib:g.ia,slot=i_=>{if(!res.has(i_))res.set(i_,{});return res.get(i_)};slot(winner).win=r.playoff[winner]/r.sims;slot(loser).loss=r.playoff[loser]/r.sims}
+  setTimeout(step,0)};
+ const draw=()=>{const rows=teams.map((t,i)=>({t,...(res.get(i)||{})})).filter(x=>x.win!=null).sort((a,b)=>b.win-a.win);
+  const note=x=>x.loss>=.9995?'<span class="fx-tag good">Already in</span>':x.win>=.9995?'<span class="fx-tag good">Clinches with a win</span>':x.win<=.0005?'<span class="fx-tag bad">Already out</span>':x.loss<=.0005?'<span class="fx-tag bad">Out with a loss</span>':x.win-x.loss>.3?'<span class="fx-tag hot">Must-win</span>':'';
+  root.innerHTML='<table class="fx-wi-table"><thead><tr><th>Team</th><th>Win Wk '+wk.w+'</th><th>Lose Wk '+wk.w+'</th><th></th></tr></thead><tbody>'+rows.map(x=>'<tr><td>'+safe(x.t.name)+'</td><td><b>'+fxPct(x.win)+'</b></td><td>'+fxPct(x.loss)+'</td><td>'+note(x)+'</td></tr>').join('')+'</tbody></table><p class="fx-note">Playoff chance if each team wins or loses its Week '+wk.w+' game. “Clinches” and “out” mean it happened in every one of 5,000 simulations, not a mathematical guarantee.</p>'};
+ setTimeout(step,0)}
+
+/* ---------- 11. playoff odds over the season ---------- */
+function fxOddsAsOf(k,sims=3000){
+ const n=teams.length,idx=new Map(teams.map((t,i)=>[Number(t.id),i])),wins=Array(n).fill(0),pf=Array(n).fill(0);
+ for(let w=1;w<=k;w++){const g={};for(const e of weekly[w]||[]){const s_=cleanScore(e);if(s_==null||e.matchup_id==null)continue;(g[e.matchup_id]??=[]).push({i:idx.get(Number(e.roster_id)),s:s_})}
+  for(const p of Object.values(g))if(p.length===2&&p.every(x=>x.i!=null)){pf[p[0].i]+=p[0].s;pf[p[1].i]+=p[1].s;if(p[0].s>p[1].s)wins[p[0].i]++;else if(p[1].s>p[0].s)wins[p[1].i]++;else{wins[p[0].i]+=.5;wins[p[1].i]+=.5}}}
+ const stats=mergeDataForStats(seasonData(leagueInfo,weekly,k),k),cfg=activeCfg(),est=teams.map(t=>estimatedTeam(stats,t.id,cfg)),nameIdx=Object.fromEntries(teams.map((t,i)=>[t.name,i])),weeks=[];
+ for(let w=k+1;w<=regularWeeks;w++){const s_=scheduleFor(w);if(!validateFixtures(s_.games))return null;weeks.push(s_.games.map(([a,b])=>[nameIdx[a],nameIdx[b]]))}
+ const rng=mulberry32(97+k),cnt=new Float64Array(n),order=Array.from({length:n},(_,i)=>i);
+ for(let s_=0;s_<sims;s_++){const W=wins.slice(),P=pf.slice();for(const wk of weeks)for(const [a,b] of wk){const x=Math.max(0,est[a].mu+gaussian(rng)*est[a].sd),y=Math.max(0,est[b].mu+gaussian(rng)*est[b].sd);P[a]+=x;P[b]+=y;if(x>=y)W[a]++;else W[b]++}
+  order.sort((a,b)=>W[b]-W[a]||P[b]-P[a]||a-b);for(let q=0;q<4;q++)cnt[order[q]]++}
+ return Array.from(cnt,c=>c/sims)}
+function fxRenderOddsSeason(){
+ const root=el('fxOddsSeason');if(!root)return;if(source!=='sleeper'||!model||completedWeeks<2){root.innerHTML='<p class="v10-muted">Needs at least two completed weeks and a forecast.</p>';return}
+ const key=completedWeeks+'|'+(live?.syncedAt||0)+'|'+model.playoff.join(',');if(key===fxOddsKey&&fxOddsSeries){fxDrawOdds();return}fxOddsKey=key;fxOddsSeries=null;root.innerHTML='<p class="v10-muted">Replaying the season week by week…</p>';
+ const series=teams.map(()=>[]);let k=1;const step=()=>{if(fxOddsKey!==key)return;if(k<completedWeeks){const r=fxOddsAsOf(k);if(r)r.forEach((p,i)=>series[i].push({w:k,p}));k++;setTimeout(step,0);return}
+  teams.forEach((t,i)=>series[i].push({w:completedWeeks,p:model.playoff[i]/model.sims,now:true}));fxOddsSeries=series;fxDrawOdds()};setTimeout(step,0)}
+function fxDrawOdds(){
+ const root=el('fxOddsSeason');if(!root||!fxOddsSeries)return;const W=160,H=56,maxW=completedWeeks,minW=1,X=w=>(4+(w-minW)/Math.max(1,maxW-minW)*(W-8)).toFixed(1),Y=p=>(4+(1-p)*(H-8)).toFixed(1);
+ const cards=teams.map((t,i)=>({t,s:fxOddsSeries[i]})).filter(x=>x.s.length).sort((a,b)=>b.s.at(-1).p-a.s.at(-1).p);
+ root.innerHTML='<div class="fx-odds-grid">'+cards.map(({t,s})=>{const now=s.at(-1),prev=s.at(-2),d=prev?now.p-prev.p:0,line=s.map(q=>X(q.w)+','+Y(q.p)).join(' ');
+  return '<div class="fx-odds-card"><div class="fx-odds-head"><b>'+safe(t.name)+'</b><span><b>'+fxPct(now.p)+'</b>'+(prev?'<i class="'+(d>.005?'up':d<-.005?'down':'')+'">'+(Math.abs(d)<.005?'±0':(d>0?'▲':'▼')+fmt(Math.abs(d)*100,0))+'</i>':'')+'</span></div><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+safe(t.name)+' playoff chance by week: '+s.map(q=>'Week '+q.w+' '+fxPct(q.p)).join(', ')+'"><line x1="0" x2="'+W+'" y1="'+Y(.5)+'" y2="'+Y(.5)+'" class="fx-sw-mid"/><polygon class="fx-od-area" points="'+X(s[0].w)+','+(H-4)+' '+line+' '+X(now.w)+','+(H-4)+'"/><polyline class="fx-od-line" points="'+line+'"/>'+s.map(q=>'<circle cx="'+X(q.w)+'" cy="'+Y(q.p)+'" r="'+(q.now?3.5:2)+'" class="fx-od-dot'+(q.now?' now':'')+'"><title>Week '+q.w+': '+fxPct(q.p)+'</title></circle>').join('')+'</svg></div>'}).join('')+'</div><p class="fx-note">Each point re-runs the season model using only the results known after that week. The dashed line is 50%.</p>'}
+
+/* ---------- wiring ---------- */
+function fxRenderAll(){fxRenderAlarms();if(hqActive==='records'){fxRenderAwards();fxRenderRivals()}if(hqActive==='toilet')fxRenderShame();if(hqActive==='forecast'){fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}if(hqActive==='rosters')fxRenderTradeLists()}
+function fxOnTab(tab){if(tab==='records'){fxRenderAwards();fxRenderRivals()}else if(tab==='toilet')fxRenderShame();else if(tab==='forecast'){fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}else if(tab==='rosters'){fxRenderAlarms();fxRenderTradeLists()}else if(tab==='games'){fxRenderMatters()}}
+function fxInit(){
+ document.body.insertAdjacentHTML('beforeend','<div id="fxToasts" class="fx-toasts" aria-live="polite"></div>');
+ const sec=(id,title,sub,body,extra='')=>'<section class="hqpanel fx-panel" id="'+id+'Panel"><div class="hqrow"><h3>'+title+'</h3>'+extra+'</div>'+(sub?'<p class="v10-muted fx-sub">'+sub+'</p>':'')+body+'</section>';
+ el('v10Wins')?.closest('section')?.insertAdjacentHTML('afterend',
+  sec('fxWhatIfS','🔮 What-if playoff picker','Pick winners for any remaining games and see how everyone’s playoff chances change.','<div id="fxWhatIf"></div>')+
+  sec('fxClinchS','🎟 This week’s playoff stakes','What a win or a loss this week does to each team’s playoff chance.','<div id="fxClinch"></div>')+
+  sec('fxOddsS','📈 Playoff odds over the season','How each team’s playoff chance has moved week by week.','<div id="fxOddsSeason"></div>'));
+ const rh=document.querySelector('#v9-view-records .hqhero');rh?.insertAdjacentHTML('afterend',
+  sec('fxAwardsS','🏅 Weekly awards','Handed out automatically from Sleeper scores.','<div id="fxAwards"></div>','<div class="fx-actions"><select id="fxAwardsWeek" aria-label="Awards week"></select><button type="button" class="primary" id="fxRecapBtn">📸 Recap card</button></div>')+
+  sec('fxRivalsS','⚔️ Rivalries','Head-to-head record between any two managers, across every loaded season.','<div class="fx-riv-pick"><select id="fxRivalA" aria-label="First manager"></select><span>v</span><select id="fxRivalB" aria-label="Second manager"></select></div><div id="fxRivals"></div>'));
+ document.querySelector('#v9-view-toilet .hqhero')?.insertAdjacentHTML('afterend','<section class="hqpanel fx-panel" id="fxShame"></section>');
+ const rv=el('v9-view-rosters');rv?.insertAdjacentHTML('afterbegin',sec('fxAlarmsS','🚨 Lineup alarms','Starters who are out, on a bye or missing — before their games kick off.','<div id="fxAlarms"></div>'));
+ rv?.insertAdjacentHTML('beforeend',sec('fxTradeS','🔁 Trade checker','Tick the players each team gives away to see how the trade changes lineups and odds.','<div class="fx-trade-pick"><div><select id="fxTradeA" aria-label="First team"></select><div class="fx-tlist" id="fxTradeListA"></div></div><div><select id="fxTradeB" aria-label="Second team"></select><div class="fx-tlist" id="fxTradeListB"></div></div></div><button type="button" class="primary" id="fxTradeBtn">Check trade</button><div id="fxTradeResult"></div>'));
+ el('fxAwardsWeek')?.addEventListener('change',e=>{fxAwardsWeek=Number(e.target.value);fxRenderAwards()});el('fxRecapBtn')?.addEventListener('click',fxShareRecap);
+ for(const id of ['fxRivalA','fxRivalB'])el(id)?.addEventListener('change',fxRenderRivals);
+ for(const [s_,box] of [['fxTradeA','fxTradeListA'],['fxTradeB','fxTradeListB']])el(s_)?.addEventListener('change',()=>{el(box).dataset.team='';fxRenderTradeLists();el('fxTradeResult').innerHTML=''});
+ el('fxTradeBtn')?.addEventListener('click',fxCheckTrade);
+ el('fxWhatIf')?.addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(!b)return;const k=b.dataset.pick,t=Number(b.dataset.team);if(fxPicks[k]===t)delete fxPicks[k];else fxPicks[k]=t;fxRenderWhatIf()});
+ el('rzFantasyBoard')?.addEventListener('click',e=>{const b=e.target.closest('[data-share]');if(b){e.preventDefault();fxShareMatchup(b.dataset.share)}});
+ el('fxMatters')?.addEventListener('click',e=>{const b=e.target.closest('[data-rz-pick]');if(!b)return;rzFocused=b.dataset.rzPick;if(rzAuto){rzAuto=false;rzAutoLabel()}rzRender();rzFocusedFetch(true);el('rzFocus')?.scrollIntoView({behavior:'smooth',block:'start'})});
+ el('fxSoundBtn')?.addEventListener('click',()=>{fxSound=!fxSound;store(FX_SOUND_KEY,fxSound);fxSoundLabel();if(fxSound){fxChime('')}});fxSoundLabel();
+ const oldTab=hqTab;hqTab=function(tab){oldTab(tab);fxOnTab(tab)};
+}
+
+initV9();fxInit();boot();
 
 /* v9.3.2: full bye details remain available by tapping a row on a phone. */
 (function(){
