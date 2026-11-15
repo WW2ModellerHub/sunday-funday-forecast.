@@ -1501,6 +1501,35 @@ td { padding:7px 6px; }
 #v9-view-games .fan-log-d small{font-size:9px;color:#7f9db3;font-weight:800}
 #v9-view-games .fan-log-note{margin:5px 2px 0;font-size:10px;color:#6f8aa0}
 @media(prefers-reduced-motion:reduce){#v9-view-games .fan-last.fresh{animation:none}}
+/* sweat panel */
+#v9-view-games .fan-sweat{margin-top:9px;padding:8px 10px;border-radius:11px;background:#2a1d0a;border:1px solid #8a6a2a;font-size:12px;color:#f3e2c2;line-height:1.45}
+#v9-view-games .fan-sweat b{color:#fff}#v9-view-games .fan-sweat .need{color:#ffd34d;font-size:14px}
+#v9-view-games .fan-sweat .ok{color:#5ff7cf;font-weight:900}#v9-view-games .fan-sweat .bad{color:#ff9daa;font-weight:900}
+#v9-view-games .fan-sweat-left{display:grid;gap:2px;margin-top:4px;font-size:11px;color:#d6c3a0}
+#v9-view-games .fan-sweat-left em{font-style:normal;font-weight:900;color:#ffe08a}
+#v9-view-games .fan-sweat-left i{font-style:normal;color:#9fb6c8}
+#v9-view-games .fan-sweat.locked{background:#0f3d37;border-color:#1f8f7d;color:#cff7ee}
+/* highlights */
+#v9-view-games .rz-hl{margin:0 12px 14px;padding:10px 12px 12px;border:1px solid #24506a;border-radius:16px;background:#081a2b}
+#v9-view-games .rz-hl-head{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:8px}
+#v9-view-games .rz-hl-head h4{margin:0;font-size:12px;letter-spacing:.12em;text-transform:uppercase;color:#cde9f4}
+#v9-view-games .rz-hl-head span{font-size:10px;color:#7f9db3}
+#v9-view-games .rz-hl-list{display:grid;grid-auto-flow:column;grid-auto-columns:200px;gap:10px;overflow-x:auto;padding-bottom:4px;scrollbar-width:thin;scrollbar-color:#2a4d66 transparent}
+#v9-view-games .rz-hl-clip{display:grid;gap:6px;text-align:left;background:none;border:0;padding:0;color:#dbe9f3;cursor:pointer}
+#v9-view-games .rz-hl-thumb{position:relative;display:block;aspect-ratio:16/9;border-radius:10px;overflow:hidden;background:#0c2638;border:1px solid #1d4258}
+#v9-view-games .rz-hl-thumb img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+#v9-view-games .rz-hl-thumb i{position:absolute;left:50%;top:50%;transform:translate(-50%,-50%);width:38px;height:38px;border-radius:50%;display:grid;place-items:center;background:#000a;color:#fff;font-style:normal;font-size:15px;border:2px solid #ffffffcc}
+#v9-view-games .rz-hl-thumb em{position:absolute;right:6px;bottom:6px;font-style:normal;font-size:10px;font-weight:900;background:#000b;color:#fff;border-radius:4px;padding:1px 5px}
+#v9-view-games .rz-hl-clip:hover .rz-hl-thumb{border-color:#44ead1}
+#v9-view-games .rz-hl-title{font-size:12px;font-weight:800;line-height:1.3;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.rz-clip-overlay{position:fixed;inset:0;z-index:300;display:grid;place-items:center;background:#000c;padding:16px}
+.rz-clip-overlay[hidden]{display:none}
+.rz-clip-box{width:min(960px,100%);background:#0b1d2e;border:1px solid #2a4d66;border-radius:16px;overflow:hidden}
+.rz-clip-head{display:flex;justify-content:space-between;align-items:center;gap:10px;padding:10px 14px;font-size:14px}
+.rz-clip-head button{background:none;border:0;color:#cde9f4;font-size:26px;line-height:1;cursor:pointer}
+.rz-clip-box video{display:block;width:100%;max-height:70vh;background:#000}
+.rz-clip-box a{display:block;padding:9px 14px;font-size:12px;color:#73ffdb}
+#fxBgBtn.on{background:#0c3b38;border-color:#2fa994;color:#73ffdb}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -2968,7 +2997,7 @@ function rzInit(){
  gameView.insertAdjacentHTML('afterbegin',`<div class="rz-cinema">
   <header class="rz-stadium"><div class="rz-brand"><div class="rz-brandtop"><span class="ball">🏈</span>Sunday Funday</div><div class="rz-brandsub">REDZONE <span class="rz-live-dot" title="Live when data arrives"></span></div><div class="rz-tagline">Fantasy football for the lads</div></div>
    <div class="rz-head-controls"><div class="rz-switcher"><button id="rzNFL" type="button" class="active">🏈 NFL REDZONE</button><button id="rzFantasyButton" type="button">🏆 Fantasy scores</button></div>
-   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button><button id="fxSoundBtn" type="button" title="Play a sound for big moments">🔕 Sound</button><button id="v10TV" class="v10-tv-button" type="button" title="Full-screen Sunday Funday TV">▣ TV</button></div></div></header>
+   <div class="rz-head-right"><label class="rzsmall" for="rzWeekSelect">Week</label><select id="rzWeekSelect" aria-label="NFL week"></select><button id="rzRefresh" type="button" title="Refresh feeds">↻ Refresh</button><button id="fxSoundBtn" type="button" title="Play a sound for big moments">🔕 Sound</button><button id="fxBgBtn" type="button" title="Keep checking and send notifications while RedZone is in a background tab">📣 Alerts</button><button id="v10TV" class="v10-tv-button" type="button" title="Full-screen Sunday Funday TV">▣ TV</button></div></div></header>
   <div id="rzNFLPanel" class="rznfl"><section class="rz-featured"><div class="rz-feature-head"><span><span class="rz-live-dot"></span> NFL · FEATURED GAME</span><span id="rzFeaturedBadge">AWAITING GAME</span></div><div id="rzFocus"><div class="rz-empty">Connecting to NFL scoreboard…</div></div></section>
   <div class="rz-all-head"><h3>▮ ALL GAMES</h3><div class="rz-all-tools"><button id="rzAutoBtn" type="button" class="rz-auto-btn" aria-pressed="true" title="Auto-follow moves the featured game to the hottest live game. Tap a game to pin it.">🔀 Auto-follow</button><div class="rz-filter" role="group" aria-label="Filter NFL games"><button type="button" data-flt="live">● Live <b></b></button><button type="button" data-flt="redzone">🔴 Red zone <b></b></button><button type="button" data-flt="all">All this GW <b></b></button></div><select id="rzFilter" hidden aria-hidden="true"><option value="live">Live</option><option value="redzone">Red zone</option><option value="all">All this GW</option></select></div></div>
   <div id="rzGrid" class="rz-cinema-grid"><div class="rz-empty">Loading NFL games…</div></div><section class="rz-live-impact" id="rzImpact"><h3>🔥 Sunday Funday · Fantasy impact</h3><div class="rz-impact-label">Once league rosters sync, this panel links NFL plays to the managers involved.</div></section>
@@ -2991,7 +3020,7 @@ function rzInit(){
  gameView.addEventListener('click',e=>{const b=e.target.closest('[data-flt-go]');if(b)rzSetFilter(b.dataset.fltGo)});
  el('rzAutoBtn').addEventListener('click',()=>{rzAuto=!rzAuto;rzAutoAt=0;store(RZ_AUTO_KEY,rzAuto);rzAutoLabel();rzRender();if(rzFocused)rzFocusedFetch(false)});rzAutoLabel();
  el('rzWeekSelect').addEventListener('change',()=>{rzWeek=Number(el('rzWeekSelect').value);rzFocused=null;rzDetailCache={};rzSeen.clear();rzScoreGuards.clear();rzHighlights=[];rzGames=[];rzClockAnchors.clear();rzDriveOpen.clear();rzDriveTop.clear();rzGridRenderKey='';rzFocusRenderKey='';rzRender();rzUpdateFantasyStamp();rzRefreshNow()});
- document.addEventListener('visibilitychange',()=>{if(document.hidden)rzStop();else if(hqActive==='games')rzOpen()});
+ document.addEventListener('visibilitychange',()=>{if(document.hidden){if(rzBgActive()){if(rzClockTimer)clearInterval(rzClockTimer);rzClockTimer=null;rzScheduleNFL();rzScheduleSleeper()}else rzStop()}else if(hqActive==='games')rzOpen()});
 }
 function rzSwitch(mode){rzMode=mode;el('rzNFL').classList.toggle('active',mode==='nfl');el('rzFantasyButton').classList.toggle('active',mode==='fantasy');el('rzNFLPanel').classList.toggle('hidden',mode!=='nfl');el('rzFantasyPanel').classList.toggle('visible',mode==='fantasy');if(mode==='fantasy'){rzFanKey='';rzUpdateFantasyStamp();rzRenderFantasy();rzSleeper(true)}}
 function rzHasLiveGames(){return rzGames.some(rzIsLive)}
@@ -3002,8 +3031,10 @@ function rzSleeperWeekFresh(){return rzLastSleeperWeek===rzWeek&&rzLastSleeperLe
 function rzCurrentSleeperStamp(){return rzSleeperWeekFresh()?rzLastSleeper:Number(live?.syncedAt||0)}
 function rzUpdateFantasyStamp(){const n=el('rzFantasyStamp');if(!n)return;const stamp=rzCurrentSleeperStamp(),fresh=rzSleeperWeekFresh(),cadence=rzLiveMode()?'refreshes every '+Math.round(RZ_SLEEPER_LIVE_MS/1000)+' seconds':'refreshes every 30 seconds';if(fresh)n.innerHTML=(rzSleeperErrors?'<span class="live-odds-badge delayed">Delayed</span>Retrying · last update ':'<span class="live-odds-badge">Live</span>Official Sleeper scores · updated ')+safe(new Date(stamp).toLocaleTimeString('en-GB'))+' · '+cadence;else n.textContent=stamp?'Week '+rzWeek+' scores loading… (last league sync '+new Date(stamp).toLocaleTimeString('en-GB')+')':'Week '+rzWeek+' scores have not loaded yet.'}
 function rzStop(){if(rzTimer)clearTimeout(rzTimer);rzTimer=null;if(rzFantasyTimer)clearTimeout(rzFantasyTimer);rzFantasyTimer=null;if(rzClockTimer)clearInterval(rzClockTimer);rzClockTimer=null;for(const anchor of rzClockAnchors.values())anchor.running=false}
-function rzScheduleNFL(delay=rzNFLDelay()){if(rzTimer)clearTimeout(rzTimer);if(document.hidden||hqActive!=='games')return;rzTimer=setTimeout(async()=>{rzTimer=null;await rzPoll(false);rzScheduleNFL()},delay)}
-function rzScheduleSleeper(delay=rzSleeperDelay()){if(rzFantasyTimer)clearTimeout(rzFantasyTimer);if(document.hidden||hqActive!=='games')return;rzFantasyTimer=setTimeout(async()=>{rzFantasyTimer=null;await rzSleeper(false);rzScheduleSleeper()},delay)}
+/* Background alerts: while RedZone is open in a hidden tab with alerts on, keep polling at a gentler pace. */
+function rzBgActive(){return !!(document.hidden&&fxBgAlerts&&hqActive==='games'&&typeof Notification!=='undefined'&&Notification.permission==='granted')}
+function rzScheduleNFL(delay=rzNFLDelay()){if(rzTimer)clearTimeout(rzTimer);if((document.hidden&&!rzBgActive())||hqActive!=='games')return;if(document.hidden)delay=Math.max(delay,15000);rzTimer=setTimeout(async()=>{rzTimer=null;await rzPoll(false);rzScheduleNFL()},delay)}
+function rzScheduleSleeper(delay=rzSleeperDelay()){if(rzFantasyTimer)clearTimeout(rzFantasyTimer);if((document.hidden&&!rzBgActive())||hqActive!=='games')return;if(document.hidden)delay=Math.max(delay,15000);rzFantasyTimer=setTimeout(async()=>{rzFantasyTimer=null;await rzSleeper(false);rzScheduleSleeper()},delay)}
 async function rzRefreshNow(){const btn=el('rzRefresh');if(btn){btn.disabled=true;btn.textContent='↻ Updating…'}const projectionRefresh=rzLiveMode()?fetchWeeklyProjections(rzWeek,false):fetchWeeklyProjections(rzWeek,true);try{await Promise.allSettled([rzPoll(true),rzSleeper(true),projectionRefresh]);}finally{if(btn){btn.disabled=false;btn.textContent='↻ Refresh'}rzScheduleNFL();rzScheduleSleeper()}}
 async function rzOpen(){if(!el('rzGrid'))return;rzStop();rzStartClock();await Promise.allSettled([rzPoll(true),rzSleeper(true)]);rzScheduleNFL();rzScheduleSleeper()}
 async function rzFetch(url,timeout=8000){const c=new AbortController(),kill=setTimeout(()=>c.abort(),timeout);
@@ -3076,8 +3107,8 @@ function rzLogScoreChanges(data){for(const g of data){const sides=rzSides(g),sco
 /* The scoreboard total usually changes a poll or two before the scoring play text arrives; attach it when it does. */
 function rzEnrichHighlights(){const now=Date.now();for(const h of rzHighlights){if(h.text||now-h.at>90000)continue;const g=rzGames.find(x=>String(x.id)===h.id);if(!g||rzPlayInvalidated(g))continue;
  const text=rzPlayText(g),need=h.delta>=6?/touchdown|\btd\b/i:h.delta===3?/field goal/i:/touchdown|\btd\b|field goal|safety|extra point|\bpat\b|(?:two|2)[ -]?point/i;if(!text||!need.test(text))continue;h.text=text;h.hits=rzLeagueHits(g,text)}}
-async function rzFocusedFetch(force=false){const id=rzFocused,g=rzGames.find(x=>x.id===id);if(!id||!g||rzDetailFetching||(!rzIsLive(g)&&!force))return;
- const cached=rzDetailCache[id];if(!force&&cached&&Date.now()-(cached._rzFetched||0)<(rzIsLive(g)?3500:15000))return;rzDetailFetching=true;
+async function rzFocusedFetch(force=false){const id=rzFocused,g=rzGames.find(x=>x.id===id),cached=id?rzDetailCache[id]:null;if(!id||!g||rzDetailFetching||(!rzIsLive(g)&&!force&&(cached||!rzState(g).includes('FINAL'))))return;
+if(!force&&cached&&Date.now()-(cached._rzFetched||0)<(rzIsLive(g)?3500:15000))return;rzDetailFetching=true;
  try{const d=await rzFetch(RZ_ESPN+'/summary?event='+encodeURIComponent(id),9000);if(rzFocused!==id)return;d._rzFetched=Date.now();rzDetailCache[id]=d;rzRender()}
  catch(e){if(!cached){el('rzFocus').insertAdjacentHTML('beforeend','<p class="rzsmall">Play feed unavailable — game summary blocked or delayed. Scoreboard may still work.</p>')}}finally{rzDetailFetching=false}
 }
@@ -3095,7 +3126,7 @@ async function rzFillMissingPositions(){
   }catch(e){/* Scoreboard stays usable without detailed feed. */}}));if(hqActive==='games')rzRender();}
  finally{rzFallbackBusy=false}
 }
-async function rzPoll(force=false){if(rzFetching||document.hidden&& !force||hqActive!=='games'&& !force)return;
+async function rzPoll(force=false){if(rzFetching||document.hidden&& !force&& !rzBgActive()||hqActive!=='games'&& !force)return;
  if(!force&&Date.now()-rzLastNFL<(rzHasLiveGames()?RZ_NFL_LIVE_MS-500:15000))return;
  const requestedWeek=rzWeek;rzFetching=true;
  try{const d=await rzFetch(RZ_ESPN+'/scoreboard?season=2026&seasontype=2&week='+requestedWeek+'&limit=100',8000);
@@ -3108,7 +3139,7 @@ async function rzPoll(force=false){if(rzFetching||document.hidden&& !force||hqAc
  if(!rzGames.length)el('rzGrid').innerHTML='<div class="rzdetail"><strong>Could not reach the independent NFL feed</strong><p class="rzsmall">The provider may block browser requests or be temporarily unavailable. Try Refresh now. Sleeper fantasy scores remain available separately.</p></div>';
  }finally{rzFetching=false;if(requestedWeek!==rzWeek&&hqActive==='games'&&!document.hidden)setTimeout(()=>rzPoll(true),0)}
 }
-async function rzSleeper(force=false){if(rzSleeperFetching||hqActive!=='games'||document.hidden||source!=='sleeper'||busy)return;
+async function rzSleeper(force=false){if(rzSleeperFetching||hqActive!=='games'||(document.hidden&&!rzBgActive())||source!=='sleeper'||busy)return;
  const id=el('leagueId').value.trim(),w=rzWeek;if(!/^\d+$/.test(id))return;if(!force&&Date.now()-rzLastSleeper<(rzLiveMode()?RZ_SLEEPER_LIVE_MS-1000:24000))return;
  rzSleeperFetching=true;
  try{const data=await rzFetch('https://api.sleeper.app/v1/league/'+id+'/matchups/'+w,8000);if(w!==rzWeek||id!==el('leagueId').value.trim()||!Array.isArray(data))return;
@@ -3169,6 +3200,16 @@ function rzFieldHtml(g){const s=rzSituation(g),off=rzOffense(g,s),side=rzSides(g
  const vars=ball!=null?' style="--ball:'+fmt(ball,2)+'%'+(first!=null?';--first:'+fmt(first,2)+'%':'')+'" data-ball="'+fmt(ball,2)+'"':'';
  return '<div class="rz-css-field'+(loc&&loc.percent>=80?' in-red':'')+(touchdown?' td':'')+'" role="img" aria-label="'+safe(locinfo)+'"'+vars+'><div aria-hidden="true">'+zone(leftC,'rz-endzone-left',off||away)+zone(rightC,'rz-endzone-right',opp||home)+'<div class="rz-redzone-band"></div><i class="rz-hash-row rz-hash-top"></i><i class="rz-hash-row rz-hash-bottom"></i>'+fieldLines+yardNumbers+path+(ball!=null&&first!=null&&first>ball?'<i class="rz-togo"></i>':'')+(ball!=null?'<i class="rz-los-line"></i>':'')+(first!=null?'<i class="rz-first-line"></i>':'')+(ball!=null&&ball<86?'<i class="rz-dir">›››</i>':'')+(ball!=null?'<i class="rz-css-ball"></i>':'')+state+'</div></div>';
 }
+/* ---------- ESPN highlight clips for the featured game ---------- */
+function rzSafeUrl(u){try{const x=new URL(String(u||''));return x.protocol==='https:'&&/(^|\.)(espn\.com|espncdn\.com|espn\.go\.com)$/i.test(x.hostname)?x.href:''}catch(_){return ''}}
+function rzClips(g){const vids=rzDetailCache[g?.id]?.videos;if(!Array.isArray(vids))return [];return vids.map(v=>({id:String(v?.id||''),title:String(v?.headline||v?.title||'Highlight'),thumb:rzSafeUrl(v?.thumbnail||v?.images?.[0]?.url),mp4:rzSafeUrl(v?.links?.source?.HD?.href||v?.links?.source?.href||v?.links?.mobile?.source?.href),web:rzSafeUrl(v?.links?.web?.href),dur:Number(v?.duration)||0})).filter(v=>v.mp4||v.web).slice(0,8)}
+function rzHighlightsHtml(g){const clips=rzClips(g);if(!clips.length)return '';const dur=s_=>s_?Math.floor(s_/60)+':'+String(Math.round(s_%60)).padStart(2,'0'):'';
+ return '<section class="rz-hl"><div class="rz-hl-head"><h4>🎬 Highlights</h4><span>ESPN · '+clips.length+' clip'+(clips.length===1?'':'s')+'</span></div><div class="rz-hl-list">'+clips.map((c,i)=>'<button type="button" class="rz-hl-clip" data-clip="'+i+'" data-game="'+safe(g.id)+'"><span class="rz-hl-thumb">'+(c.thumb?'<img src="'+safe(c.thumb)+'" alt="" loading="lazy" onerror="this.remove()">':'')+'<i>▶</i>'+(c.dur?'<em>'+dur(c.dur)+'</em>':'')+'</span><span class="rz-hl-title">'+safe(c.title)+'</span></button>').join('')+'</div></section>'}
+function rzPlayClip(gameId,i){const c=rzClips(rzGames.find(x=>String(x.id)===String(gameId))||{id:gameId})[Number(i)];if(!c)return;
+ if(!c.mp4){if(c.web)window.open(c.web,'_blank','noopener');return}
+ let ov=el('rzClipOverlay');if(!ov){document.body.insertAdjacentHTML('beforeend','<div id="rzClipOverlay" class="rz-clip-overlay" role="dialog" aria-modal="true" aria-label="Highlight"><div class="rz-clip-box"><div class="rz-clip-head"><b id="rzClipTitle"></b><button type="button" id="rzClipClose" aria-label="Close">×</button></div><video id="rzClipVideo" controls playsinline></video><a id="rzClipWeb" target="_blank" rel="noopener noreferrer">Open on ESPN ↗</a></div></div>');ov=el('rzClipOverlay');
+  const close=()=>{const v=el('rzClipVideo');v.pause();v.removeAttribute('src');v.load();ov.hidden=true};el('rzClipClose').addEventListener('click',close);ov.addEventListener('click',e=>{if(e.target===ov)close()});document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!ov.hidden)close()})}
+ el('rzClipTitle').textContent=c.title;const v=el('rzClipVideo');v.src=c.mp4;const a=el('rzClipWeb');a.hidden=!c.web;if(c.web)a.href=c.web;ov.hidden=false;v.play().catch(()=>{})}
 /* ---------- Drive tracker ---------- */
 let rzDriveTop=new Map();
 /* "KC 25" -> yards from the offense's own goal line (0-100). */
@@ -3232,7 +3273,7 @@ function rzRenderFocus(){const root=el('rzFocus');if(!root)return;const mountedD
  const sides=rzSides(g),s=rzSituation(g),off=rzOffense(g,s),live=rzIsLive(g),final=rzState(g).includes('FINAL'),played=live||final,red=rzIsRedZone(g,s),scored=rzScoreUpdate(g,s),ended=rzDriveEnded(g,s);
  const nflstatus=live?rzPeriod(g):(final?'FINAL':rzKickoff(g));const dd=String(s?.downDistanceText||s?.shortDownDistanceText||'');const txt=rzPlayText(g);
  const involved=rzStarterCount(g);
- const drive=rzDriveHtml(g,s,off,live,final,scored,ended);
+ const drive=rzDriveHtml(g,s,off,live,final,scored,ended),hl=rzHighlightsHtml(g);
  const scoreLine=(c,klass,isHome)=>{const tc=rzTeamColor(c),has=live&&!scored&&!ended&&off&&off===rzAbbr(c),rawTo=isHome?s?.homeTimeouts:s?.awayTimeouts,to=rawTo==null?NaN:Number(rawTo),rec=String(c?.records?.[0]?.summary||'');
   const pips=live&&Number.isFinite(to)&&to>=0&&to<=3?'<span class="rz-timeouts" title="'+to+' timeout'+(to===1?'':'s')+' left">'+[0,1,2].map(k=>'<i class="'+(k<to?'on':'')+'"></i>').join('')+'</span>':'';
   return '<div class="rz-team-side '+klass+(tc?' has-tc':'')+'"'+(tc?' style="--tc:'+tc+'"':'')+'><div class="rz-team-logo">'+rzLogo(c)+'</div><div class="rz-team-numbers"><span class="rz-main-pts">'+(played?safe(c?.score??'—'):'—')+'</span><span class="rz-main-abbr">'+safe(rzAbbr(c))+(has?' <span class="rz-poss" title="In possession">🏈</span>':'')+'</span>'+(rec?'<span class="rz-rec">'+safe(rec)+'</span>':'')+pips+'</div></div>'};
@@ -3240,13 +3281,13 @@ function rzRenderFocus(){const root=el('rzFocus');if(!root)return;const mountedD
  const quarters=c=>(Array.isArray(c?.linescores)?c.linescores:[]).map(x=>x?.displayValue??x?.value??''),qa=quarters(sides.away),qh=quarters(sides.home),nq=Math.max(qa.length,qh.length);
  const hwp=live?rzWinProb(g):null,wpHtml=hwp==null?'':(()=>{const a=Math.round((1-hwp)*100),h=100-a,ac=rzTeamColor(sides.away)||'#ff8a96',hc=rzTeamColor(sides.home)||'#24e7c5';return '<div class="rz-wp" title="ESPN live win probability"><span><b>'+a+'%</b> '+safe(rzAbbr(sides.away))+'</span><div class="rz-wp-track"><i style="width:'+a+'%;background:'+ac+'"></i><i style="width:'+h+'%;background:'+hc+'"></i></div><span>'+safe(rzAbbr(sides.home))+' <b>'+h+'%</b></span><small>NFL win probability · ESPN</small></div>'})();
  const lines=played&&nq?'<div class="rz-linescore"><table><thead><tr><th></th>'+Array.from({length:nq},(_,k)=>'<th>'+(k<4?'Q'+(k+1):k===4&&nq===5?'OT':'OT'+(k-3))+'</th>').join('')+'<th>T</th></tr></thead><tbody>'+[[sides.away,qa],[sides.home,qh]].map(([c,q])=>'<tr><th>'+safe(rzAbbr(c))+'</th>'+Array.from({length:nq},(_,k)=>'<td>'+safe(q[k]??'')+'</td>').join('')+'<td class="tot">'+safe(c?.score??'')+'</td></tr>').join('')+'</tbody></table></div>':'';
- const field=rzFieldHtml(g),focusKey=JSON.stringify([String(g.id),rzState(g),Number((g.status||g.competitions?.[0]?.status||{}).period)||0,sides.away?.score,sides.home?.score,live,final,red,scored,ended,dd,off,involved,txt,drive.key,field,awayHtml,homeHtml,lines,wpHtml]);
+ const field=rzFieldHtml(g),focusKey=JSON.stringify([String(g.id),rzState(g),Number((g.status||g.competitions?.[0]?.status||{}).period)||0,sides.away?.score,sides.home?.score,live,final,red,scored,ended,dd,off,involved,txt,drive.key,hl,field,awayHtml,homeHtml,lines,wpHtml]);
  const badge=el('rzFeaturedBadge');if(badge)badge.textContent=scored&&live?'⚡ SCORE UPDATE':red&&live?'🔴 RED ZONE':live?'● LIVE GAME':final?'FINAL':'UPCOMING';
  if(rzFocusRenderKey===focusKey&&root.dataset.rzFocusGame===String(g.id)){rzTickClocks(root);rzRenderImpact();return}
  rzFocusRenderKey=focusKey;root.dataset.rzFocusGame=String(g.id);
  root.innerHTML='<div class="rz-match-score"'+(boardVars?' style="'+boardVars+'"':'')+'>'+awayHtml+'<div class="rz-center-clock"><div class="quarter">'+safe(live?'LIVE':final?'FINAL':'KICKOFF')+'</div><div class="time">'+safe(nflstatus)+'</div></div>'+homeHtml+'</div>'+wpHtml+lines+
  '<div class="rz-field-container">'+field+'</div><div class="rz-statrow"><b>'+safe(scored?'Points scored · awaiting next possession':ended?'Drive complete · awaiting next possession':live?(dd||'Down & distance pending'):final?'Full time':'Kickoff '+rzKickoff(g))+'</b><span>'+safe(scored||ended?'Possession resetting':off?off+' in possession':live?'Possession pending':final?'Game complete':'Not started')+'</span><span>'+safe(involved?involved+' Sunday Funday starters':'No identified league starters')+'</span></div>'+
- drive.html;
+ drive.html+hl;
  const clock=root.querySelector('.rz-center-clock .time');if(clock&&live)clock.dataset.rzClockGame=String(g.id);const more=root.querySelector('details[data-rz-drive-game]');if(more)more.addEventListener('toggle',()=>rzDriveOpen.set(String(g.id),more.open));rzTickClocks(root);
  const lastTop=rzDriveTop.get(String(g.id));if(drive.topId&&lastTop!==undefined&&lastTop!==drive.topId)root.querySelector('.rz-dp.latest')?.classList.add('fresh');rzDriveTop.set(String(g.id),drive.topId);
  // Glide the ball from its previous spot on the same possession, and pop a score that has just gone up.
@@ -3352,7 +3393,7 @@ function rzRenderFantasy(){
   const n=Math.max(a.rows.length,b.rows.length),lines=Array.from({length:n},(_,i)=>{const ra=a.rows[i],rb=b.rows[i];return '<div class="fan-line">'+(ra?rzFanCell(ra,false):'<div></div>')+'<span class="fan-slot" title="'+safe((ra||rb)?.slot||'')+'">'+safe(rzSlotLabel((ra||rb)?.slot))+'</span>'+(rb?rzFanCell(rb,true):'<div></div>')+'</div>'}).join('');
   const sumPts=m=>m.rows.reduce((s,r)=>s+(r.pts||0),0);
   const open=rzFanClosed.has(key)?'':' open';
-  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div>'+fxScoreFeedHtml(w,a.t,b.t,key)+'<div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSwingHtml(w,a.t,b.t)+
+  return '<article class="fan-card'+(live?' is-live':'')+'" data-key="'+safe(key)+'"><div class="fan-status">'+state+'<button class="fan-share" type="button" data-share="'+safe(key)+'" title="Share this matchup as an image">📸 Share</button>'+(lead&&!done&&started?'<span class="fan-margin">'+safe((lead>0?a:b).t.name)+' by '+fmt(margin,1)+'</span>':'')+'</div>'+fxScoreFeedHtml(w,a.t,b.t,key)+'<div class="fan-teams">'+side(a,false,lead>0,odds.projA)+'<div class="fan-mid">vs</div>'+side(b,true,lead<0,odds.projB)+'</div>'+prob+fxSweatHtml(w,a,b,done,started,odds)+fxSwingHtml(w,a.t,b.t)+
    '<details class="fan-lineups" data-key="'+safe(key)+'"'+open+'><summary><span>Starting lineups</span><small>tap to '+(open?'hide':'show')+'</small></summary><div class="fan-lines">'+lines+'<div class="fan-line total"><div class="fan-cell"><div class="fan-who"><b>Starters total</b></div><div class="fan-pts">'+fmt(sumPts(a),1)+'</div></div><span class="fan-slot"></span><div class="fan-cell right"><div class="fan-pts">'+fmt(sumPts(b),1)+'</div><div class="fan-who"><b>Starters total</b></div></div></div></div></details></article>'});
  const html='<div class="fan-grid">'+cards.join('')+'</div>';
  if(summary)summary.innerHTML='<b>Week '+w+'</b> · '+(done?'final scores':liveGames?liveGames+' matchup'+(liveGames===1?'':'s')+' live':'pregame')+(totalPts?' · '+fmt(totalPts,1)+' league points':'');
@@ -3439,7 +3480,16 @@ function renderV10(){v10RenderTicker();v10RenderPlayoff();v10RenderWins();v10Ren
  * ==========================================================================*/
 const fxByeCache=new WeakMap();
 function fxByeFor(w){let m=fxByeCache.get(rosters);if(!m){m=new Map();fxByeCache.set(rosters,m)}const k=w+'|'+source+'|'+(leagueInfo?.league_id||'');if(!m.has(k))m.set(k,teams.map(t=>byeImpact(t,w).pts));return m.get(k)}
-const FX_SOUND_KEY='sf_v11_sound';
+const FX_SOUND_KEY='sf_v11_sound',FX_BG_KEY='sf_v11_bgalerts';
+let fxBgAlerts=read(FX_BG_KEY)===true;
+function fxNotify(icon,title,detail,kind){try{const n=new Notification(icon+' '+title,{body:detail||'',tag:'sf-'+title,silent:!fxSound});n.onclick=()=>{window.focus();n.close()};setTimeout(()=>n.close(),15000)}catch(_){}}
+function fxBgLabel(){const b=el('fxBgBtn');if(!b)return;const ok=fxBgAlerts&&typeof Notification!=='undefined'&&Notification.permission==='granted';b.textContent=ok?'📣 Alerts on':'📣 Alerts';b.classList.toggle('on',ok);b.setAttribute('aria-pressed',String(ok))}
+async function fxToggleBg(){
+ if(typeof Notification==='undefined'||!window.isSecureContext){showCopyToast('This browser can’t show notifications here');return}
+ if(fxBgAlerts){fxBgAlerts=false;store(FX_BG_KEY,false);fxBgLabel();showCopyToast('Background alerts off');return}
+ let perm=Notification.permission;if(perm==='default'){try{perm=await Notification.requestPermission()}catch(_){perm='denied'}}
+ if(perm!=='granted'){showCopyToast('Notifications are blocked — allow them in your browser’s site settings');fxBgLabel();return}
+ fxBgAlerts=true;store(FX_BG_KEY,true);fxBgLabel();showCopyToast('Alerts on — keep RedZone open in a background tab');fxNotify('📣','Sunday Funday alerts are on','You’ll be told about league touchdowns, lead changes and comebacks while this tab is in the background.','')}
 let fxWiOpen=new Set(),fxWiTouched=new Set(),fxSound=read(FX_SOUND_KEY)===true,fxAudio=null,fxAlerted=new Set(),fxSwing={},fxSwingLeague='',fxSwingSavedAt=0,fxPicks={},fxWhatIfTimer=null,fxWhatIfToken=0,fxClinchKey='',fxOddsKey='',fxOddsSeries=null,fxCountdownTimer=null,fxAwardsWeek=null;
 function fxLeague(){return String(leagueInfo?.league_id||el('leagueId')?.value||'')}
 function fxPct(p){return Number.isFinite(p)?(p>.995&&p<1?'>99':p<.005&&p>0?'<1':Math.round(p*100))+'%':'—'}
@@ -3449,7 +3499,8 @@ function fxTeamById(id){return teams.find(t=>Number(t.id)===Number(id))||null}
 function fxChime(kind){if(!fxSound)return;try{fxAudio=fxAudio||new (window.AudioContext||window.webkitAudioContext)();const ctx=fxAudio,now=ctx.currentTime,notes=kind==='td'?[523,659,784,1047]:kind==='bad'?[392,330]:[587,880];
  notes.forEach((hz,i)=>{const o=ctx.createOscillator(),g=ctx.createGain();o.type='triangle';o.frequency.value=hz;g.gain.setValueAtTime(0,now+i*.12);g.gain.linearRampToValueAtTime(.18,now+i*.12+.02);g.gain.exponentialRampToValueAtTime(.001,now+i*.12+.35);o.connect(g).connect(ctx.destination);o.start(now+i*.12);o.stop(now+i*.12+.4)})}catch(_){}}
 function fxToast(icon,title,detail,kind=''){
- const box=el('fxToasts');if(!box||document.hidden)return;const t=document.createElement('div');t.className='fx-toast '+kind;t.setAttribute('role','status');
+ if(document.hidden){if(rzBgActive())fxNotify(icon,title,detail,kind);return}
+ const box=el('fxToasts');if(!box)return;const t=document.createElement('div');t.className='fx-toast '+kind;t.setAttribute('role','status');
  t.innerHTML='<div class="fx-toast-ico">'+safe(icon)+'</div><div><b>'+safe(title)+'</b>'+(detail?'<small>'+safe(detail)+'</small>':'')+'</div><button type="button" aria-label="Dismiss">×</button>';
  t.querySelector('button').addEventListener('click',()=>t.remove());box.prepend(t);while(box.children.length>4)box.lastChild.remove();setTimeout(()=>t.classList.add('out'),8500);setTimeout(()=>t.remove(),9200);fxChime(kind)}
 function fxSoundLabel(){const b=el('fxSoundBtn');if(!b)return;b.textContent=fxSound?'🔔 Sound':'🔕 Sound';b.classList.toggle('on',fxSound);b.setAttribute('aria-pressed',String(fxSound))}
@@ -3482,6 +3533,20 @@ function fxSwingHtml(w,ta,tb){
  return '<div class="fx-swing"><div class="fx-swing-head"><span>Win-chance swings</span><span>'+(flips?flips+' lead change'+(flips===1?'':'s')+' · ':'')+'since '+new Date(t0).toLocaleTimeString('en-GB',{hour:'2-digit',minute:'2-digit'})+'</span></div><svg viewBox="0 0 '+W+' '+H+'" preserveAspectRatio="none" role="img" aria-label="'+safe(ta.name)+' win chance from '+fxPct(pts[0].p)+' to '+fxPct(now.p)+', high '+fxPct(hi.p)+', low '+fxPct(lo.p)+'"><line x1="0" x2="'+W+'" y1="'+Y(.5)+'" y2="'+Y(.5)+'" class="fx-sw-mid"/><polygon class="fx-sw-area" points="'+X(t0)+','+Y(.5)+' '+line+' '+X(t1)+','+Y(.5)+'"/><polyline class="fx-sw-line" points="'+line+'"/>'+marks.join('')+'<circle cx="'+X(now.t)+'" cy="'+Y(now.p)+'" r="4.5" class="fx-sw-now"/></svg><div class="fx-swing-foot"><span>▲ '+safe(ta.name)+'</span><span>'+safe(tb.name)+' ▼</span></div></div>'}
 function fxHighlightAlerts(){for(const h of rzHighlights){if(!h.text||!h.hits?.length)continue;const k='hl|'+h.id+'|'+h.at;if(fxAlerted.has(k))continue;fxAlerted.add(k);
  const td=/touchdown/i.test(h.kind||h.text);fxToast(td?'🔥':'⚡',(td?'TOUCHDOWN — ':'Score — ')+h.hits.map(x=>x.name).join(' & '),h.hits.map(x=>x.team).join(', ')+' · '+(h.event||''),td?'td':'')}}
+
+/* ---------- "what they need" sweat panel ---------- */
+function fxRemaining(m,w){return m.rows.map(r=>{const st=r.st,proj=Number(r.proj)||0,pts=Number(r.pts)||0;let rem;
+  if(r.p.empty)rem=0;else if(st.k==='done')rem=0;else if(st.k==='todo')rem=proj;else if(st.k==='live'){const g=rzNFLGameForTeam(r.p.nfl),prog=g?rzGameProgress(g):0;rem=proj*(1-(prog||0))}else rem=Math.max(0,proj-pts);
+  return {name:r.p.name,rem:Math.max(0,rem),live:st.k==='live',todo:st.k==='todo'}}).filter(x=>x.rem>=.3||x.live||x.todo).sort((x,y)=>y.rem-x.rem)}
+function fxSweatHtml(w,a,b,done,started,odds){
+ if(done||!started||w<=completedWeeks)return '';const ra=fxRemaining(a,w),rb=fxRemaining(b,w),diff=a.score-b.score;if(!ra.length&&!rb.length)return '';
+ const sum=xs=>xs.reduce((t,x)=>t+x.rem,0),list=xs=>xs.slice(0,3).map(x=>safe(x.name)+' <i>≈'+fmt(x.rem,1)+'</i>').join(', ')+(xs.length>3?' +'+(xs.length-3):'');
+ const lead=diff>=0?a:b,trail=diff>=0?b:a,lr=diff>=0?ra:rb,tr=diff>=0?rb:ra,gap=Math.abs(diff);
+ if(gap>=.05&&!tr.length)return '<div class="fan-sweat locked">🔒 <b>'+safe(lead.t.name)+'</b> have this locked — '+safe(trail.t.name)+' have nobody left to play.</div>';
+ // Use the card's own projected finals when available so the numbers match.
+ const pA=Number.isFinite(odds?.projA)?odds.projA:a.score+sum(ra),pB=Number.isFinite(odds?.projB)?odds.projB:b.score+sum(rb),finT=diff>=0?pB:pA,finL=diff>=0?pA:pB,margin=finT-finL;
+ const head=(gap<.05?'<b>All square</b>':'🥵 <b>'+safe(trail.t.name)+'</b> trail by <b class="need">'+fmt(gap,1)+'</b>')+' · projected <b>'+fmt(finT,1)+'</b>–<b>'+fmt(finL,1)+'</b> '+(Math.abs(margin)<.05?'<span class="bad">too close to call</span>':margin>0?'<span class="ok">'+(gap<.05?safe(trail.t.name)+' edge it by ':'overtake by ')+fmt(margin,1)+'</span>':'<span class="bad">'+(gap<.05?safe(lead.t.name)+' edge it by ':'fall short by ')+fmt(-margin,1)+'</span>');
+ return '<div class="fan-sweat">'+head+'<div class="fan-sweat-left"><span><em>'+safe(trail.t.name)+' left:</em> '+(tr.length?list(tr):'nobody')+'</span><span><em>'+safe(lead.t.name)+' left:</em> '+(lr.length?list(lr)+' (≈'+fmt(sum(lr),1)+')':'nobody')+'</span></div></div>'}
 
 /* ---------- matchup scoring feed ----------
  * Sleeper has no public play-by-play of fantasy points, so build one: compare each
@@ -3743,6 +3808,7 @@ function fxInit(){
  el('fxTradeBtn')?.addEventListener('click',fxCheckTrade);
  el('fxWhatIf')?.addEventListener('click',e=>{const b=e.target.closest('[data-pick]');if(!b)return;const k=b.dataset.pick,t=Number(b.dataset.team);if(fxPicks[k]===t)delete fxPicks[k];else fxPicks[k]=t;fxRenderWhatIf()});
  el('rzFantasyBoard')?.addEventListener('click',e=>{const lg=e.target.closest('[data-log]');if(lg){e.preventDefault();const k=lg.dataset.log;if(fxLogOpen.has(k))fxLogOpen.delete(k);else fxLogOpen.add(k);rzFanKey='';rzRenderFantasy();return}const b=e.target.closest('[data-share]');if(b){e.preventDefault();fxShareMatchup(b.dataset.share)}});
+ el('fxBgBtn')?.addEventListener('click',fxToggleBg);el('rzFocus')?.addEventListener('click',e=>{const b=e.target.closest('[data-clip]');if(b)rzPlayClip(b.dataset.game,b.dataset.clip)});fxBgLabel();
  el('fxSoundBtn')?.addEventListener('click',()=>{fxSound=!fxSound;store(FX_SOUND_KEY,fxSound);fxSoundLabel();if(fxSound){fxChime('')}});fxSoundLabel();
  const oldTab=hqTab;hqTab=function(tab){oldTab(tab);fxOnTab(tab)};
  sfWideSetup();
