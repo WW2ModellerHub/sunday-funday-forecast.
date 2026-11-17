@@ -1553,6 +1553,24 @@ td { padding:7px 6px; }
 .fx-need{display:block;margin-top:5px;font-size:11px;font-weight:800;color:#ffd98a;line-height:1.35}
 .fx-need.in{color:#5ff7cf}.fx-need.out,.fx-need.long{color:#ff9daa}
 .fc-name .fx-need{margin-top:2px;font-size:10.5px}
+/* run-in difficulty */
+.fx-ri-sum{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;margin-bottom:10px;font-size:12px;color:#b9d3e4}
+.fx-ri-key{display:inline-flex;align-items:center;gap:5px;color:#7f9db3;font-size:11px}.fx-ri-key i{display:inline-block;width:10px;height:10px;border-radius:3px;margin-left:6px}
+.fx-ri-opp.easy{background:#0f3d37}.fx-ri-opp.mid{background:#3b2f10}.fx-ri-opp.hard{background:#3d1520}
+.fx-ri-key i.easy{background:#24e7c5}.fx-ri-key i.mid{background:#ffbd4a}.fx-ri-key i.hard{background:#ff8a9a}
+.fx-ri{display:grid;gap:6px}
+.fx-ri-row{display:grid;grid-template-columns:28px minmax(120px,1fr) minmax(0,3fr) 130px;gap:12px;align-items:center;padding:8px 10px;border-radius:12px;background:#0c2235;border:1px solid #21455f}
+.fx-ri-rank{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:#16324a;font-weight:1000;font-size:12px}
+.fx-ri-row:first-child .fx-ri-rank{background:#24e7c5;color:#002c2b}.fx-ri-row:last-child .fx-ri-rank{background:#ff8a9a;color:#2b0710}
+.fx-ri-team{min-width:0}.fx-ri-team b{display:block;font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.fx-ri-team small{font-size:10px;color:#7f9db3}
+.fx-ri-opps{display:flex;flex-wrap:wrap;gap:4px}
+.fx-ri-opp{display:inline-flex;align-items:center;gap:4px;max-width:150px;padding:3px 7px;border-radius:7px;font-size:11px;font-weight:800;color:#e3eef6;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;border:1px solid #ffffff14}
+.fx-ri-opp.easy{color:#9ff5df}.fx-ri-opp.mid{color:#ffe3a6}.fx-ri-opp.hard{color:#ffc2cb}
+.fx-ri-opp em{font-style:normal;font-size:9px;opacity:.7}
+.fx-ri-avg{text-align:right;font-variant-numeric:tabular-nums}.fx-ri-avg b{font-size:15px}.fx-ri-avg small{display:block;font-size:10px;color:#7f9db3}
+.fx-ri-bar{height:5px;margin-top:4px;border-radius:3px;background:#16324a;overflow:hidden}.fx-ri-bar i{display:block;height:100%}
+.fx-ri-bar i.easy{background:#24e7c5}.fx-ri-bar i.mid{background:#ffbd4a}.fx-ri-bar i.hard{background:#ff8a9a}
+@media(max-width:700px){.fx-ri-row{grid-template-columns:26px minmax(0,1fr) 96px;gap:6px 10px}.fx-ri-opps{grid-column:1/-1;grid-row:2}}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -2605,6 +2623,11 @@ function tableData(target){
   const squadActive=model.squadSignal?.ready&&el('modelMode')?.value!=='legacy';
   teams.map((t,i)=>({t,i,p:model.playoff[i]/model.sims,rank:model.projReg[i]})).sort((a,b)=>a.rank-b.rank)
    .forEach(x=>{const adjustment=Number(model.teamEstimates?.[x.i]?.squadAdjustment)||0;rows.push([x.t.name,x.t.w+'–'+x.t.l,ord(x.rank),squadActive?(adjustment>=0?'+':'')+fmt(adjustment,1)+' pts/wk':'Unavailable',hqPct(x.p)]);});
+  return rows;
+ }
+ if(target==='fxRunIn'){
+  const rows=[['Rank','Team','Remaining opponents','Opponents avg pts/wk','Expected wins']];
+  for(const r of e.querySelectorAll('.fx-ri-row'))rows.push([tidyCell(r.querySelector('.fx-ri-rank')?.textContent),tidyCell(r.querySelector('.fx-ri-team b')?.textContent),[...r.querySelectorAll('.fx-ri-opp')].map(o=>tidyCell(o.textContent)).join(', '),tidyCell(r.querySelector('.fx-ri-avg b')?.textContent),tidyCell(r.querySelector('.fx-ri-team small')?.dataset.ew||'')]);
   return rows;
  }
  if(target==='rzFantasyBoard'){
@@ -3760,6 +3783,25 @@ function fxCheckTrade(){
   const ra_=row(A,ia,before[0],after[0]),rb_=row(B,ib,before[1],after[1]),win=Math.abs(ra_.d-rb_.d)<.01?null:ra_.d>rb_.d?A:B;
   out.innerHTML='<div class="fx-trade-verdict">'+(win?'🏆 <b>'+safe(win.name)+'</b> win this trade':'🤝 Pretty even trade')+'</div><div class="fx-trade-grid">'+ra_.html+rb_.html+'</div><p class="fx-note">Lineups valued with '+safe(before[0].how)+'. Odds use the season model with the same '+Math.round(weight*100)+'% current-squad weighting, so they move conservatively.</p>'}catch(e){out.innerHTML='<p class="v10-muted">Trade check failed: '+safe(e.message)+'</p>'}},30)}
 
+/* ---------- run-in difficulty ----------
+ * Rate each team's remaining schedule by its opponents' modelled strength
+ * (points per week). "Neutral" expected wins is how an average team would fare
+ * against the same opponents, so it measures the schedule, not the team. */
+function fxRunIn(){
+ if(!model?.strength)return null;const nameIdx=Object.fromEntries(teams.map((t,i)=>[t.name,i])),games=teams.map(()=>[]);
+ for(let w=completedWeeks+1;w<=regularWeeks;w++){const sc=scheduleFor(w);if(!validateFixtures(sc.games))continue;for(const [a,b] of sc.games){const ia=nameIdx[a],ib=nameIdx[b];if(ia==null||ib==null)continue;games[ia].push({w,o:ib});games[ib].push({w,o:ia})}}
+ const mu=model.strength,sd=model.sigma,avgMu=mean(mu),avgSd=mean(sd),win=(m1,s1,j)=>normalCDF((m1-mu[j])/Math.max(1,Math.hypot(s1,sd[j])));
+ const rows=teams.map((t,i)=>{const g=games[i];if(!g.length)return null;return {t,i,g,oppAvg:mean(g.map(x=>mu[x.o])),neutral:g.reduce((s_,x)=>s_+win(avgMu,avgSd,x.o),0),own:g.reduce((s_,x)=>s_+win(mu[i],sd[i],x.o),0)}}).filter(Boolean);
+ return rows.sort((a,b)=>a.oppAvg-b.oppAvg||a.t.name.localeCompare(b.t.name))}
+function fxRenderRunIn(){
+ const root=el('fxRunIn');if(!root)return;const rows=model?fxRunIn():null;if(!rows||!rows.length){root.innerHTML='<p class="v10-muted">'+(model?'No regular-season games left to rate.':'Run the forecast to rate each team’s run-in.')+'</p>';return}
+ const sorted=[...model.strength].sort((a,b)=>a-b),lo=sorted[Math.floor(sorted.length/3)],hi=sorted[Math.floor(sorted.length*2/3)],tier=j=>model.strength[j]>=hi?'hard':model.strength[j]<=lo?'easy':'mid';
+ const minA=rows[0].oppAvg,maxA=rows.at(-1).oppAvg,span=Math.max(.1,maxA-minA),avg=mean(model.strength),easy=rows[0],hard=rows.at(-1);
+ root.innerHTML='<div class="fx-ri-sum"><span>✅ Easiest: <b>'+safe(easy.t.name)+'</b> (opponents avg '+fmt(easy.oppAvg,1)+')</span><span>🔥 Toughest: <b>'+safe(hard.t.name)+'</b> (opponents avg '+fmt(hard.oppAvg,1)+')</span><span class="fx-ri-key"><i class="easy"></i>weaker <i class="mid"></i>average <i class="hard"></i>stronger opponent</span></div>'+
+  '<div class="fx-ri">'+rows.map((r,n)=>{const d=(r.oppAvg-minA)/span;
+   return '<div class="fx-ri-row"><span class="fx-ri-rank">'+(n+1)+'</span><div class="fx-ri-team"><b>'+safe(r.t.name)+'</b><small data-ew="'+fmt(r.own,1)+' of '+r.g.length+'">expected '+fmt(r.own,1)+' wins of '+r.g.length+'</small></div><div class="fx-ri-opps">'+r.g.map(x=>'<span class="fx-ri-opp '+tier(x.o)+'" title="Week '+x.w+': '+safe(teams[x.o].name)+' · '+fmt(model.strength[x.o],1)+' pts/wk"><em>W'+x.w+'</em>'+safe(teams[x.o].name)+'</span>').join('')+'</div><div class="fx-ri-avg"><b>'+fmt(r.oppAvg,1)+'</b><small>'+(r.oppAvg>=avg?'+':'−')+fmt(Math.abs(r.oppAvg-avg),1)+' vs avg</small><div class="fx-ri-bar"><i style="width:'+fmt(8+d*92,1)+'%" class="'+(d<.34?'easy':d>.66?'hard':'mid')+'"></i></div></div></div>'}).join('')+'</div>'+
+  '<p class="fx-note">Opponent strength is the season model’s points per week, including the current-squad blend'+(model.liveTeams?' and live scores':'')+'. Colours split the league into thirds. Expected wins use each team’s own strength against those opponents.</p>'}
+
 /* ---------- best and worst possible finish ---------- */
 function fxSpread(counts,total){let lo=-1,hi=-1,peak=0,run=0,p10=-1,p90=-1;counts.forEach((c,k)=>{if(c>0){if(lo<0)lo=k;hi=k}if(c>counts[peak])peak=k});
  for(let k=0;k<counts.length;k++){run+=counts[k];if(p10<0&&run>=.1*total)p10=k;if(p90<0&&run>=.9*total)p90=k}return {lo,hi,peak,p10,p90}}
@@ -3899,12 +3941,13 @@ setInterval(()=>{if(document.hidden||hqActive==='games'||source!=='sleeper'||bus
  Promise.allSettled([rzPoll(true),rzSleeper(true)]).then(()=>fxMaybeLiveForecast())},45000);
 
 /* ---------- wiring ---------- */
-function fxRenderAll(){fxRenderAlarms();if(hqActive==='records'){fxRenderAwards();fxRenderRivals()}if(hqActive==='toilet')fxRenderShame();if(hqActive==='forecast'){fxRenderRange();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}if(hqActive==='rosters')fxRenderTradeLists()}
-function fxOnTab(tab){if(tab==='records'){fxRenderAwards();fxRenderRivals()}else if(tab==='toilet')fxRenderShame();else if(tab==='forecast'){fxRenderRange();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}else if(tab==='rosters'){fxRenderAlarms();fxRenderTradeLists()}}
+function fxRenderAll(){fxRenderAlarms();if(hqActive==='records'){fxRenderAwards();fxRenderRivals()}if(hqActive==='toilet')fxRenderShame();if(hqActive==='forecast'){fxRenderRange();fxRenderRunIn();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}if(hqActive==='rosters')fxRenderTradeLists()}
+function fxOnTab(tab){if(tab==='records'){fxRenderAwards();fxRenderRivals()}else if(tab==='toilet')fxRenderShame();else if(tab==='forecast'){fxRenderRange();fxRenderRunIn();fxRenderWhatIf();fxRenderClinch();fxRenderOddsSeason()}else if(tab==='rosters'){fxRenderAlarms();fxRenderTradeLists()}}
 function fxInit(){
  document.body.insertAdjacentHTML('beforeend','<div id="fxToasts" class="fx-toasts" aria-live="polite"></div>');
  const sec=(id,title,sub,body,extra='')=>'<section class="hqpanel fx-panel" id="'+id+'Panel"><div class="hqrow"><h3>'+title+'</h3>'+extra+'</div>'+(sub?'<p class="v10-muted fx-sub">'+sub+'</p>':'')+body+'</section>';
  el('v10Wins')?.closest('section')?.insertAdjacentHTML('afterend',
+  sec('fxRunInS','🗓 Run-in difficulty','Remaining regular-season schedule, easiest first, rated by the strength of each team’s remaining opponents.','<div id="fxRunIn"></div>','<button type="button" class="secondary copy-action" data-copy-target="fxRunIn" data-copy-title="Run-in difficulty">📸 Copy image</button>')+
   sec('fxRangeS','↕️ Best and worst case','The highest and lowest each team finished across every simulated season — final place after the playoffs and Toilet Bowl, plus regular-season seed.','<div id="fxRange"></div>')+
   sec('fxWhatIfS','🔮 What-if playoff picker','Pick winners for any remaining games and see how everyone’s playoff chances change.','<div id="fxWhatIf"></div>')+
   sec('fxClinchS','🎟 This week’s playoff stakes','What a win or a loss this week does to each team’s playoff chance.','<div id="fxClinch"></div>')+
@@ -3936,7 +3979,7 @@ function sfWideSetup(){
  for(const id of ['v9-view-home','v9-view-forecast','v9-view-rosters','v9-view-toilet','v9-view-records'])el(id)?.classList.add('sf-wide');
  // Grid order: keep each pair together without changing the phone order.
  const order=(view,list)=>{const kids=[...(el(view)?.children||[])];kids.forEach((k,i)=>k.style.order=String(100+i));list.forEach((n,i)=>{if(n)n.style.order=String(i+1)})};
- order('v9-view-forecast',[el('v10Playoff')?.closest('section'),el('v10Wins')?.closest('section'),el('fxRangeSPanel'),el('fxClinchSPanel'),el('fxWhatIfSPanel'),el('fxOddsSPanel')]);
+ order('v9-view-forecast',[el('v10Playoff')?.closest('section'),el('v10Wins')?.closest('section'),el('fxRangeSPanel'),el('fxClinchSPanel'),el('fxRunInSPanel'),el('fxWhatIfSPanel'),el('fxOddsSPanel')]);
  order('v9-view-rosters',[el('fxAlarmsSPanel'),el('v10Spotlight')?.closest('section'),el('fxTradeSPanel')]);
  sfLayoutRZ();SF_WIDE?.addEventListener?.('change',sfLayoutRZ);
 }
