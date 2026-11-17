@@ -3838,6 +3838,30 @@ function fxDrawOdds(){
    (s.length>1?'<div class="fx-trend"><span class="fx-trend-tag '+tr.kind+'">'+label[tr.kind]+'</span><span class="fx-trend-v">'+pp(tr.d3)+' over '+tr.span+' wk'+(tr.span===1?'':'s')+'</span>'+streak+'</div>':'')+'</div>'}).join('')+
   '</div><p class="fx-note">Each point re-runs the season model using only the results known after that week. Teal segments are weeks the chance rose, pink ones where it fell; moves under 2 points count as steady. The dashed line is 50%.</p>'}
 
+/* Share card for the playoff-odds-over-the-season section. */
+function fxShareOdds(){
+ if(!fxOddsSeries||!model){showCopyToast('The chart is still loading');return}
+ const cards=teams.map((t,i)=>({t,s:fxOddsSeries[i]})).filter(x=>x.s.length).map(x=>({...x,tr:fxOddsTrend(x.s)})).sort((a,b)=>b.s.at(-1).p-a.s.at(-1).p);if(!cards.length)return;
+ const W=1080,cols=2,cw=470,ch=206,gx=20,top=372,rows=Math.ceil(cards.length/cols),H=top+rows*(ch+18)+92,{c,x}=fxCanvas(W,H);
+ const UP='#5ff7cf',DOWN='#ff8a9a',FLAT='#8fb0c4',pp=v=>(v>0?'+':v<0?'−':'±')+fmt(Math.abs(v)*100,0)+'pp',label={hot:'🔥 Rising fast',up:'↗ Rising',flat:'➖ Steady',down:'↘ Falling',cold:'🧊 Falling fast'};
+ fxText(x,'SUNDAY FUNDAY',60,86,{size:28,weight:900,color:'#24e7c5',spacing:6});fxText(x,'Playoff odds over the season',60,150,{size:58,weight:1000});
+ fxText(x,'After Week '+completedWeeks+(model.liveTeams?' · Week '+model.liveWk+' live':'')+' · '+model.sims.toLocaleString('en-GB')+' simulated seasons',60,192,{size:24,weight:700,color:'#8fb0c4'});
+ const pick=(f,dir)=>cards.filter(q=>q.s.length>1&&dir*f(q)>=.02).sort((a,b)=>dir*(f(b)-f(a)))[0];
+ const movers=[['THIS WEEK’S RISER',pick(q=>q.tr.d1,1),q=>pp(q.tr.d1),UP],['THIS WEEK’S FALLER',pick(q=>q.tr.d1,-1),q=>pp(q.tr.d1),DOWN],['HOTTEST · 3 WKS',pick(q=>q.tr.d3,1),q=>pp(q.tr.d3),UP],['COLDEST · 3 WKS',pick(q=>q.tr.d3,-1),q=>pp(q.tr.d3),DOWN]];
+ movers.forEach(([k,m,v,col],i)=>{const X=60+i*(232+8),Y=222;fxBox(x,X,Y,232,118,16,'#0c2235','#21455f');x.fillStyle=col;x.fillRect(X,Y+10,4,98);fxText(x,k,X+18,Y+32,{size:15,weight:900,color:'#7f9db3',spacing:1});
+  if(m){fxText(x,m.t.name,X+18,Y+70,{size:26,weight:900,max:200});fxText(x,v(m),X+18,Y+102,{size:24,weight:1000,color:col})}else fxText(x,'—',X+18,Y+76,{size:26,weight:900,color:'#5f7b92'})});
+ cards.forEach((q,i)=>{const X=60+(i%cols)*(cw+gx),Y=top+Math.floor(i/cols)*(ch+18),s_=q.s,now=s_.at(-1),tr=q.tr,col=tr.kind==='hot'||tr.kind==='up'?UP:tr.kind==='cold'||tr.kind==='down'?DOWN:FLAT;
+  fxBox(x,X,Y,cw,ch,18,'#0c2235',tr.kind==='hot'?'#2fa994':tr.kind==='cold'?'#8c3341':'#21455f');
+  fxText(x,q.t.name,X+22,Y+44,{size:28,weight:900,max:260});fxText(x,fxPct(now.p),X+cw-22,Y+48,{size:40,weight:1000,align:'right'});
+  if(s_.length>1)fxText(x,(Math.abs(tr.d1)<.005?'±0':(tr.d1>0?'▲ ':'▼ ')+fmt(Math.abs(tr.d1)*100,0))+' this week',X+cw-22,Y+76,{size:18,weight:800,align:'right',color:tr.d1>.005?UP:tr.d1<-.005?DOWN:FLAT});
+  const px=X+22,pw=cw-44,py=Y+86,ph=72,minW=1,maxW=Math.max(2,completedWeeks),PX=w=>px+(w-minW)/Math.max(1,maxW-minW)*pw,PY=p=>py+(1-p)*ph;
+  x.save();x.setLineDash([6,6]);x.strokeStyle='#3b5873';x.lineWidth=1.5;x.beginPath();x.moveTo(px,PY(.5));x.lineTo(px+pw,PY(.5));x.stroke();x.restore();
+  x.beginPath();x.moveTo(PX(s_[0].w),py+ph);s_.forEach(p=>x.lineTo(PX(p.w),PY(p.p)));x.lineTo(PX(now.w),py+ph);x.closePath();x.fillStyle='#24e7c51c';x.fill();
+  x.lineWidth=4;x.lineCap='round';for(let k=1;k<s_.length;k++){const a=s_[k-1],b=s_[k],d=b.p-a.p;x.strokeStyle=Math.abs(d)<.02?FLAT:d>0?UP:DOWN;x.beginPath();x.moveTo(PX(a.w),PY(a.p));x.lineTo(PX(b.w),PY(b.p));x.stroke()}
+  x.beginPath();x.arc(PX(now.w),PY(now.p),7,0,Math.PI*2);x.fillStyle='#eafffb';x.fill();x.lineWidth=3;x.strokeStyle='#0c2235';x.stroke();
+  if(s_.length>1)fxText(x,label[tr.kind]+'  '+pp(tr.d3)+' ('+tr.span+' wk'+(tr.span===1?'':'s')+')'+(tr.run>=2?'  '+(tr.dir>0?'▲':'▼')+tr.run+' straight':''),X+22,Y+ch-16,{size:19,weight:800,color:col,max:cw-44})});
+ fxFooter(x,W,H);fxShareCanvas(c,'Sunday Funday playoff odds over the season')}
+
 /* ---------- live season forecast ----------
  * During the week in progress, re-run the season simulation whenever a started
  * matchup's live score or projected final changes (at most every 20 seconds),
@@ -3865,14 +3889,14 @@ function fxInit(){
   sec('fxRangeS','↕️ Best and worst case','The highest and lowest each team finished across every simulated season — final place after the playoffs and Toilet Bowl, plus regular-season seed.','<div id="fxRange"></div>')+
   sec('fxWhatIfS','🔮 What-if playoff picker','Pick winners for any remaining games and see how everyone’s playoff chances change.','<div id="fxWhatIf"></div>')+
   sec('fxClinchS','🎟 This week’s playoff stakes','What a win or a loss this week does to each team’s playoff chance.','<div id="fxClinch"></div>')+
-  sec('fxOddsS','📈 Playoff odds over the season','How each team’s playoff chance has moved week by week.','<div id="fxOddsSeason"></div>'));
+  sec('fxOddsS','📈 Playoff odds over the season','How each team’s playoff chance has moved week by week.','<div id="fxOddsSeason"></div>','<button type="button" class="secondary copy-action" id="fxOddsShare">📸 Share image</button>'));
  const rh=document.querySelector('#v9-view-records .hqhero');rh?.insertAdjacentHTML('afterend',
   sec('fxAwardsS','🏅 Weekly awards','Handed out automatically from Sleeper scores.','<div id="fxAwards"></div>','<div class="fx-actions"><select id="fxAwardsWeek" aria-label="Awards week"></select><button type="button" class="primary" id="fxRecapBtn">📸 Recap card</button></div>')+
   sec('fxRivalsS','⚔️ Rivalries','Head-to-head record between any two managers, across every loaded season.','<div class="fx-riv-pick"><select id="fxRivalA" aria-label="First manager"></select><span>v</span><select id="fxRivalB" aria-label="Second manager"></select></div><div id="fxRivals"></div>'));
  document.querySelector('#v9-view-toilet .hqhero')?.insertAdjacentHTML('afterend','<section class="hqpanel fx-panel" id="fxShame"></section>');
  const rv=el('v9-view-rosters');rv?.insertAdjacentHTML('afterbegin',sec('fxAlarmsS','🚨 Lineup alarms','Starters who are out, on a bye or missing — before their games kick off.','<div id="fxAlarms"></div>'));
  rv?.insertAdjacentHTML('beforeend',sec('fxTradeS','🔁 Trade checker','Tick the players each team gives away to see how the trade changes lineups and odds.','<div class="fx-trade-pick"><div><select id="fxTradeA" aria-label="First team"></select><div class="fx-tlist" id="fxTradeListA"></div></div><div><select id="fxTradeB" aria-label="Second team"></select><div class="fx-tlist" id="fxTradeListB"></div></div></div><button type="button" class="primary" id="fxTradeBtn">Check trade</button><div id="fxTradeResult"></div>'));
- el('fxAwardsWeek')?.addEventListener('change',e=>{fxAwardsWeek=Number(e.target.value);fxRenderAwards()});el('fxRecapBtn')?.addEventListener('click',fxShareRecap);
+ el('fxAwardsWeek')?.addEventListener('change',e=>{fxAwardsWeek=Number(e.target.value);fxRenderAwards()});el('fxRecapBtn')?.addEventListener('click',fxShareRecap);el('fxOddsShare')?.addEventListener('click',fxShareOdds);
  for(const id of ['fxRivalA','fxRivalB'])el(id)?.addEventListener('change',fxRenderRivals);
  for(const [s_,box] of [['fxTradeA','fxTradeListA'],['fxTradeB','fxTradeListB']])el(s_)?.addEventListener('change',()=>{el(box).dataset.team='';fxRenderTradeLists();el('fxTradeResult').innerHTML=''});
  el('fxTradeBtn')?.addEventListener('click',fxCheckTrade);
