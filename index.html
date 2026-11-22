@@ -2013,16 +2013,22 @@ function startSimulation(){
 }
 function updateForecastFreshness(){
  const target=el('forecastFreshness');if(!target)return;
- const stamp=Number(live?.syncedAt||0),age=stamp?Date.now()-stamp:Infinity;
+ const stamp=Number(live?.syncedAt||0),age=stamp?Date.now()-stamp:Infinity,diag=typeof fxLiveDiag==='function'?fxLiveDiag():null;
  if(source!=='sleeper'){
   target.className='statusline warn';
   target.textContent='Waiting for the current Sleeper standings. The saved Week 4 example is not a live projection.';
+ }else if(model?.liveTeams){
+  target.className='statusline ok';
+  target.textContent='● LIVE · Week '+model.liveWk+' in progress: '+model.liveTeams+' of '+teams.length+' teams’ live scores included · updated '+new Date(model.liveAt||Date.now()).toLocaleTimeString('en-GB')+(diag?.missing?.length?' · not yet included: '+diag.missing.join(', '):'')+'. Unstarted matchups use season form.';
+ }else if(diag?.reason){
+  target.className='statusline warn';
+  target.textContent='Week '+diag.wk+' is in progress, but live scores aren’t in the forecast yet: '+diag.reason+'. Odds use season form until then.';
  }else if(!stamp||age>60*60*1000){
   target.className='statusline warn';
   target.textContent='Cached Sleeper data'+(stamp?' from '+new Date(stamp).toLocaleString('en-GB'):'')+'. Probabilities can change after the next successful sync.';
  }else{
   target.className='statusline ok';
-  target.textContent=(model?.liveTeams?'● LIVE · Week '+model.liveWk+' in progress: '+model.liveTeams+' teams’ live scores included · updated '+new Date(model.liveAt||Date.now()).toLocaleTimeString('en-GB')+' · ':'Sleeper synced '+new Date(stamp).toLocaleString('en-GB')+' · ')+'Forecast covers 10 teams after Week '+completedWeeks+'. Positions are estimates, not confirmed brackets.';
+  target.textContent='Sleeper synced '+new Date(stamp).toLocaleString('en-GB')+' · Forecast covers 10 teams after Week '+completedWeeks+'. Positions are estimates, not confirmed brackets.';
  }
 }
 function renderForecast(){updateForecastFreshness();if(!model)return;const rows=teams.map((t,i)=>({t,i,current:model.cur[i],projReg:model.projReg[i],expWins:model.expWins[i],playoff:model.playoff[i]/model.sims,
@@ -2981,7 +2987,7 @@ function rzGameProgress(g){
 }
 function rzNFLGameForTeam(abbr){const wanted=rzNormTeam(abbr);return rzGames.find(g=>{const s=rzSides(g);return [rzNormTeam(rzAbbr(s.home)),rzNormTeam(rzAbbr(s.away))].includes(wanted)})||null}
 function liveTeamForecast(teamName,w){
- const team=teams.find(t=>t.name===teamName),base=weeklyLineupProjection(teamName,w),projection=weeklyProjectionCache[Number(w)];if(!team||!base||base.coverage<.999||!projection||projection.error)return null;
+ const team=teams.find(t=>t.name===teamName),base=weeklyLineupProjection(teamName,w),projection=weeklyProjectionCache[Number(w)];if(!team||!base||base.coverage<.75||!projection||projection.error)return null;
  const entry=matchupEntryForTeam(team,w),raw=entry?.custom_points==null?Number(entry?.points):Number(entry.custom_points),current=Number.isFinite(raw)?raw:0;
  const starters=lineupStartersForWeek(team,w);let remaining=0,mapped=0,projected=0,started=current!==0,active=0,finished=0,totalWeight=0,remainingWeight=0;
  for(const p of starters){const row=projection.map[String(p.id)];if(!row||!Number.isFinite(row.points))continue;const points=Number(row.points);if(row.confirmedZero){mapped++;continue}if(points!==0)projected++;
@@ -3931,6 +3937,16 @@ let fxLiveSig='',fxLiveRunAt=0,fxLiveTimer=null,fxLiveRunning=false;
 function fxLiveWeekDist(){
  if(source!=='sleeper'||!leagueInfo)return null;const w=completedWeeks+1;if(w>regularWeeks||rzWeek!==w||rzLastNFLWeek!==w)return null;const byIdx={};let n=0;
  teams.forEach((t,i)=>{const f=liveTeamForecast(t.name,w);if(f?.ready&&f.started&&Number.isFinite(f.expectedFinal)){byIdx[i]={mu:f.expectedFinal,sd:Math.max(0,Number(f.sd)||0)};n++}});return n?{wk:w,byIdx,n}:null}
+/* Why live scores are or aren't in the forecast, for the status line. */
+function fxLiveDiag(){
+ if(source!=='sleeper'||!leagueInfo)return null;const w=completedWeeks+1;if(w>regularWeeks)return null;
+ const scored=(weekly[w]||[]).some(e=>(cleanScore(e)||0)>0),games=rzLastNFLWeek===w&&rzGames.length,started=scored||(games&&rzGames.some(g=>rzIsLive(g)||rzState(g).includes('FINAL')));if(!started)return null;
+ const out={wk:w,missing:[]};if(rzWeek!==w){out.reason='the app’s NFL week ('+rzWeek+') doesn’t match Sleeper’s current week ('+w+')';return out}
+ if(rzLastNFLWeek!==w){out.reason=rzErrors?'the NFL scoreboard can’t be reached':'waiting for the NFL scoreboard';return out}
+ const pj=weeklyProjectionCache[w];if(!pj){out.reason='waiting for Sleeper player projections';return out}if(pj.error){out.reason='Sleeper player projections are unavailable';return out}
+ for(const t of teams){const f=liveTeamForecast(t.name,w);if(f?.ready&&f.started)continue;const base=weeklyLineupProjection(t.name,w);if(f&&!f.started)continue;
+  out.missing.push(t.name+(base&&base.coverage<.75?' (too few projected starters)':f&&f.ready===false?' (NFL game data incomplete)':''))}
+ if(out.missing.length===teams.length)out.reason='no team’s live score could be projected yet';return out}
 function fxLiveSignature(){const d=fxLiveWeekDist();return d?Object.entries(d.byIdx).map(([i,x])=>i+':'+x.mu.toFixed(1)+':'+x.sd.toFixed(1)).join('|'):''}
 function fxMaybeLiveForecast(){
  if(source!=='sleeper'||busy||!model||fxLiveRunning)return;const sig=fxLiveSignature();if(!sig||sig===fxLiveSig)return;
