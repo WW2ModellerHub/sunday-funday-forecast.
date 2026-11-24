@@ -1585,6 +1585,13 @@ td { padding:7px 6px; }
 .fx-luck-bar.pos{background:#5ff7cf;border-radius:0 4px 4px 0}.fx-luck-bar.neg{background:#ff8a9a;border-radius:4px 0 0 4px}
 .fx-luck-val{text-align:right;font-variant-numeric:tabular-nums}.fx-luck-val b{font-size:16px}.fx-luck-val small{display:block;font-size:10px;color:#7f9db3;white-space:nowrap}
 @media(max-width:600px){.fx-luck-row{grid-template-columns:minmax(0,1fr) 104px;gap:4px 8px}.fx-luck-plot{grid-column:1/-1;grid-row:2}.fx-luck-val small{white-space:normal}}
+.fx-luck-stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;margin-bottom:10px}
+.fx-luck-stats>div{padding:9px 11px;border-radius:12px;background:#0c2235;border:1px solid #21455f}
+.fx-luck-stats span{display:block;font-size:10px;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:#7f9db3}
+.fx-luck-stats b{display:block;font-size:22px;font-variant-numeric:tabular-nums}.fx-luck-stats small{font-size:11px;color:#8fb0c4}
+.fx-luck-chips{display:flex;flex-wrap:wrap;gap:3px;margin-top:4px}
+.fx-luck-chip{font-size:10px;font-weight:800;border-radius:5px;padding:1px 6px;white-space:nowrap}
+.fx-luck-chip.pos{background:#0f3d37;color:#9ff5df}.fx-luck-chip.neg{background:#3d1520;color:#ffc2cb}
 </style></head><body><main class="wrap">
 <header><div class="lead"><div class="mark">🏈</div><div><h1>Sunday Funday <span style="color:#24e7c5">v10</span></h1>
 <div class="hero-note">Sleeper-connected league forecasts · 50,000 simulations · Championship + Toilet Bowl</div></div></div>
@@ -3921,29 +3928,42 @@ function fxWinsNeededHtml(i){const x=fxWinsNeeded(i);return x?'<span class="fx-n
 /* ---------- luck ----------
  * Deserved wins = all-play record (share of the league each score would have beaten,
  * summed over completed weeks). Luck = actual wins − deserved wins. */
-function fxWL(a,n){const f=v=>Number.isInteger(v)?String(v):fmt(v,1);return f(a)+'–'+f(n-a)}
-function fxLuckRows(){const rows=hqLuck();return rows.map(r=>{const t=r.team,gp=Math.max(1,t.w+t.l+(t.ties||0));return {...r,pa:Number(t.pa)/gp,pf:Number(t.pf)/gp}}).sort((a,b)=>b.delta-a.delta||a.team.name.localeCompare(b.team.name))}
+/* Lucky wins: won with a score below that week's league average. Unlucky losses: lost
+ * with a score above it. Only weeks where every team has a complete, paired score count. */
+function fxLuckData(){
+ if(source!=='sleeper')return null;const by=new Map(teams.map(t=>[Number(t.id),{team:t,w:0,l:0,ties:0,lucky:[],unlucky:[],games:0}])),wins=[],all=[];let lowWin=null,highLoss=null,weeks=0;
+ for(let wk=1;wk<=completedWeeks;wk++){const es=weekly[wk]||[];if(es.length!==teams.length)continue;const pairs={};for(const e of es)if(e?.matchup_id!=null)(pairs[e.matchup_id]??=[]).push(e);
+  const ps=Object.values(pairs);if(ps.length!==teams.length/2||ps.some(p=>p.length!==2||p.some(e=>cleanScore(e)==null||!by.has(Number(e.roster_id)))))continue;
+  const avg=mean(es.map(cleanScore));weeks++;
+  for(const [a,b] of ps){const sa=cleanScore(a),sb=cleanScore(b),A=by.get(Number(a.roster_id)),B=by.get(Number(b.roster_id));all.push(sa,sb);A.games++;B.games++;
+   if(sa===sb){A.ties++;B.ties++;continue}const [W,L,sw,sl]=sa>sb?[A,B,sa,sb]:[B,A,sb,sa];W.w++;L.l++;wins.push(sw);
+   if(sw<avg)W.lucky.push({wk,score:sw,avg,opp:L.team.name,os:sl});if(sl>avg)L.unlucky.push({wk,score:sl,avg,opp:W.team.name,os:sw});
+   if(!lowWin||sw<lowWin.score)lowWin={team:W.team,score:sw,wk};if(!highLoss||sl>highLoss.score)highLoss={team:L.team,score:sl,wk}}}
+ if(!weeks)return null;const ap=new Map(hqLuck().map(r=>[Number(r.team.id),r.delta]));
+ const rows=[...by.values()].filter(r=>r.games).map(r=>({...r,net:r.lucky.length-r.unlucky.length,allPlay:ap.get(Number(r.team.id))??0})).sort((a,b)=>b.net-a.net||b.allPlay-a.allPlay||a.team.name.localeCompare(b.team.name));
+ return {rows,weeks,avgWin:mean(wins),avgScore:mean(all),lowWin,highLoss}}
 function fxRenderLuck(){
- const root=el('fxLuck');if(!root)return;const rows=source==='sleeper'?fxLuckRows():[];if(!rows.length){root.innerHTML='<p class="v10-muted">Sync Sleeper to measure luck from completed weeks.</p>';return}
- const max=Math.max(1,...rows.map(r=>Math.abs(r.delta))),weeks=Math.max(...rows.map(r=>r.weeks)),paRank=[...rows].sort((a,b)=>b.pa-a.pa),lucky=rows[0],unlucky=rows.at(-1),w=v=>fmt(Math.abs(v)/max*50,2)+'%';
- root.innerHTML='<div class="fx-luck-sum">'+(lucky.delta>.05?'<span>🍀 Luckiest: <b>'+safe(lucky.team.name)+'</b> +'+fmt(lucky.delta,1)+' wins</span>':'')+(unlucky.delta<-.05?'<span>🌧️ Unluckiest: <b>'+safe(unlucky.team.name)+'</b> −'+fmt(-unlucky.delta,1)+' wins</span>':'')+'<span class="fx-luck-key"><i class="neg"></i>unlucky <i class="pos"></i>lucky</span></div>'+
-  '<div class="fx-luck">'+rows.map(r=>{const d=r.delta,pos=d>=0,pr=paRank.indexOf(r)+1;
-   return '<div class="fx-luck-row" title="'+safe(r.team.name)+': '+fmt(r.actual,1)+' actual wins vs '+fmt(r.expected,1)+' deserved over '+r.weeks+' weeks"><div class="fx-luck-name"><b>'+safe(r.team.name)+'</b><small>went '+fxWL(r.actual,r.weeks)+' · deserved '+fmt(r.expected,1)+'–'+fmt(r.weeks-r.expected,1)+'</small></div>'+
-    '<div class="fx-luck-plot"><i class="fx-luck-zero"></i><i class="fx-luck-bar '+(pos?'pos':'neg')+'" style="'+(pos?'left:50%':'right:50%')+';width:'+w(d)+'"></i></div><div class="fx-luck-val '+(Math.abs(d)<.05?'':pos?'pos':'neg')+'"><b>'+(Math.abs(d)<.05?'±0':(pos?'+':'−')+fmt(Math.abs(d),1))+'</b><small>faced '+fmt(r.pa,1)+'/wk ('+ord(pr)+' most)</small></div></div>'}).join('')+'</div>'+
-  '<p class="fx-note">Based on '+weeks+' completed week'+(weeks===1?'':'s')+'. “Deserved” is the all-play record: a top score each week earns a full win, a median score half. “Faced” is points scored against them per week.</p>'}
+ const root=el('fxLuck');if(!root)return;const d=fxLuckData();if(!d){root.innerHTML='<p class="v10-muted">Sync Sleeper to measure luck from completed weeks.</p>';return}
+ const rows=d.rows,max=Math.max(1,...rows.map(r=>Math.abs(r.net))),lucky=rows[0],unlucky=rows.at(-1),w=v=>fmt(Math.abs(v)/max*50,2)+'%',n=(k,one,many)=>k+' '+(k===1?one:many),chips=(arr,cls)=>arr.map(g=>'<span class="fx-luck-chip '+cls+'" title="Week '+g.wk+': '+fmt(g.score,1)+' v '+safe(g.opp)+' '+fmt(g.os,1)+' · week average '+fmt(g.avg,1)+'">Wk'+g.wk+' '+fmt(g.score,1)+'</span>').join('');
+ root.innerHTML='<div class="fx-luck-stats"><div><span>Average winning score</span><b>'+fmt(d.avgWin,1)+'</b></div><div><span>Average score</span><b>'+fmt(d.avgScore,1)+'</b></div>'+(d.lowWin?'<div><span>Lowest winning score</span><b>'+fmt(d.lowWin.score,1)+'</b><small>'+safe(d.lowWin.team.name)+' · Wk '+d.lowWin.wk+'</small></div>':'')+(d.highLoss?'<div><span>Highest losing score</span><b>'+fmt(d.highLoss.score,1)+'</b><small>'+safe(d.highLoss.team.name)+' · Wk '+d.highLoss.wk+'</small></div>':'')+'</div>'+
+  '<div class="fx-luck-sum">'+(lucky.net>0?'<span>🍀 Luckiest: <b>'+safe(lucky.team.name)+'</b> '+n(lucky.lucky.length,'lucky win','lucky wins')+'</span>':'')+(unlucky.net<0?'<span>🌧️ Unluckiest: <b>'+safe(unlucky.team.name)+'</b> '+n(unlucky.unlucky.length,'unlucky loss','unlucky losses')+'</span>':'')+'<span class="fx-luck-key"><i class="neg"></i>unlucky <i class="pos"></i>lucky</span></div>'+
+  '<div class="fx-luck">'+rows.map(r=>{const v=r.net,pos=v>=0;
+   return '<div class="fx-luck-row"><div class="fx-luck-name"><b>'+safe(r.team.name)+'</b><small>'+r.w+'–'+r.l+(r.ties?'–'+r.ties:'')+' · 🍀 '+n(r.lucky.length,'lucky win','lucky wins')+' · 🌧️ '+n(r.unlucky.length,'unlucky loss','unlucky losses')+'</small>'+(r.lucky.length||r.unlucky.length?'<div class="fx-luck-chips">'+chips(r.lucky,'pos')+chips(r.unlucky,'neg')+'</div>':'')+'</div>'+
+    '<div class="fx-luck-plot"><i class="fx-luck-zero"></i>'+(v?'<i class="fx-luck-bar '+(pos?'pos':'neg')+'" style="'+(pos?'left:50%':'right:50%')+';width:'+w(v)+'"></i>':'')+'</div><div class="fx-luck-val"><b>'+(v>0?'+':v<0?'−':'±')+Math.abs(v)+'</b><small>all-play '+(r.allPlay>=0?'+':'−')+fmt(Math.abs(r.allPlay),1)+'</small></div></div>'}).join('')+'</div>'+
+  '<p class="fx-note">Based on '+d.weeks+' completed week'+(d.weeks===1?'':'s')+'. “Average” is that week’s league average score, so high- and low-scoring weeks are judged fairly. All-play is a second luck measure: actual wins minus the wins earned by beating each week’s lower scores; it breaks ties.</p>'}
 function fxShareLuck(){
- const rows=source==='sleeper'?fxLuckRows():[];if(!rows.length){showCopyToast('No completed weeks to measure yet');return}
- const W=1080,rowH=96,top=300,H=top+rows.length*rowH+110,{c,x}=fxCanvas(W,H),max=Math.max(1,...rows.map(r=>Math.abs(r.delta))),weeks=Math.max(...rows.map(r=>r.weeks)),POS='#5ff7cf',NEG='#ff8a9a';
+ const d=fxLuckData();if(!d){showCopyToast('No completed weeks to measure yet');return}
+ const rows=d.rows,W=1080,rowH=96,top=392,H=top+rows.length*rowH+110,{c,x}=fxCanvas(W,H),max=Math.max(1,...rows.map(r=>Math.abs(r.net))),POS='#5ff7cf',NEG='#ff8a9a';
  fxText(x,'SUNDAY FUNDAY',60,86,{size:28,weight:900,color:'#24e7c5',spacing:6});fxText(x,'Luckiest & unluckiest',60,150,{size:58,weight:1000});
- fxText(x,'Actual wins vs the wins their scores deserved · '+weeks+' week'+(weeks===1?'':'s'),60,192,{size:24,weight:700,color:'#8fb0c4'});
- const L=rows[0],U=rows.at(-1);if(L.delta>.05)fxText(x,'🍀 '+L.team.name+'  +'+fmt(L.delta,1),60,250,{size:30,weight:900,color:POS,max:460});if(U.delta<-.05)fxText(x,'🌧️ '+U.team.name+'  −'+fmt(-U.delta,1),W-60,250,{size:30,weight:900,color:NEG,align:'right',max:460});
- const cx=640,half=230;x.strokeStyle='#3b5873';x.lineWidth=2;x.beginPath();x.moveTo(cx,top-10);x.lineTo(cx,top+rows.length*rowH-10);x.stroke();
- rows.forEach((r,i)=>{const Y=top+i*rowH,d=r.delta,wd=Math.abs(d)/max*half;fxBox(x,60,Y,W-120,rowH-12,16,i%2?'#0b1f31':'#0c2235');
-  fxText(x,r.team.name,84,Y+40,{size:28,weight:900,max:330});fxText(x,'went '+fxWL(r.actual,r.weeks)+' · deserved '+fmt(r.expected,1)+'–'+fmt(r.weeks-r.expected,1),84,Y+70,{size:19,weight:700,color:'#8fb0c4',max:330});
-  if(wd>.5){x.fillStyle=d>=0?POS:NEG;fxBox(x,d>=0?cx:cx-wd,Y+26,wd,32,6,d>=0?POS:NEG)}
-  fxText(x,Math.abs(d)<.05?'±0':(d>=0?'+':'−')+fmt(Math.abs(d),1),d>=0?Math.min(cx+wd+12,W-150):Math.max(cx-wd-12,440),Y+52,{size:26,weight:1000,align:d>=0?'left':'right'})});
+ fxText(x,'🍀 Lucky win: below-average score  ·  🌧️ Unlucky loss: above-average score',60,190,{size:21,weight:700,color:'#8fb0c4',max:W-120});
+ const stats=[['AVG WINNING SCORE',fmt(d.avgWin,1),''],['AVG SCORE',fmt(d.avgScore,1),''],['LOWEST WIN',d.lowWin?fmt(d.lowWin.score,1):'—',d.lowWin?d.lowWin.team.name+' · Wk '+d.lowWin.wk:''],['HIGHEST LOSS',d.highLoss?fmt(d.highLoss.score,1):'—',d.highLoss?d.highLoss.team.name+' · Wk '+d.highLoss.wk:'']];
+ stats.forEach(([k,v,sub],i)=>{const X=60+i*240,Y=214;fxBox(x,X,Y,228,140,16,'#0c2235','#21455f');fxText(x,k,X+18,Y+32,{size:15,weight:900,color:'#7f9db3',spacing:1});fxText(x,v,X+18,Y+86,{size:42,weight:1000});if(sub)fxText(x,sub,X+18,Y+118,{size:17,weight:700,color:'#8fb0c4',max:196})});
+ const cx=700,half=170;x.strokeStyle='#3b5873';x.lineWidth=2;x.beginPath();x.moveTo(cx,top-6);x.lineTo(cx,top+rows.length*rowH-10);x.stroke();
+ rows.forEach((r,i)=>{const Y=top+i*rowH,v=r.net,wd=Math.abs(v)/max*half;fxBox(x,60,Y,W-120,rowH-12,16,i%2?'#0b1f31':'#0c2235');
+  fxText(x,r.team.name,84,Y+40,{size:28,weight:900,max:380});fxText(x,r.w+'–'+r.l+(r.ties?'–'+r.ties:'')+' · 🍀 '+r.lucky.length+' lucky · 🌧️ '+r.unlucky.length+' unlucky',84,Y+70,{size:19,weight:700,color:'#8fb0c4',max:400});
+  if(v)fxBox(x,v>0?cx:cx-wd,Y+26,wd,32,6,v>0?POS:NEG);
+  fxText(x,(v>0?'+':v<0?'−':'±')+Math.abs(v),v>=0?Math.min(cx+wd+14,W-110):Math.max(cx-wd-14,470),Y+53,{size:28,weight:1000,align:v>=0?'left':'right'})});
  fxFooter(x,W,H);fxShareCanvas(c,'Sunday Funday luck table')}
-
 /* Share card for the Live playoff picture. */
 function fxSharePlayoff(){
  if(!model){showCopyToast('Run the forecast first');return}
@@ -4029,7 +4049,7 @@ function fxInit(){
   sec('fxOddsS','📈 Playoff odds over the season','How each team’s playoff chance has moved week by week.','<div id="fxOddsSeason"></div>','<button type="button" class="secondary copy-action" id="fxOddsShare">📸 Share image</button>'));
  const rh=document.querySelector('#v9-view-records .hqhero');rh?.insertAdjacentHTML('afterend',
   sec('fxAwardsS','🏅 Weekly awards','Handed out automatically from Sleeper scores.','<div id="fxAwards"></div>','<div class="fx-actions"><select id="fxAwardsWeek" aria-label="Awards week"></select><button type="button" class="primary" id="fxRecapBtn">📸 Recap card</button></div>')+
-  sec('fxLuckS','🍀 Luckiest & unluckiest managers','Actual wins against the wins their scores deserved: each week, how many teams they would have beaten if they had played everyone.','<div id="fxLuck"></div>','<button type="button" class="secondary copy-action" id="fxLuckShare">📸 Share image</button>')+
+  sec('fxLuckS','🍀 Luckiest & unluckiest managers','A lucky win is a win with a below-average score for that week; an unlucky loss is a loss with an above-average score. Luck = lucky wins − unlucky losses.','<div id="fxLuck"></div>','<button type="button" class="secondary copy-action" id="fxLuckShare">📸 Share image</button>')+
   sec('fxRivalsS','⚔️ Rivalries','Head-to-head record between any two managers, across every loaded season.','<div class="fx-riv-pick"><select id="fxRivalA" aria-label="First manager"></select><span>v</span><select id="fxRivalB" aria-label="Second manager"></select></div><div id="fxRivals"></div>'));
  document.querySelector('#v9-view-toilet .hqhero')?.insertAdjacentHTML('afterend','<section class="hqpanel fx-panel" id="fxShame"></section>');
  const rv=el('v9-view-rosters');rv?.insertAdjacentHTML('afterbegin',sec('fxAlarmsS','🚨 Lineup alarms','Starters who are out, on a bye or missing — before their games kick off.','<div id="fxAlarms"></div>'));
