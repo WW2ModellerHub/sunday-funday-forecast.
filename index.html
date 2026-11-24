@@ -3953,16 +3953,32 @@ function fxRenderLuck(){
   '<p class="fx-note">Based on '+d.weeks+' completed week'+(d.weeks===1?'':'s')+'. “Average” is that week’s league average score, so high- and low-scoring weeks are judged fairly. All-play is a second luck measure: actual wins minus the wins earned by beating each week’s lower scores; it breaks ties.</p>'}
 function fxShareLuck(){
  const d=fxLuckData();if(!d){showCopyToast('No completed weeks to measure yet');return}
- const rows=d.rows,W=1080,rowH=96,top=392,H=top+rows.length*rowH+110,{c,x}=fxCanvas(W,H),max=Math.max(1,...rows.map(r=>Math.abs(r.net))),POS='#5ff7cf',NEG='#ff8a9a';
+ const rows=d.rows,W=1080,POS='#5ff7cf',NEG='#ff8a9a',FONT='system-ui,-apple-system,"Segoe UI",Roboto,sans-serif';
+ // Lay out each row's week chips first so every row gets the height it needs.
+ const m=document.createElement('canvas').getContext('2d');m.font='800 17px '+FONT;const chipW=t=>m.measureText(t).width+20,maxRow=540;
+ const lay=rows.map(r=>{const chips=[...r.lucky.map(g=>({t:'Wk'+g.wk+' '+fmt(g.score,1),pos:true})),...r.unlucky.map(g=>({t:'Wk'+g.wk+' '+fmt(g.score,1),pos:false}))],lines=[[]];let w=0;
+  for(const c of chips){const cw=chipW(c.t)+6;if(w+cw>maxRow&&lines.at(-1).length){lines.push([]);w=0}lines.at(-1).push(c);w+=cw}
+  return {r,lines:chips.length?lines:[],h:96+(chips.length?lines.length*32:0)}});
+ const top=472,H=top+lay.reduce((t,l)=>t+l.h+10,0)+200,{c,x}=fxCanvas(W,H),max=Math.max(1,...rows.map(r=>Math.abs(r.net)));
  fxText(x,'SUNDAY FUNDAY',60,86,{size:28,weight:900,color:'#24e7c5',spacing:6});fxText(x,'Luckiest & unluckiest',60,150,{size:58,weight:1000});
  fxText(x,'🍀 Lucky win: below-average score  ·  🌧️ Unlucky loss: above-average score',60,190,{size:21,weight:700,color:'#8fb0c4',max:W-120});
  const stats=[['AVG WINNING SCORE',fmt(d.avgWin,1),''],['AVG SCORE',fmt(d.avgScore,1),''],['LOWEST WIN',d.lowWin?fmt(d.lowWin.score,1):'—',d.lowWin?d.lowWin.team.name+' · Wk '+d.lowWin.wk:''],['HIGHEST LOSS',d.highLoss?fmt(d.highLoss.score,1):'—',d.highLoss?d.highLoss.team.name+' · Wk '+d.highLoss.wk:'']];
  stats.forEach(([k,v,sub],i)=>{const X=60+i*240,Y=214;fxBox(x,X,Y,228,140,16,'#0c2235','#21455f');fxText(x,k,X+18,Y+32,{size:15,weight:900,color:'#7f9db3',spacing:1});fxText(x,v,X+18,Y+86,{size:42,weight:1000});if(sub)fxText(x,sub,X+18,Y+118,{size:17,weight:700,color:'#8fb0c4',max:196})});
- const cx=700,half=170;x.strokeStyle='#3b5873';x.lineWidth=2;x.beginPath();x.moveTo(cx,top-6);x.lineTo(cx,top+rows.length*rowH-10);x.stroke();
- rows.forEach((r,i)=>{const Y=top+i*rowH,v=r.net,wd=Math.abs(v)/max*half;fxBox(x,60,Y,W-120,rowH-12,16,i%2?'#0b1f31':'#0c2235');
-  fxText(x,r.team.name,84,Y+40,{size:28,weight:900,max:380});fxText(x,r.w+'–'+r.l+(r.ties?'–'+r.ties:'')+' · 🍀 '+r.lucky.length+' lucky · 🌧️ '+r.unlucky.length+' unlucky',84,Y+70,{size:19,weight:700,color:'#8fb0c4',max:400});
-  if(v)fxBox(x,v>0?cx:cx-wd,Y+26,wd,32,6,v>0?POS:NEG);
-  fxText(x,(v>0?'+':v<0?'−':'±')+Math.abs(v),v>=0?Math.min(cx+wd+14,W-110):Math.max(cx-wd-14,470),Y+53,{size:28,weight:1000,align:v>=0?'left':'right'})});
+ const L=rows[0],U=rows.at(-1),n=(k,a,b)=>k+' '+(k===1?a:b);
+ if(L.net>0)fxText(x,'🍀 Luckiest: '+L.team.name+' · '+n(L.lucky.length,'lucky win','lucky wins'),60,402,{size:26,weight:900,color:POS,max:W-120});
+ if(U.net<0)fxText(x,'🌧️ Unluckiest: '+U.team.name+' · '+n(U.unlucky.length,'unlucky loss','unlucky losses'),60,440,{size:26,weight:900,color:NEG,max:W-120});
+ const cx=830,half=120;let y=top;
+ lay.forEach(({r,lines,h},i)=>{const Y=y,v=r.net,wd=Math.abs(v)/max*half;fxBox(x,60,Y,W-120,h,16,i%2?'#0b1f31':'#0c2235');
+  // Shrink long names rather than clipping them.
+  let size=28;x.font='900 '+size+'px '+FONT;while(size>18&&x.measureText(r.team.name).width>560){size-=2;x.font='900 '+size+'px '+FONT}
+  fxText(x,r.team.name,84,Y+40,{size,weight:900,max:560});fxText(x,r.w+'–'+r.l+(r.ties?'–'+r.ties:'')+' · 🍀 '+n(r.lucky.length,'lucky win','lucky wins')+' · 🌧️ '+n(r.unlucky.length,'unlucky loss','unlucky losses'),84,Y+70,{size:19,weight:700,color:'#8fb0c4',max:560});
+  lines.forEach((line,li)=>{let cxp=84;const cy=Y+90+li*32;for(const ch of line){const cw=chipW(ch.t);fxBox(x,cxp,cy,cw,26,6,ch.pos?'#0f3d37':'#3d1520');fxText(x,ch.t,cxp+10,cy+19,{size:17,weight:800,color:ch.pos?'#9ff5df':'#ffc2cb'});cxp+=cw+6}});
+  x.strokeStyle='#3b5873';x.lineWidth=2;x.beginPath();x.moveTo(cx,Y+12);x.lineTo(cx,Y+h-12);x.stroke();
+  if(v)fxBox(x,v>0?cx:cx-wd,Y+28,wd,30,6,v>0?POS:NEG);
+  fxText(x,(v>0?'+':v<0?'−':'±')+Math.abs(v),v>=0?Math.min(cx+wd+12,W-110):Math.max(cx-wd-12,662),Y+53,{size:28,weight:1000,align:v>=0?'left':'right'});
+  fxText(x,'all-play '+(r.allPlay>=0?'+':'−')+fmt(Math.abs(r.allPlay),1),W-84,Y+86,{size:17,weight:700,color:'#7f9db3',align:'right'});
+  y+=h+10});
+ ['Based on '+d.weeks+' completed week'+(d.weeks===1?'':'s')+'. “Average” is that week’s league average score.','Luck = lucky wins − unlucky losses. All-play (actual wins minus the wins','from beating each week’s lower scores) breaks ties.'].forEach((t,k)=>fxText(x,t,60,y+26+k*26,{size:18,weight:700,color:'#7f9db3',max:W-120}));
  fxFooter(x,W,H);fxShareCanvas(c,'Sunday Funday luck table')}
 /* Share card for the Live playoff picture. */
 function fxSharePlayoff(){
